@@ -60,6 +60,13 @@ class Order
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $cancelDate = null;
 
+    public function __construct()
+        {
+            $this->createdAt = new \DateTimeImmutable();
+            $this->status = 'En attente';
+            $this->equipmentBorrowed = false;
+        }
+
     public function getId(): ?int
     {
         return $this->id;
