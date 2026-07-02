@@ -60,12 +60,16 @@ class Order
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $cancelDate = null;
 
+    #[ORM\ManyToOne(inversedBy: 'orders')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
+
     public function __construct()
-        {
-            $this->createdAt = new \DateTimeImmutable();
-            $this->status = 'En attente';
-            $this->equipmentBorrowed = false;
-        }
+    {
+        $this->createdAt = new \DateTimeImmutable();
+        $this->status = 'En attente';
+        $this->equipmentBorrowed = false;
+    }
 
     public function getId(): ?int
     {
@@ -248,6 +252,18 @@ class Order
     public function setCancelDate(?\DateTimeImmutable $cancelDate): static
     {
         $this->cancelDate = $cancelDate;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }
