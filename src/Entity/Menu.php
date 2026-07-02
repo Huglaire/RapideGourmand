@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\MenuRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -41,10 +43,17 @@ class Menu
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    /**
+     * @var Collection<int, Theme>
+     */
+    #[ORM\ManyToMany(targetEntity: Theme::class)]
+    private Collection $theme;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
         $this->isAvailable = true;
+        $this->theme = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -156,6 +165,30 @@ class Menu
     public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Theme>
+     */
+    public function getTheme(): Collection
+    {
+        return $this->theme;
+    }
+
+    public function addTheme(Theme $theme): static
+    {
+        if (!$this->theme->contains($theme)) {
+            $this->theme->add($theme);
+        }
+
+        return $this;
+    }
+
+    public function removeTheme(Theme $theme): static
+    {
+        $this->theme->removeElement($theme);
 
         return $this;
     }
