@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\DishRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -29,9 +31,30 @@ class Dish
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    /**
+     * @var Collection<int, Menu>
+     */
+    #[ORM\ManyToMany(targetEntity: Menu::class, mappedBy: 'dishes')]
+    private Collection $menus;
+
+    /**
+     * @var Collection<int, Picture>
+     */
+    #[ORM\ManyToMany(targetEntity: Picture::class, inversedBy: 'dishes')]
+    private Collection $pictures;
+
+    /**
+     * @var Collection<int, Allergen>
+     */
+    #[ORM\ManyToMany(targetEntity: Allergen::class, inversedBy: 'dishes')]
+    private Collection $allergens;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
+        $this->menus = new ArrayCollection();
+        $this->pictures = new ArrayCollection();
+        $this->allergens = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -95,6 +118,81 @@ class Dish
     public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Menu>
+     */
+    public function getMenus(): Collection
+    {
+        return $this->menus;
+    }
+
+    public function addMenu(Menu $menu): static
+    {
+        if (!$this->menus->contains($menu)) {
+            $this->menus->add($menu);
+            $menu->addDish($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMenu(Menu $menu): static
+    {
+        if ($this->menus->removeElement($menu)) {
+            $menu->removeDish($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Picture>
+     */
+    public function getPictures(): Collection
+    {
+        return $this->pictures;
+    }
+
+    public function addPicture(Picture $picture): static
+    {
+        if (!$this->pictures->contains($picture)) {
+            $this->pictures->add($picture);
+        }
+
+        return $this;
+    }
+
+    public function removePicture(Picture $picture): static
+    {
+        $this->pictures->removeElement($picture);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Allergen>
+     */
+    public function getAllergens(): Collection
+    {
+        return $this->allergens;
+    }
+
+    public function addAllergen(Allergen $allergen): static
+    {
+        if (!$this->allergens->contains($allergen)) {
+            $this->allergens->add($allergen);
+        }
+
+        return $this;
+    }
+
+    public function removeAllergen(Allergen $allergen): static
+    {
+        $this->allergens->removeElement($allergen);
 
         return $this;
     }

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\OrderRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -64,11 +66,18 @@ class Order
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
+    /**
+     * @var Collection<int, OrderMenu>
+     */
+    #[ORM\OneToMany(targetEntity: OrderMenu::class, mappedBy: 'customerOrder', orphanRemoval: true)]
+    private Collection $orderMenus;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
         $this->status = 'En attente';
         $this->equipmentBorrowed = false;
+        $this->orderMenus = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -264,6 +273,36 @@ class Order
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, OrderMenu>
+     */
+    public function getOrderMenus(): Collection
+    {
+        return $this->orderMenus;
+    }
+
+    public function addOrderMenu(OrderMenu $orderMenu): static
+    {
+        if (!$this->orderMenus->contains($orderMenu)) {
+            $this->orderMenus->add($orderMenu);
+            $orderMenu->setCustomerOrder($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrderMenu(OrderMenu $orderMenu): static
+    {
+        if ($this->orderMenus->removeElement($orderMenu)) {
+            // set the owning side to null (unless already changed)
+            if ($orderMenu->getCustomerOrder() === $this) {
+                $orderMenu->setCustomerOrder(null);
+            }
+        }
 
         return $this;
     }

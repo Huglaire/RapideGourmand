@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\PictureRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -29,9 +31,23 @@ class Picture
     #[ORM\Column(length: 255)]
     private ?string $path = null;
 
+    /**
+     * @var Collection<int, Menu>
+     */
+    #[ORM\ManyToMany(targetEntity: Menu::class, mappedBy: 'pictures')]
+    private Collection $menus;
+
+    /**
+     * @var Collection<int, Dish>
+     */
+    #[ORM\ManyToMany(targetEntity: Dish::class, mappedBy: 'pictures')]
+    private Collection $dishes;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
+        $this->menus = new ArrayCollection();
+        $this->dishes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -98,4 +114,60 @@ class Picture
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Menu>
+     */
+    public function getMenus(): Collection
+    {
+        return $this->menus;
+    }
+
+    public function addMenu(Menu $menu): static
+    {
+        if (!$this->menus->contains($menu)) {
+            $this->menus->add($menu);
+            $menu->addPicture($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMenu(Menu $menu): static
+    {
+        if ($this->menus->removeElement($menu)) {
+            $menu->removePicture($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Dish>
+     */
+    public function getDishes(): Collection
+    {
+        return $this->dishes;
+    }
+
+    public function addDish(Dish $dish): static
+    {
+        if (!$this->dishes->contains($dish)) {
+            $this->dishes->add($dish);
+            $dish->addPicture($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDish(Dish $dish): static
+    {
+        if ($this->dishes->removeElement($dish)) {
+            $dish->removePicture($this);
+        }
+
+        return $this;
+    }
+
+
 }
