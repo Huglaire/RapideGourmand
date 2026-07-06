@@ -2,13 +2,14 @@
 
 namespace App\Controller;
 
+use App\Entity\Menu;
 use App\Repository\MenuRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Routing\Attribute\Route;
-use App\Entity\Menu;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class MenuController extends AbstractController
 {
@@ -65,6 +66,7 @@ final class MenuController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_EMPLOYEE')]
     #[Route('/api/menus', name: 'app_menu_create', methods: ['POST'])]
     public function create(
         Request $request,
@@ -102,6 +104,7 @@ final class MenuController extends AbstractController
         ], 201);
     }
 
+    #[IsGranted('ROLE_EMPLOYEE')]
     #[Route('/api/menus/{id}', name: 'app_menu_update', methods: ['PATCH'])]
     public function update(
         int $id,
@@ -153,6 +156,7 @@ final class MenuController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_EMPLOYEE')]
     #[Route('/api/menus/{id}', name: 'app_menu_delete', methods: ['DELETE'])]
     public function delete(
         int $id,
@@ -178,6 +182,7 @@ final class MenuController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_EMPLOYEE')]
     #[Route('/api/menus/{id}/restore', name: 'app_menu_restore', methods: ['PATCH'])]
     public function restore(
         int $id,

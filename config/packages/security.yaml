@@ -11,6 +11,10 @@ security:
                 class: App\Entity\User
                 property: email
 
+    role_hierarchy:
+        ROLE_EMPLOYEE: ROLE_USER
+        ROLE_ADMIN: ROLE_EMPLOYEE
+
     firewalls:
         dev:
             pattern: ^/(_profiler|_wdt|assets|build)/

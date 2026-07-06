@@ -44,6 +44,7 @@ final class RegisterController extends AbstractController
         $user->setStreet($data['street']);
         $user->setPostalCode($data['postalCode']);
         $user->setCity($data['city']);
+        $user->setRoles(['ROLE_USER']);
 
         $entityManager->persist($user);
         $entityManager->flush();
