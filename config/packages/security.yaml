@@ -38,6 +38,10 @@ security:
     access_control:
         - { path: ^/api/login_check, roles: PUBLIC_ACCESS }
         - { path: ^/api/register, roles: PUBLIC_ACCESS }
+
+        - { path: ^/api/menus$, roles: PUBLIC_ACCESS, methods: [GET] }
+        
+        - { path: ^/api/menus/\d+$, roles: PUBLIC_ACCESS, methods: [GET] }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
 
 when@test:
