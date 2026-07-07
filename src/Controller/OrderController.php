@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Entity\Menu;
 use App\Entity\Order;
 use App\Entity\OrderMenu;
+use App\Repository\OrderRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -154,5 +155,34 @@ final class OrderController extends AbstractController
             'message' => 'Commande créée avec succès.',
             'orderId' => $order->getId()
         ], Response::HTTP_CREATED);
+    }
+
+    #[Route('', name: 'app_order_index', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    public function index(OrderRepository $orderRepository): JsonResponse
+    {
+        $user = $this->getUser();
+
+        $orders = $orderRepository->findBy(
+            ['user' => $user],
+            //Tri des commandes de la plus récente à la plus ancienne
+            ['createdAt' => 'DESC']
+        );
+
+        $data = [];
+
+        foreach ($orders as $order) {
+            $data[] = [
+                'id' => $order->getId(),
+                'deliveryDate' => $order->getDeliveryDate()->format('Y-m-d'),
+                'numberOfPeople' => $order->getGuestNumber(),
+                'totalPrice' => $order->getTotalPrice(),
+                'deliveryFee' => $order->getDeliveryFee(),
+                'status' => $order->getStatus(),
+                'createdAt' => $order->getCreatedAt()->format('Y-m-d H:i:s'),
+            ];
+        }
+
+        return $this->json($data);
     }
 }
