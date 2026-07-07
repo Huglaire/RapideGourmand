@@ -175,7 +175,7 @@ final class OrderController extends AbstractController
             $data[] = [
                 'id' => $order->getId(),
                 'deliveryDate' => $order->getDeliveryDate()->format('Y-m-d'),
-                'numberOfPeople' => $order->getGuestNumber(),
+                'guestNumber' => $order->getGuestNumber(),
                 'totalPrice' => $order->getTotalPrice(),
                 'deliveryFee' => $order->getDeliveryFee(),
                 'status' => $order->getStatus(),
@@ -184,5 +184,48 @@ final class OrderController extends AbstractController
         }
 
         return $this->json($data);
+    }
+
+    #[Route('/{id}', name: 'app_order_show', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    public function show(Order $order): JsonResponse
+    {
+        // Symfony récupère automatiquement la commande correspondant à l'identifiant présent dans l'URL.
+        // Si aucune commande n'est trouvée, une réponse HTTP 404 est renvoyée automatiquement.
+
+        // Vérification que la commande appartient bien à l'utilisateur connecté.
+        if ($order->getUser() !== $this->getUser()) {
+            return $this->json([
+                'message' => 'Accès interdit à cette commande.'
+            ], Response::HTTP_FORBIDDEN);
+        }
+
+        $menus = [];
+
+        foreach ($order->getOrderMenus() as $orderMenu) {
+            $menus[] = [
+                'id' => $orderMenu->getMenu()->getId(),
+                'title' => $orderMenu->getMenu()->getTitle(),
+                'quantity' => $orderMenu->getQuantity(),
+                'unitPrice' => $orderMenu->getMenu()->getPrice(),
+            ];
+        }
+
+        return $this->json([
+            'id' => $order->getId(),
+            'orderDate' => $order->getOrderDate()->format('Y-m-d H:i:s'),
+            'deliveryDate' => $order->getDeliveryDate()->format('Y-m-d'),
+            'guestNumber' => $order->getGuestNumber(),
+            'deliveryStreet' => $order->getDeliveryStreet(),
+            'deliveryPostalCode' => $order->getDeliveryPostalCode(),
+            'deliveryCity' => $order->getDeliveryCity(),
+            'deliveryFee' => $order->getDeliveryFee(),
+            'totalPrice' => $order->getTotalPrice(),
+            'equipmentBorrowed' => $order->isEquipmentBorrowed(),
+            'status' => $order->getStatus(),
+            'createdAt' => $order->getCreatedAt()->format('Y-m-d H:i:s'),
+            'updatedAt' => $order->getUpdatedAt()?->format('Y-m-d H:i:s'),
+            'menus' => $menus,
+        ]);
     }
 }
