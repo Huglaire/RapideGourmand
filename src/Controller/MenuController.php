@@ -66,7 +66,7 @@ final class MenuController extends AbstractController
         ]);
     }
 
-    #[IsGranted('ROLE_EMPLOYEE')]
+    #[IsGranted('ROLE_EMPLOYEE', message: 'Action réservée aux employeurs ou admin.')]
     #[Route('/api/menus', name: 'app_menu_create', methods: ['POST'])]
     public function create(
         Request $request,
@@ -104,7 +104,7 @@ final class MenuController extends AbstractController
         ], 201);
     }
 
-    #[IsGranted('ROLE_EMPLOYEE')]
+    #[IsGranted('ROLE_EMPLOYEE', message: 'Action réservée aux employeurs ou admin.')]
     #[Route('/api/menus/{id}', name: 'app_menu_update', methods: ['PATCH'])]
     public function update(
         int $id,
@@ -156,7 +156,7 @@ final class MenuController extends AbstractController
         ]);
     }
 
-    #[IsGranted('ROLE_EMPLOYEE')]
+    #[IsGranted('ROLE_EMPLOYEE', message: 'Action réservée aux employeurs ou admin.')]
     #[Route('/api/menus/{id}', name: 'app_menu_delete', methods: ['DELETE'])]
     public function delete(
         int $id,
@@ -182,7 +182,7 @@ final class MenuController extends AbstractController
         ]);
     }
 
-    #[IsGranted('ROLE_EMPLOYEE')]
+    #[IsGranted('ROLE_EMPLOYEE', message: 'Action réservée aux employeurs ou admin.')]
     #[Route('/api/menus/{id}/restore', name: 'app_menu_restore', methods: ['PATCH'])]
     public function restore(
         int $id,
