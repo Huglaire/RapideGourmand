@@ -12,6 +12,15 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: '`order`')]
 class Order
 {
+    public const STATUS_PENDING = 'En attente';
+    public const STATUS_ACCEPTED = 'Accepté';
+    public const STATUS_PREPARING = 'En préparation';
+    public const STATUS_DELIVERING = 'En cours de livraison';
+    public const STATUS_DELIVERED = 'Livré';
+    public const STATUS_WAITING_EQUIPMENT = 'En attente du retour de matériel';
+    public const STATUS_FINISHED = 'Terminée';
+    public const STATUS_CANCELLED = 'Annulée';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -75,7 +84,7 @@ class Order
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
-        $this->status = 'En attente';
+        $this->status = self::STATUS_PENDING;
         $this->equipmentBorrowed = false;
         $this->orderMenus = new ArrayCollection();
     }
