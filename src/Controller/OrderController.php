@@ -312,7 +312,7 @@ final class OrderController extends AbstractController
         }
 
         //Impossibilité d'annuler une commande déjà annulée
-        if ($order->getStatus() == Order::STATUS_CANCELLED) {
+        if ($order->getStatus() === Order::STATUS_CANCELLED) {
             return $this->json([
                 'message' => 'Cette commande a déjà été annulée.'
             ], Response::HTTP_BAD_REQUEST);
