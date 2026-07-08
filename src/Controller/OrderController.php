@@ -257,7 +257,7 @@ final class OrderController extends AbstractController
             return $this->json([
                 'message' => 'Le corps de la requête doit contenir un JSON valide.'
             ], Response::HTTP_BAD_REQUEST);
-}
+        }
         // Règle métier : le client peut uniquement reporter la date de livraison.
         // Toute modification susceptible d'impacter la tarification ou l'organisation
         // de la prestation (menu, nombre d'invités, adresse...) doit être traitée par l'entreprise.
@@ -294,6 +294,92 @@ final class OrderController extends AbstractController
 
         return $this->json([
             'message' => 'La date de livraison a été mise à jour avec succès.'
+        ]);
+    }
+
+    #[Route('/{id}/cancel', name: 'app_order_cancel', methods: ['PATCH'])]
+    #[IsGranted('ROLE_USER')]
+    public function cancel(
+        Request $request,
+        Order $order,
+        EntityManagerInterface $entityManager
+    ): JsonResponse {
+        // Vérification que la commande appartient bien à l'utilisateur connecté.
+        if ($order->getUser() !== $this->getUser()) {
+            return $this->json([
+                'message' => 'Accès interdit à cette commande.'
+            ], Response::HTTP_FORBIDDEN);
+        }
+
+        //Impossibilité d'annuler une commande déjà annulée
+        if ($order->getStatus() == Order::STATUS_CANCELLED) {
+            return $this->json([
+                'message' => 'Cette commande a déjà été annulée.'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+
+        // Règle métier : une commande ne peut être annulée que tant qu'elle est en attente.
+        if ($order->getStatus() !== Order::STATUS_PENDING) {
+            return $this->json([
+                'message' => 'Cette commande a été validée et ne peut plus être annulée.'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $data = json_decode($request->getContent(), true);
+
+        if (!is_array($data)) {
+            return $this->json([
+                'message' => 'Le corps de la requête doit contenir un JSON valide.'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Règle métier : le client doit obligatoirement indiquer un motif d'annulation.
+        // Ce motif est conservé afin d'assurer un suivi des annulations.
+
+        if (
+            count($data) !== 1 ||
+            !array_key_exists('cancelReason', $data)
+        ) {
+            return $this->json([
+                'message' => 'Un motif d\'annulation est obligatoire.'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        //Restriction de typage de l'entrée pour n'accepter que du type string
+        if (!is_string($data['cancelReason'])) {
+            return $this->json([
+                'message' => 'La raison d\'annulation doit être une chaîne de caractères.'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        //"trim" permet de refuser toute entrée composée uniquement d'espaces vides
+        if (trim($data['cancelReason']) === '') {
+            return $this->json([
+                'message' => 'Le motif d\'annulation ne peut pas être vide.'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Enregistrement des informations relatives à l'annulation.
+        $order->setCancelReason(trim($data['cancelReason']));
+        $order->setCancelContactMethod('Site web');
+        $order->setCancelDate(new \DateTimeImmutable());
+        $order->setStatus(Order::STATUS_CANCELLED);
+        $order->setUpdatedAt(new \DateTimeImmutable());
+
+        // Restauration du stock des menus de la commande.
+        foreach ($order->getOrderMenus() as $orderMenu) {
+            $menu = $orderMenu->getMenu();
+
+            $menu->setStock(
+                $menu->getStock() + $orderMenu->getQuantity()
+            );
+        }
+
+        $entityManager->flush();
+
+        return $this->json([
+            'message' => 'La commande a été annulée avec succès.'
         ]);
     }
 }
