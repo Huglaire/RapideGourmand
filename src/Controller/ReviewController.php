@@ -91,11 +91,119 @@ final class ReviewController extends AbstractController
                 'comment' => $review->getComment(),
                 'createdAt' => $review->getCreatedAt()?->format('Y-m-d H:i:s'),
                 'user' => [
-                    'firstName' => $review->getUser()->getFirstName(),
+                'firstName' => $review->getUser()->getFirstName(),
                 ],
             ];
         }
 
         return $this->json($data, Response::HTTP_OK);
+    }
+
+    #[Route('/api/reviews/{id}', name: 'app_review_update', methods: ['PATCH'])]
+    #[IsGranted('ROLE_USER')]
+    public function update(
+        int $id,
+        Request $request,
+        ReviewRepository $reviewRepository,
+        EntityManagerInterface $entityManager
+    ): JsonResponse
+    {
+        $user = $this->getUser();
+
+        // Vérifie que l'avis existe
+        $review = $reviewRepository->find($id);
+
+        if (!$review) {
+            return $this->json([
+                'message' => 'Avis introuvable.'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        // Vérifie que l'utilisateur est le propriétaire de l'avis
+        if ($review->getUser() !== $user) {
+            return $this->json([
+                'message' => 'Vous ne pouvez modifier que votre propre avis.'
+            ], Response::HTTP_FORBIDDEN);
+        }
+
+        $data = json_decode($request->getContent(), true);
+
+        // Vérifie que le corps de la requête contient un JSON valide
+        if (!is_array($data)) {
+            return $this->json([
+                'message' => 'Le corps de la requête est invalide.'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Met à jour la note si elle est renseignée
+        if (isset($data['rating'])) {
+
+            // Vérifie que la note est un entier compris entre 1 et 5
+            if (!is_int($data['rating']) || $data['rating'] < 1 || $data['rating'] > 5) {
+                return $this->json([
+                    'message' => 'La note doit être un entier compris entre 1 et 5.'
+                ], Response::HTTP_BAD_REQUEST);
+            }
+
+            $review->setRating($data['rating']);
+        }
+
+        // Met à jour le commentaire si celui-ci est renseigné
+        if (array_key_exists('comment', $data)) {
+            $review->setComment($data['comment']);
+        }
+
+        // Remet l'avis en attente de validation
+        $review->setStatus('En attente');
+
+        // Met à jour la date de modification
+        $review->setUpdatedAt(new \DateTimeImmutable());
+
+        $entityManager->flush();
+
+        return $this->json([
+            'message' => 'Avis modifié avec succès.',
+            'review' => [
+                'id' => $review->getId(),
+                'rating' => $review->getRating(),
+                'comment' => $review->getComment(),
+                'status' => $review->getStatus(),
+                'updatedAt' => $review->getUpdatedAt()?->format('Y-m-d H:i:s')
+            ]
+        ], Response::HTTP_OK);
+    }
+
+    #[Route('/api/reviews/{id}', name: 'app_review_delete', methods: ['DELETE'])]
+    #[IsGranted('ROLE_USER')]
+    public function delete(
+        int $id,
+        ReviewRepository $reviewRepository,
+        EntityManagerInterface $entityManager
+    ): JsonResponse
+    {
+        $user = $this->getUser();
+
+        // Vérifie que l'avis existe
+        $review = $reviewRepository->find($id);
+
+        if (!$review) {
+            return $this->json([
+                'message' => 'Avis introuvable.'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        // Vérifie que l'utilisateur est le propriétaire de l'avis
+        if ($review->getUser() !== $user) {
+            return $this->json([
+                'message' => 'Vous ne pouvez supprimer que votre propre avis.'
+            ], Response::HTTP_FORBIDDEN);
+        }
+
+        $entityManager->remove($review);
+        $entityManager->flush();
+
+        return $this->json([
+            'message' => 'Avis supprimé avec succès.'
+        ], Response::HTTP_OK);
     }
 }
