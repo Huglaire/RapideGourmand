@@ -228,4 +228,72 @@ final class OrderController extends AbstractController
             'menus' => $menus,
         ]);
     }
+
+    #[Route('/{id}', name: 'app_order_update', methods: ['PATCH'])]
+    #[IsGranted('ROLE_USER')]
+    public function update(
+        Request $request,
+        Order $order,
+        EntityManagerInterface $entityManager
+    ): JsonResponse {
+
+        // Vérification que la commande appartient bien à l'utilisateur connecté.
+        if ($order->getUser() !== $this->getUser()) {
+            return $this->json([
+                'message' => 'Accès interdit à cette commande.'
+            ], Response::HTTP_FORBIDDEN);
+        }
+
+        // Vérification que la commande est encore modifiable.
+        if ($order->getStatus() !== Order::STATUS_PENDING) {
+            return $this->json([
+                'message' => 'Cette commande ne peut plus être modifiée.'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $data = json_decode($request->getContent(), true);
+
+        if (!is_array($data)) {
+            return $this->json([
+                'message' => 'Le corps de la requête doit contenir un JSON valide.'
+            ], Response::HTTP_BAD_REQUEST);
+}
+        // Règle métier : le client peut uniquement reporter la date de livraison.
+        // Toute modification susceptible d'impacter la tarification ou l'organisation
+        // de la prestation (menu, nombre d'invités, adresse...) doit être traitée par l'entreprise.
+
+        if (
+            count($data) !== 1 ||
+            !array_key_exists('deliveryDate', $data)
+        ) {
+            return $this->json([
+                'message' => 'Seule la date de livraison peut être modifiée.'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $now = new \DateTimeImmutable();
+
+        try {
+            $deliveryDate = new \DateTimeImmutable($data['deliveryDate']);
+        } catch (\Exception) {
+            return $this->json([
+                'message' => 'Le format de la date de livraison est invalide.'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        if ($deliveryDate <= $now) {
+            return $this->json([
+                'message' => 'La date de livraison doit être postérieure à la date actuelle.'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $order->setDeliveryDate($deliveryDate);
+        $order->setUpdatedAt(new \DateTimeImmutable());
+
+        $entityManager->flush();
+
+        return $this->json([
+            'message' => 'La date de livraison a été mise à jour avec succès.'
+        ]);
+    }
 }
