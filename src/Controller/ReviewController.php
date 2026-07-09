@@ -91,7 +91,7 @@ final class ReviewController extends AbstractController
                 'comment' => $review->getComment(),
                 'createdAt' => $review->getCreatedAt()?->format('Y-m-d H:i:s'),
                 'user' => [
-                'firstName' => $review->getUser()->getFirstName(),
+                    'firstName' => $review->getUser()->getFirstName(),
                 ],
             ];
         }
@@ -106,8 +106,7 @@ final class ReviewController extends AbstractController
         Request $request,
         ReviewRepository $reviewRepository,
         EntityManagerInterface $entityManager
-    ): JsonResponse
-    {
+    ): JsonResponse {
         $user = $this->getUser();
 
         // Vérifie que l'avis existe
@@ -179,8 +178,7 @@ final class ReviewController extends AbstractController
         int $id,
         ReviewRepository $reviewRepository,
         EntityManagerInterface $entityManager
-    ): JsonResponse
-    {
+    ): JsonResponse {
         $user = $this->getUser();
 
         // Vérifie que l'avis existe
@@ -204,6 +202,114 @@ final class ReviewController extends AbstractController
 
         return $this->json([
             'message' => 'Avis supprimé avec succès.'
+        ], Response::HTTP_OK);
+    }
+
+    #[Route('/api/admin/reviews', name: 'app_admin_review_list', methods: ['GET'])]
+    #[IsGranted('ROLE_EMPLOYEE')]
+    public function adminIndex(ReviewRepository $reviewRepository): JsonResponse
+    {
+        // Retourne uniquement les avis en attente de modération
+        $reviews = $reviewRepository->findBy(
+            ['status' => 'En attente'],
+            ['createdAt' => 'DESC']
+        );
+
+        $data = [];
+
+        foreach ($reviews as $review) {
+            $data[] = [
+                'id' => $review->getId(),
+                'rating' => $review->getRating(),
+                'comment' => $review->getComment(),
+                'status' => $review->getStatus(),
+                'createdAt' => $review->getCreatedAt()?->format('Y-m-d H:i:s'),
+                'user' => [
+                    'id' => $review->getUser()->getId(),
+                    'firstName' => $review->getUser()->getFirstName(),
+                    'lastName' => $review->getUser()->getLastName(),
+                ],
+            ];
+        }
+
+        return $this->json($data, Response::HTTP_OK);
+    }
+
+    #[Route('/api/admin/reviews/{id}/approve', name: 'app_admin_review_approve', methods: ['PATCH'])]
+    #[IsGranted('ROLE_EMPLOYEE')]
+    public function approve(
+        int $id,
+        ReviewRepository $reviewRepository,
+        EntityManagerInterface $entityManager
+    ): JsonResponse {
+        // Vérifie que l'avis existe
+        $review = $reviewRepository->find($id);
+
+        if (!$review) {
+            return $this->json([
+                'message' => 'Avis introuvable.'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        // Vérifie que l'avis est en attente de modération
+        if ($review->getStatus() !== 'En attente') {
+            return $this->json([
+                'message' => 'Seuls les avis en attente peuvent être validés.'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Valide l'avis
+        $review->setStatus('Validé');
+        $review->setUpdatedAt(new \DateTimeImmutable());
+
+        $entityManager->flush();
+
+        return $this->json([
+            'message' => 'Avis validé avec succès.',
+            'review' => [
+                'id' => $review->getId(),
+                'status' => $review->getStatus(),
+                'updatedAt' => $review->getUpdatedAt()?->format('Y-m-d H:i:s')
+            ]
+        ], Response::HTTP_OK);
+    }
+
+    #[Route('/api/admin/reviews/{id}/reject', name: 'app_admin_review_reject', methods: ['PATCH'])]
+    #[IsGranted('ROLE_EMPLOYEE')]
+    public function reject(
+        int $id,
+        ReviewRepository $reviewRepository,
+        EntityManagerInterface $entityManager
+    ): JsonResponse {
+        // Vérifie que l'avis existe
+        $review = $reviewRepository->find($id);
+
+        if (!$review) {
+            return $this->json([
+                'message' => 'Avis introuvable.'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        // Vérifie que l'avis est en attente de modération
+        if ($review->getStatus() !== 'En attente') {
+            return $this->json([
+                'message' => 'Seuls les avis en attente peuvent être refusés.'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Refuse l'avis
+        $review->setStatus('Refusé');
+        $review->setUpdatedAt(new \DateTimeImmutable());
+
+        $entityManager->flush();
+
+        return $this->json([
+            'message' => 'Avis refusé avec succès.',
+            'review' => [
+                'id' => $review->getId(),
+                'status' => $review->getStatus(),
+                'updatedAt' => $review->getUpdatedAt()?->format('Y-m-d H:i:s')
+            ]
         ], Response::HTTP_OK);
     }
 }
