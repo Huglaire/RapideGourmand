@@ -90,4 +90,96 @@ final class AdminController extends AbstractController
             ]
         ], Response::HTTP_CREATED);
     }
+
+    #[Route('/api/admin/employees/{id}/disable', name: 'app_admin_disable_employee', methods: ['PATCH'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function disableEmployee(
+        int $id,
+        UserRepository $userRepository,
+        EntityManagerInterface $entityManager
+    ): JsonResponse {
+        // Vérifie que l'employé existe
+        $employee = $userRepository->find($id);
+
+        if (!$employee) {
+            return $this->json([
+                'message' => 'Employé introuvable.'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        // Vérifie que le compte est bien un employé
+        if (!in_array('ROLE_EMPLOYEE', $employee->getRoles())) {
+            return $this->json([
+                'message' => 'Ce compte ne correspond pas à un employé.'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Vérifie que le compte est encore actif
+        if (!$employee->isActive()) {
+            return $this->json([
+                'message' => 'Ce compte est déjà désactivé.'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Désactive le compte employé
+        $employee->setIsActive(false);
+        $employee->setUpdatedAt(new \DateTimeImmutable());
+
+        $entityManager->flush();
+
+        return $this->json([
+            'message' => 'Compte employé désactivé avec succès.',
+            'employee' => [
+                'id' => $employee->getId(),
+                'isActive' => $employee->isActive(),
+                'updatedAt' => $employee->getUpdatedAt()?->format('Y-m-d H:i:s')
+            ]
+        ], Response::HTTP_OK);
+    }
+
+    #[Route('/api/admin/employees/{id}/restore', name: 'app_admin_restore_employee', methods: ['PATCH'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function restoreEmployee(
+        int $id,
+        UserRepository $userRepository,
+        EntityManagerInterface $entityManager
+    ): JsonResponse {
+        // Vérifie que l'employé existe
+        $employee = $userRepository->find($id);
+
+        if (!$employee) {
+            return $this->json([
+                'message' => 'Employé introuvable.'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        // Vérifie que le compte est bien un employé
+        if (!in_array('ROLE_EMPLOYEE', $employee->getRoles())) {
+            return $this->json([
+                'message' => 'Ce compte ne correspond pas à un employé.'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Vérifie que le compte est désactivé
+        if ($employee->isActive()) {
+            return $this->json([
+                'message' => 'Ce compte est déjà actif.'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Réactive le compte employé
+        $employee->setIsActive(true);
+        $employee->setUpdatedAt(new \DateTimeImmutable());
+
+        $entityManager->flush();
+
+        return $this->json([
+            'message' => 'Compte employé réactivé avec succès.',
+            'employee' => [
+                'id' => $employee->getId(),
+                'isActive' => $employee->isActive(),
+                'updatedAt' => $employee->getUpdatedAt()?->format('Y-m-d H:i:s')
+            ]
+        ], Response::HTTP_OK);
+    }
 }
