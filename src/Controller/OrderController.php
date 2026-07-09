@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Service\StatisticsService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\User;
@@ -22,7 +23,8 @@ final class OrderController extends AbstractController
     #[Route('', name: 'app_order_create', methods: ['POST'])]
     public function create(
         Request $request,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        StatisticsService $statisticsService
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
 
@@ -121,6 +123,7 @@ final class OrderController extends AbstractController
         $orderMenu->setCustomerOrder($order);
         $orderMenu->setMenu($menu);
         $orderMenu->setQuantity(1);
+        $order->addOrderMenu($orderMenu);
 
         //Conversion en float pour ne pas avoir de string
         $totalPrice = (float) $menu->getPrice() * $order->getGuestNumber();
@@ -150,6 +153,10 @@ final class OrderController extends AbstractController
         $entityManager->persist($order);
         $entityManager->persist($orderMenu);
         $entityManager->flush();
+
+        // Synchronisation de la commande avec MongoDB afin d'alimenter
+        // le module de statistiques.
+        $statisticsService->recordOrder($order);
 
         return new JsonResponse([
             'message' => 'Commande créée avec succès.',
