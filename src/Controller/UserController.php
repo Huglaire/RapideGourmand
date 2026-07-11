@@ -105,7 +105,7 @@ final class UserController extends AbstractController
     #[OA\Patch(
         path: '/api/me',
         summary: 'Mettre à jour son profil',
-        description: 'Met à jour les informations de l’utilisateur authentifié.',
+        description: 'Met à jour les informations de l’utilisateur connecté.',
         tags: ['Utilisateurs'],
         security: [['Bearer' => []]],
         requestBody: new OA\RequestBody(
@@ -253,7 +253,7 @@ final class UserController extends AbstractController
     #[OA\Delete(
         path: '/api/me',
         summary: 'Désactiver son compte',
-        description: 'Désactive le compte de l’utilisateur authentifié sans supprimer ses données.',
+        description: 'Désactive le compte de l’utilisateur connecté sans supprimer ses données.',
         tags: ['Utilisateurs'],
         security: [['Bearer' => []]],
         responses: [

@@ -9,11 +9,29 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
+use OpenApi\Attributes as OA;
 
 final class StatisticsController extends AbstractController
 {
     #[Route('/api/admin/statistics/orders-per-menu', name: 'admin_statistics_orders', methods: ['GET'])]
     #[IsGranted('ROLE_ADMIN')]
+    #[OA\Get(
+        path: '/api/admin/statistics/orders-per-menu',
+        summary: 'Afficher le nombre de commandes par menu',
+        description: 'Retourne le nombre de commandes par menu à partir des statistiques stockées dans MongoDB.',
+        tags: ['Statistiques'],
+        security: [['Bearer' => []]],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Statistiques récupérées avec succès.'
+            ),
+            new OA\Response(
+                response: 403,
+                description: 'Accès refusé.'
+            )
+        ]
+    )]
     public function ordersPerMenu(
         StatisticsQueryService $statisticsQueryService,
         MenuRepository $menuRepository,
@@ -33,6 +51,50 @@ final class StatisticsController extends AbstractController
 
     #[Route('/api/admin/statistics/revenue', name: 'admin_statistics_revenue', methods: ['GET'])]
     #[IsGranted('ROLE_ADMIN')]
+    #[OA\Get(
+        path: '/api/admin/statistics/revenue',
+        summary: 'Afficher le chiffre d’affaires par menu',
+        description: 'Retourne le chiffre d’affaires par menu avec possibilité de filtrer par menu et par période.',
+        tags: ['Statistiques'],
+        security: [['Bearer' => []]],
+        parameters: [
+            new OA\Parameter(
+                name: 'menuId',
+                in: 'query',
+                description: 'Identifiant du menu',
+                required: false,
+                schema: new OA\Schema(type: 'integer')
+            ),
+            new OA\Parameter(
+                name: 'start',
+                in: 'query',
+                description: 'Date de début (YYYY-MM-DD)',
+                required: false,
+                schema: new OA\Schema(type: 'string', format: 'date')
+            ),
+            new OA\Parameter(
+                name: 'end',
+                in: 'query',
+                description: 'Date de fin (YYYY-MM-DD)',
+                required: false,
+                schema: new OA\Schema(type: 'string', format: 'date')
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Statistiques récupérées avec succès.'
+            ),
+            new OA\Response(
+                response: 400,
+                description: 'Format de date invalide.'
+            ),
+            new OA\Response(
+                response: 403,
+                description: 'Accès refusé.'
+            )
+        ]
+    )]
     public function revenue(
         Request $request,
         StatisticsQueryService $statisticsQueryService,

@@ -15,12 +15,47 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use OpenApi\Attributes as OA;
 
 #[Route('/api/orders')]
 final class OrderController extends AbstractController
 {
     #[IsGranted('ROLE_USER')]
     #[Route('', name: 'app_order_create', methods: ['POST'])]
+    #[OA\Post(
+        path: '/api/orders',
+        summary: 'Créer une commande',
+        description: 'Crée une nouvelle commande pour l’utilisateur connecté.',
+        tags: ['Commandes'],
+        security: [['Bearer' => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: [
+                    'menuId',
+                    'deliveryDate',
+                    'guestNumber',
+                    'deliveryStreet',
+                    'deliveryPostalCode',
+                    'deliveryCity'
+                ],
+                properties: [
+                    new OA\Property(property: 'menuId', type: 'integer', example: 1),
+                    new OA\Property(property: 'deliveryDate', type: 'string', format: 'date-time', example: '2026-08-15T12:00:00'),
+                    new OA\Property(property: 'guestNumber', type: 'integer', example: 10),
+                    new OA\Property(property: 'deliveryStreet', type: 'string', example: '12 avenue ciboulette'),
+                    new OA\Property(property: 'deliveryPostalCode', type: 'string', example: '33000'),
+                    new OA\Property(property: 'deliveryCity', type: 'string', example: 'Bordeaux')
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(response: 201, description: 'Commande créée avec succès.'),
+            new OA\Response(response: 400, description: 'Requête invalide.'),
+            new OA\Response(response: 401, description: 'Utilisateur non authentifié.'),
+            new OA\Response(response: 404, description: 'Menu introuvable.')
+        ]
+    )]
     public function create(
         Request $request,
         EntityManagerInterface $entityManager,
@@ -166,6 +201,23 @@ final class OrderController extends AbstractController
 
     #[Route('', name: 'app_order_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
+    #[OA\Get(
+        path: '/api/orders',
+        summary: 'Lister ses commandes',
+        description: 'Retourne la liste des commandes de l’utilisateur connecté.',
+        tags: ['Commandes'],
+        security: [['Bearer' => []]],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Liste des commandes récupérée avec succès.'
+            ),
+            new OA\Response(
+                response: 401,
+                description: 'Utilisateur non authentifié.'
+            )
+        ]
+    )]
     public function index(OrderRepository $orderRepository): JsonResponse
     {
         $user = $this->getUser();
@@ -195,6 +247,27 @@ final class OrderController extends AbstractController
 
     #[Route('/{id}', name: 'app_order_show', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
+    #[OA\Get(
+        path: '/api/orders/{id}',
+        summary: 'Consulter une commande par ID',
+        description: 'Retourne le détail d’une commande appartenant à l’utilisateur connecté.',
+        tags: ['Commandes'],
+        security: [['Bearer' => []]],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                in: 'path',
+                description: 'Identifiant de la commande',
+                required: true,
+                schema: new OA\Schema(type: 'integer')
+            )
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Commande récupérée avec succès.'),
+            new OA\Response(response: 403, description: 'Accès interdit à cette commande.'),
+            new OA\Response(response: 404, description: 'Commande introuvable.')
+        ]
+    )]
     public function show(Order $order): JsonResponse
     {
         // Symfony récupère automatiquement la commande correspondant à l'identifiant présent dans l'URL.
@@ -238,6 +311,42 @@ final class OrderController extends AbstractController
 
     #[Route('/{id}', name: 'app_order_update', methods: ['PATCH'])]
     #[IsGranted('ROLE_USER')]
+    #[OA\Patch(
+        path: '/api/orders/{id}',
+        summary: 'Modifier une commande par ID',
+        description: 'Met à jour la date de livraison d’une commande en attente.',
+        tags: ['Commandes'],
+        security: [['Bearer' => []]],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                in: 'path',
+                description: 'Identifiant de la commande',
+                required: true,
+                schema: new OA\Schema(type: 'integer')
+            )
+        ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['deliveryDate'],
+                properties: [
+                    new OA\Property(
+                        property: 'deliveryDate',
+                        type: 'string',
+                        format: 'date-time',
+                        example: '2026-12-20T12:00:00'
+                    )
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(response: 200, description: 'Date de livraison mise à jour avec succès.'),
+            new OA\Response(response: 400, description: 'Requête invalide.'),
+            new OA\Response(response: 403, description: 'Accès interdit à cette commande.'),
+            new OA\Response(response: 404, description: 'Commande introuvable.')
+        ]
+    )]
     public function update(
         Request $request,
         Order $order,
@@ -306,6 +415,41 @@ final class OrderController extends AbstractController
 
     #[Route('/{id}/cancel', name: 'app_order_cancel', methods: ['PATCH'])]
     #[IsGranted('ROLE_USER')]
+    #[OA\Patch(
+        path: '/api/orders/{id}/cancel',
+        summary: 'Annuler une commande par ID',
+        description: 'Annule une commande en attente en enregistrant un motif d’annulation.',
+        tags: ['Commandes'],
+        security: [['Bearer' => []]],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                in: 'path',
+                description: 'Identifiant de la commande',
+                required: true,
+                schema: new OA\Schema(type: 'integer')
+            )
+        ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['cancelReason'],
+                properties: [
+                    new OA\Property(
+                        property: 'cancelReason',
+                        type: 'string',
+                        example: 'La mort de Mémé'
+                    )
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(response: 200, description: 'Commande annulée avec succès.'),
+            new OA\Response(response: 400, description: 'Requête invalide.'),
+            new OA\Response(response: 403, description: 'Accès interdit à cette commande.'),
+            new OA\Response(response: 404, description: 'Commande introuvable.')
+        ]
+    )]
     public function cancel(
         Request $request,
         Order $order,
