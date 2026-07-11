@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Response;
 use App\Repository\UserRepository;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use OpenApi\Attributes as OA;
 
 final class UserController extends AbstractController
@@ -324,6 +325,94 @@ final class UserController extends AbstractController
 
         return $this->json([
             'message' => 'Compte désactivé avec succès.'
+        ], Response::HTTP_OK);
+    }
+
+    #[Route('/api/account/restore', name: 'app_user_restore_account', methods: ['POST'])]
+    #[OA\Post(
+        path: '/api/account/restore',
+        summary: 'Réactiver un compte utilisateur',
+        description: 'Réactive un compte utilisateur désactivé après vérification de l’adresse e-mail et du mot de passe.',
+        tags: ['Utilisateurs'],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['email', 'password'],
+                properties: [
+                    new OA\Property(
+                        property: 'email',
+                        type: 'string',
+                        example: 'john.doe@example.com'
+                    ),
+                    new OA\Property(
+                        property: 'password',
+                        type: 'string',
+                        example: 'Password123'
+                    )
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Compte réactivé avec succès.'
+            ),
+            new OA\Response(
+                response: 400,
+                description: 'Le compte est déjà actif.'
+            ),
+            new OA\Response(
+                response: 401,
+                description: 'Adresse e-mail ou mot de passe incorrect.'
+            ),
+            new OA\Response(
+                response: 404,
+                description: 'Utilisateur introuvable.'
+            )
+        ]
+    )]
+    public function restoreAccount(
+        Request $request,
+        UserRepository $userRepository,
+        UserPasswordHasherInterface $passwordHasher,
+        EntityManagerInterface $entityManager
+    ): Response {
+        $data = $request->toArray();
+
+        $user = $userRepository->findOneBy([
+            'email' => $data['email'] ?? null
+        ]);
+
+        if (!$user) {
+            return $this->json([
+                'message' => 'Utilisateur introuvable.'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        if (
+            !$passwordHasher->isPasswordValid(
+                $user,
+                $data['password'] ?? ''
+            )
+        ) {
+            return $this->json([
+                'message' => 'Adresse e-mail ou mot de passe incorrect.'
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
+        if ($user->isActive()) {
+            return $this->json([
+                'message' => 'Le compte est déjà actif.'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $user->setIsActive(true);
+        $user->setUpdatedAt(new \DateTimeImmutable());
+
+        $entityManager->flush();
+
+        return $this->json([
+            'message' => 'Compte réactivé avec succès.'
         ], Response::HTTP_OK);
     }
 }

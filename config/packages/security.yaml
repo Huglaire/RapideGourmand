@@ -50,6 +50,7 @@ security:
         # Routes accessibles sans authentification
         - { path: ^/api/login_check, roles: PUBLIC_ACCESS }
         - { path: ^/api/register, roles: PUBLIC_ACCESS }
+        - { path: ^/api/account/restore$, roles: PUBLIC_ACCESS }
 
         # Documentation Swagger
         - { path: ^/api/doc$, roles: PUBLIC_ACCESS }
