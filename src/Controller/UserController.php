@@ -9,13 +9,71 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Response;
 use App\Repository\UserRepository;
+use OpenApi\Attributes as OA;
 
 final class UserController extends AbstractController
 {
     #[Route('/api/me', name: 'app_user_me', methods: ['GET'])]
+    #[OA\Get(
+        path: '/api/me',
+        summary: 'Consulter son profil',
+        description: 'Retourne les informations du profil de l\'utilisateur connecté.',
+        tags: ['Utilisateurs'],
+        security: [['Bearer' => []]],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Profil utilisateur récupéré avec succès.',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'id', type: 'integer', example: 1),
+                        new OA\Property(property: 'email', type: 'string', example: 'john.doe@example.com'),
+                        new OA\Property(
+                            property: 'roles',
+                            type: 'array',
+                            items: new OA\Items(type: 'string'),
+                            example: ['ROLE_USER']
+                        ),
+                        new OA\Property(property: 'firstName', type: 'string', example: 'John'),
+                        new OA\Property(property: 'lastName', type: 'string', example: 'Doe'),
+                        new OA\Property(property: 'phone', type: 'string', example: '0612345678'),
+                        new OA\Property(property: 'street', type: 'string', example: '37 rue de la Gourde Bleue'),
+                        new OA\Property(property: 'postalCode', type: 'string', example: '33000'),
+                        new OA\Property(property: 'city', type: 'string', example: 'Bordeaux')
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 401,
+                description: 'Utilisateur non authentifié.',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'message',
+                            type: 'string',
+                            example: 'Utilisateur non authentifié.'
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 403,
+                description: 'Compte utilisateur déjà désactivé.',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'message',
+                            type: 'string',
+                            example: 'Compte utilisateur déjà désactivé.'
+                        )
+                    ]
+                )
+            )
+        ]
+    )]
     public function me(): JsonResponse
     {
-            $user = $this->getUser();
+        $user = $this->getUser();
 
         if (!$user) {
             return $this->json([
@@ -25,7 +83,7 @@ final class UserController extends AbstractController
 
         if (!$user->isActive()) {
             return $this->json([
-                'message' => 'Compte utilisateur désactivé.'
+                'message' => 'Compte utilisateur déjà désactivé.'
             ], Response::HTTP_FORBIDDEN);
         }
 
@@ -44,12 +102,86 @@ final class UserController extends AbstractController
 
 
     #[Route('/api/me', name: 'app_user_update_me', methods: ['PATCH'])]
+    #[OA\Patch(
+        path: '/api/me',
+        summary: 'Mettre à jour son profil',
+        description: 'Met à jour les informations de l’utilisateur authentifié.',
+        tags: ['Utilisateurs'],
+        security: [['Bearer' => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'email', type: 'string', example: 'john.doe@example.com'),
+                    new OA\Property(property: 'firstName', type: 'string', example: 'John'),
+                    new OA\Property(property: 'lastName', type: 'string', example: 'Doe'),
+                    new OA\Property(property: 'phone', type: 'string', example: '0612345678'),
+                    new OA\Property(property: 'street', type: 'string', example: '37 rue de la Gourde Bleue'),
+                    new OA\Property(property: 'postalCode', type: 'string', example: '33000'),
+                    new OA\Property(property: 'city', type: 'string', example: 'Bordeaux')
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Informations mises à jour avec succès.',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'message',
+                            type: 'string',
+                            example: 'Informations mises à jour avec succès.'
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 401,
+                description: 'Utilisateur non authentifié.',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'message',
+                            type: 'string',
+                            example: 'Utilisateur non authentifié.'
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 403,
+                description: 'Compte utilisateur désactivé.',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'message',
+                            type: 'string',
+                            example: 'Compte utilisateur désactivé.'
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 409,
+                description: 'Adresse e-mail déjà utilisée.',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'message',
+                            type: 'string',
+                            example: 'Cet email est déjà utilisé.'
+                        )
+                    ]
+                )
+            )
+        ]
+    )]
     public function updateMe(
         Request $request,
         EntityManagerInterface $entityManager,
         UserRepository $userRepository
-    ): Response
-    {
+    ): Response {
         $user = $this->getUser();
 
         if (!$user) {
@@ -90,10 +222,8 @@ final class UserController extends AbstractController
             $user->setCity($data['city']);
         }
 
-        // Si un nouvel e-mail est renseigné
         if (isset($data['email'])) {
 
-            // Vérifie que l'e-mail n'est pas déjà utilisé
             if ($data['email'] !== $user->getEmail()) {
 
                 $existingUser = $userRepository->findOneBy([
@@ -110,7 +240,6 @@ final class UserController extends AbstractController
             }
         }
 
-        // Met à jour la date de modification.
         $user->setUpdatedAt(new \DateTimeImmutable());
 
         $entityManager->flush();
@@ -118,14 +247,60 @@ final class UserController extends AbstractController
         return $this->json([
             'message' => 'Informations mises à jour avec succès.'
         ], Response::HTTP_OK);
-
     }
 
     #[Route('/api/me', name: 'app_user_delete_me', methods: ['DELETE'])]
+    #[OA\Delete(
+        path: '/api/me',
+        summary: 'Désactiver son compte',
+        description: 'Désactive le compte de l’utilisateur authentifié sans supprimer ses données.',
+        tags: ['Utilisateurs'],
+        security: [['Bearer' => []]],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Compte désactivé avec succès.',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'message',
+                            type: 'string',
+                            example: 'Compte désactivé avec succès.'
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 401,
+                description: 'Utilisateur non authentifié.',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'message',
+                            type: 'string',
+                            example: 'Utilisateur non authentifié.'
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 403,
+                description: 'Compte utilisateur désactivé.',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'message',
+                            type: 'string',
+                            example: 'Compte utilisateur désactivé.'
+                        )
+                    ]
+                )
+            )
+        ]
+    )]
     public function deleteMe(
         EntityManagerInterface $entityManager
-    ): Response
-    {
+    ): Response {
         $user = $this->getUser();
 
         if (!$user) {
@@ -151,5 +326,4 @@ final class UserController extends AbstractController
             'message' => 'Compte désactivé avec succès.'
         ], Response::HTTP_OK);
     }
-
 }

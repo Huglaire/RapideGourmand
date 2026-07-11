@@ -1,0 +1,21 @@
+nelmio_api_doc:
+    documentation:
+        info:
+            title: Rapide & Gourmand
+            description: API REST du projet ECF Rapide & Gourmand.
+            version: 1.0.0
+
+        # Configuration de l'authentification JWT utilisée par Swagger
+        components:
+            securitySchemes:
+                Bearer:
+                    type: http
+                    scheme: bearer
+                    bearerFormat: JWT
+
+        security:
+            - Bearer: []
+
+    areas:
+        path_patterns:
+            - ^/api(?!/doc$)
