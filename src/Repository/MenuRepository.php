@@ -16,28 +16,100 @@ class MenuRepository extends ServiceEntityRepository
         parent::__construct($registry, Menu::class);
     }
 
-//    /**
-//     * @return Menu[] Returns an array of Menu objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('m')
-//            ->andWhere('m.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('m.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * Retourne les menus disponibles.
+     */
+    public function findAvailableMenus(): array
+    {
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.isAvailable = :available')
+            ->setParameter('available', true)
+            ->orderBy('m.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 
-//    public function findOneBySomeField($value): ?Menu
-//    {
-//        return $this->createQueryBuilder('m')
-//            ->andWhere('m.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /**
+     * Retourne les bornes du nombre minimum de personnes.
+     */
+    public function getGuestNumberRange(): array
+    {
+        $result = $this->createQueryBuilder('m')
+            ->select(
+                'MIN(m.minimumGuestNumber) AS minGuestNumber',
+                'MAX(m.minimumGuestNumber) AS maxGuestNumber'
+            )
+            ->andWhere('m.isAvailable = :available')
+            ->setParameter('available', true)
+            ->getQuery()
+            ->getSingleResult();
+
+        return [
+            'min' => (int) $result['minGuestNumber'],
+            'max' => (int) $result['maxGuestNumber'],
+        ];
+    }
+
+    /**
+     * Retourne les bornes du prix.
+     */
+    public function getPriceRange(): array
+    {
+        $result = $this->createQueryBuilder('m')
+            ->select(
+                'MIN(m.price) AS minPrice',
+                'MAX(m.price) AS maxPrice'
+            )
+            ->andWhere('m.isAvailable = :available')
+            ->setParameter('available', true)
+            ->getQuery()
+            ->getSingleResult();
+
+        return [
+            'min' => (float) $result['minPrice'],
+            'max' => (float) $result['maxPrice'],
+        ];
+    }
+
+    /**
+     * Retourne les menus correspondant aux filtres sélectionnés.
+     */
+    public function findFilteredMenus(array $filters): array
+    {
+        $queryBuilder = $this->createQueryBuilder('m')
+            ->leftJoin('m.theme', 't')
+            ->leftJoin('m.diets', 'd')
+            ->andWhere('m.isAvailable = :available')
+            ->setParameter('available', true);
+
+        if (!empty($filters['themes'])) {
+            $queryBuilder
+                ->andWhere('t.id IN (:themes)')
+                ->setParameter('themes', $filters['themes']);
+        }
+
+        if (!empty($filters['diets'])) {
+            $queryBuilder
+                ->andWhere('d.id IN (:diets)')
+                ->setParameter('diets', $filters['diets']);
+        }
+
+        if (!empty($filters['guestNumber'])) {
+            $queryBuilder
+                ->andWhere('m.minimumGuestNumber <= :guestNumber')
+                ->setParameter('guestNumber', $filters['guestNumber']);
+        }
+
+        if (!empty($filters['price'])) {
+            $queryBuilder
+                ->andWhere('m.price <= :price')
+                ->setParameter('price', $filters['price']);
+        }
+
+        return $queryBuilder
+            ->orderBy('m.createdAt', 'DESC')
+            ->distinct()
+            ->getQuery()
+            ->getResult();
+    }
 }

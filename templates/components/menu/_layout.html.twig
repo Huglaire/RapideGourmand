@@ -7,7 +7,20 @@
                 menus: menus
             }) }}
 
-            {{ include('components/menu/_filters.html.twig') }}
+            <form
+                method="get"
+                action="{{ path('menu_index') }}"
+            >
+
+                {{ include('components/menu/_filters.html.twig', {
+                    themes: themes,
+                    diets: diets,
+                    guestNumberRange: guestNumberRange,
+                    priceRange: priceRange,
+                    filters: filters
+                }) }}
+
+            </form>
 
         </div>
 

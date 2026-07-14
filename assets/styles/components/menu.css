@@ -171,7 +171,7 @@
 
     /* Dimensions */
     padding: var(--space-md);
-
+    width: 100%;
     /* Apparence */
     background-color: #ffffff;
     border-radius: var(--border-radius);
@@ -187,7 +187,6 @@
 
 .menu-filters p {
     margin: 0;
-
     color: var(--color-text);
 }
 
@@ -258,4 +257,23 @@
 
 .menu-filters button:hover {
     background-color: var(--color-primary-hover, #641923);
+}
+
+/* Curseurs des filtres */
+.range-filter {
+    width: 100%;
+}
+
+.range-values {
+    display: flex;
+    justify-content: space-between;
+
+    margin-bottom: var(--space-xs);
+
+    color: var(--color-text);
+    font-size: 0.9rem;
+}
+
+.range-filter input[type="range"] {
+    width: 100%;
 }

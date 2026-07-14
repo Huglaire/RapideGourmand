@@ -1,61 +1,123 @@
 <aside class="menu-filters">
 
-	<h2>Filtres</h2>
+    <h2>Filtres</h2>
 
-	<section class="filter-group">
+    {# Sélection des thèmes #}
+    <section class="filter-group">
 
-		<h3>Thèmes</h3>
+        <h3>Thèmes</h3>
 
-		<label>
-			<input type="checkbox">
-			Mariage
-		</label>
+        {% for theme in themes %}
 
-		<label>
-			<input type="checkbox">
-			Anniversaire
-		</label>
+            <label>
 
-		<label>
-			<input type="checkbox">
-			Entreprise
-		</label>
+                <input
+                    type="checkbox"
+                    name="themes[]"
+                    value="{{ theme.id }}"
+                    {% if theme.id in filters.themes|default([]) %}
+                        checked
+                    {% endif %}
+                >
 
-	</section>
+                {{ theme.title }}
 
-	<section class="filter-group">
+            </label>
 
-		<h3>Nombre de personnes min.</h3>
+        {% endfor %}
 
-		<select>
-			<option value="">Tous</option>
-			<option value="2">2 personnes</option>
-			<option value="4">4 personnes</option>
-			<option value="6">6 personnes</option>
-			<option value="8">8 personnes</option>
-			<option value="10">10 personnes</option>
-			<option value="12">12 personnes</option>
-		</select>
+    </section>
 
-	</section>
+    {# Filtre sur le nombre minimum de personnes #}
+    <section class="filter-group">
 
-	<section class="filter-group">
+        <h3>Nombre de personnes minimum</h3>
 
-		<h3>Prix par personne</h3>
+        <div class="range-filter">
 
-		<div class="price-range">
+            <output class="range-output">
+                {{ filters.guestNumber|default(guestNumberRange.min) }}
+            </output>
 
-			<input type="number" min="0" placeholder="Min.">
+            <input
+                id="guest-number-range"
+                type="range"
+                name="guestNumber"
+                min="{{ guestNumberRange.min }}"
+                max="{{ guestNumberRange.max }}"
+                value="{{ filters.guestNumber|default(guestNumberRange.min) }}"
+            >
 
-			<span>à</span>
+            <div class="range-values">
+                <span>{{ guestNumberRange.min }}</span>
+                <span>{{ guestNumberRange.max }}</span>
+            </div>
 
-			<input type="number" min="0" placeholder="Max.">
+        </div>
 
-		</div>
+    </section>
 
-	</section>
+    {# Filtre sur le prix par personne #}
+    <section class="filter-group">
 
-	<button type="button">
-		Appliquer
-	</button>
+        <h3>Prix par personne</h3>
+
+        <div class="range-filter">
+
+            <output class="range-output">
+                {{ filters.price|default(priceRange.min) }} €
+            </output>
+
+            <input
+                id="price-range"
+                type="range"
+                name="price"
+                min="{{ priceRange.min }}"
+                max="{{ priceRange.max }}"
+                value="{{ filters.price|default(priceRange.min) }}"
+                step="0.01"
+            >
+
+            <div class="range-values">
+                <span>{{ priceRange.min }} €</span>
+                <span>{{ priceRange.max }} €</span>
+            </div>
+
+        </div>
+
+    </section>
+
+    {# Sélection des régimes alimentaires #}
+    <section class="filter-group">
+
+        <h3>Régimes alimentaires</h3>
+
+        {% for diet in diets %}
+
+            <label>
+
+                <input
+                    type="checkbox"
+                    name="diets[]"
+                    value="{{ diet.id }}"
+                    {% if diet.id in filters.diets|default([]) %}
+                        checked
+                    {% endif %}
+                >
+
+                {{ diet.title }}
+
+            </label>
+
+        {% endfor %}
+
+    </section>
+
+    <button
+        type="submit"
+        class="btn btn-primary w-100"
+    >
+        Appliquer
+    </button>
+
 </aside>
