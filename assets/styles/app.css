@@ -9,5 +9,6 @@
 @import "./components/hero.css";
 @import "./components/quality.css";
 @import "./components/reviews.css";
+@import './components/menu.css';
 
 @import "./layout/page.css";

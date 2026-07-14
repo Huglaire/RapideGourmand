@@ -1,10 +1,48 @@
 <article class="menu-card">
-    <h2>{{ menu.title }}</h2>
 
-    <p>{{ menu.description }}</p>
+	<div class="menu-card__image">
+		<img src="https://placehold.co/300x180" alt="{{ menu.title }}">
+	</div>
 
-    <p>
-        À partir de {{ menu.price }} €
-        • {{ menu.minimumGuestNumber }} personne(s) minimum
-    </p>
+	<div class="menu-card__content">
+
+		<div class="menu-card__header">
+			<h2>{{ menu.title }}</h2>
+
+			<p>{{ menu.description }}</p>
+		</div>
+
+		<div class="menu-card__infos">
+
+			<span class="menu-card__badge">
+				👥 Min.
+				{{ menu.minimumGuestNumber }}
+				personnes
+			</span>
+
+			<span class="menu-card__badge">
+				💶
+				{{ menu.price|number_format(2, ',', ' ') }}
+				€ / personne
+			</span>
+
+			<span class="menu-card__badge">
+				📦 Stock :
+				{{ menu.stock }}
+			</span>
+
+		</div>
+
+	</div>
+
+	<div class="menu-card__aside">
+
+		<p>Thème : À venir</p>
+
+		<button type="button">
+			Voir les détails
+		</button>
+
+	</div>
+
 </article>
