@@ -1,11 +1,9 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Nos menus | Rapide & Gourmand{% endblock %}
-
 {% block body %}
 
 <h1>Nos menus</h1>
 
-<p>{{ menus|length }} menu(x) trouvé(s).</p>
+{{ include('components/menu/_menu_grid.html.twig', {
+    menus: menus
+}) }}
 
 {% endblock %}

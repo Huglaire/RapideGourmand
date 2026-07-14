@@ -1,0 +1,9 @@
+<div class="menu-grid">
+    {% for menu in menus %}
+        {{ include('components/menu/_menu_card.html.twig', {
+            menu: menu
+        }) }}
+    {% else %}
+        <p>Aucun menu n'est disponible pour le moment.</p>
+    {% endfor %}
+</div>
