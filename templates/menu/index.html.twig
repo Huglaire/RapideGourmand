@@ -1,8 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nos menus | Rapide & Gourmand{% endblock %}
+
 {% block body %}
 
-<h1>Nos menus</h1>
+{{ include('components/menu/_header.html.twig') }}
 
-{{ include('components/menu/_menu_grid.html.twig', {
+{{ include('components/menu/_layout.html.twig', {
     menus: menus
 }) }}
 
