@@ -1,0 +1,49 @@
+/* Section des avis clients */
+.reviews {
+    padding: 6rem 0;
+    background-color: #f8f5f2;
+}
+
+/* Titre de la section */
+.reviews-title {
+    font-family: var(--font-title);
+    font-size: 2.5rem;
+    color: var(--color-primary);
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+/* Grille des avis */
+.reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+}
+
+/* Carte d'un avis */
+.review-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Auteur */
+.review-author {
+    color: var(--color-primary);
+    font-size: 1.2rem;
+    margin-bottom: 0.75rem;
+}
+
+/* Étoiles */
+.review-stars {
+    color: #d4af37;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+/* Texte */
+.review-content {
+    line-height: 1.7;
+    color: #555555;
+}

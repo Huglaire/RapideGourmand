@@ -8,5 +8,6 @@
 @import "./components/navbar.css";
 @import "./components/hero.css";
 @import "./components/quality.css";
+@import "./components/reviews.css";
 
 @import "./layout/page.css";
