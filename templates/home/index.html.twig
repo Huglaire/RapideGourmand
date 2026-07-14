@@ -1,23 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{# Titre de l'onglet du navigateur #}
 {% block title %}
     Accueil - Rapide & Gourmand
 {% endblock %}
 
-{# Contenu principal de la page #}
 {% block body %}
 
-    <section class="text-center">
-
-        <h1 class="display-4 mb-4">
-            Bienvenue chez Rapide & Gourmand
-        </h1>
-
-        <p class="lead">
-            Des repas de qualité, préparés avec soin pour tous vos événements.
-        </p>
-
-    </section>
+    {% include 'components/home/_hero.html.twig' %}
 
 {% endblock %}
