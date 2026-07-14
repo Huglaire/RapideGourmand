@@ -1,0 +1,45 @@
+/* Bouton principal */
+.btn-primary-custom {
+    background-color: var(--color-primary);
+    border: none;
+    border-radius: var(--border-radius);
+    color: var(--color-secondary);
+    font-weight: 600;
+    padding: 0.75rem 2rem;
+    transition: 0.3s ease;
+}
+
+.btn-primary-custom:hover {
+    background-color: #651822;
+}
+
+/* Bouton accent */
+.btn-accent-custom {
+    background-color: var(--color-accent);
+    border: none;
+    border-radius: var(--border-radius);
+    color: var(--color-secondary);
+    font-weight: 600;
+    padding: 0.75rem 2rem;
+    transition: 0.3s ease;
+}
+
+.btn-accent-custom:hover {
+    background-color: #b28d4d;
+}
+
+/* Bouton secondaire */
+.btn-secondary-custom {
+    background-color: transparent;
+    border: 1px solid var(--color-primary);
+    border-radius: var(--border-radius);
+    color: var(--color-primary);
+    font-weight: 600;
+    padding: 0.75rem 2rem;
+    transition: 0.3s ease;
+}
+
+.btn-secondary-custom:hover {
+    background-color: var(--color-primary);
+    color: var(--color-secondary);
+}

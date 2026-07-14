@@ -2,3 +2,6 @@
 
 @import "./base/variables.css";
 @import "./base/base.css";
+
+@import "./components/buttons.css";
+@import "./components/cards.css";

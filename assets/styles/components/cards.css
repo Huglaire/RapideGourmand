@@ -1,0 +1,8 @@
+/* Carte réutilisable */
+.card-custom {
+    background-color: var(--color-secondary);
+    border: 2px solid var(--color-success);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-card);
+    padding: 2rem;
+}
