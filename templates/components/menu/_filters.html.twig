@@ -1,7 +1,61 @@
 <aside class="menu-filters">
 
-    <h2>Filtres</h2>
+	<h2>Filtres</h2>
 
-    <p>Les filtres seront ajoutés prochainement.</p>
+	<section class="filter-group">
 
+		<h3>Thèmes</h3>
+
+		<label>
+			<input type="checkbox">
+			Mariage
+		</label>
+
+		<label>
+			<input type="checkbox">
+			Anniversaire
+		</label>
+
+		<label>
+			<input type="checkbox">
+			Entreprise
+		</label>
+
+	</section>
+
+	<section class="filter-group">
+
+		<h3>Nombre de personnes min.</h3>
+
+		<select>
+			<option value="">Tous</option>
+			<option value="2">2 personnes</option>
+			<option value="4">4 personnes</option>
+			<option value="6">6 personnes</option>
+			<option value="8">8 personnes</option>
+			<option value="10">10 personnes</option>
+			<option value="12">12 personnes</option>
+		</select>
+
+	</section>
+
+	<section class="filter-group">
+
+		<h3>Prix par personne</h3>
+
+		<div class="price-range">
+
+			<input type="number" min="0" placeholder="Min.">
+
+			<span>à</span>
+
+			<input type="number" min="0" placeholder="Max.">
+
+		</div>
+
+	</section>
+
+	<button type="button">
+		Appliquer
+	</button>
 </aside>

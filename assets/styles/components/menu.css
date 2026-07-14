@@ -1,0 +1,261 @@
+/* Carte d'un menu */
+.menu-card {
+
+    /* Mise en page */
+    display: flex;
+    gap: var(--space-md);
+
+    /* Dimensions */
+    padding: var(--space-md);
+    margin-bottom: var(--space-md);
+
+    /* Apparence */
+    background-color: #ffffff;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-card);
+}
+
+/* Image du menu */
+.menu-card__image {
+    flex-shrink: 0;
+}
+
+.menu-card__image img {
+
+    /* Dimensions */
+    width: 260px;
+    height: 170px;
+
+    /* Apparence */
+    object-fit: cover;
+    border-radius: var(--border-radius);
+}
+
+/* Contenu principal */
+.menu-card__content {
+
+    /* Mise en page */
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Titre et description */
+.menu-card__header h2 {
+    margin-bottom: var(--space-sm);
+
+    color: var(--color-primary);
+    font-family: var(--font-title);
+    font-size: 2rem;
+}
+
+.menu-card__header p {
+    margin-bottom: var(--space-md);
+
+    line-height: 1.5;
+
+    color: var(--color-text);
+}
+
+/* Informations du menu */
+.menu-card__infos {
+
+    /* Mise en page */
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    margin-top: auto;
+}
+
+.menu-card__infos span {
+    font-size: 1rem;
+}
+
+/* Colonne latérale */
+.menu-card__aside {
+
+    /* Mise en page */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+
+    /* Dimensions */
+    width: 220px;
+}
+
+.menu-card__aside p {
+    margin: 0;
+
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Bouton de la carte */
+.menu-card__aside button {
+
+    /* Dimensions */
+    width: 100%;
+    padding: 0.9rem 1rem;
+
+    /* Apparence */
+    border: none;
+    border-radius: var(--border-radius);
+    background-color: var(--color-primary);
+
+    /* Typographie */
+    color: #ffffff;
+    font-family: var(--font-text);
+    font-size: 1rem;
+    font-weight: 600;
+
+    /* Interaction */
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.menu-card__aside button:hover {
+    background-color: #641923;
+    transform: translateY(-2px);
+}
+
+/* Organisation générale de la page */
+.menu-layout .container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.menu-content {
+
+    /* Mise en page */
+    display: grid;
+    grid-template-columns: 2fr 350px;
+    gap: var(--space-lg);
+
+    align-items: start;
+}
+
+/* Liste des cartes */
+.menu-grid {
+
+    /* Mise en page */
+    display: flex;
+    flex-direction: column;
+}
+
+/* En-tête de la page des menus */
+.menu-header {
+    padding: var(--space-xl) 0;
+    text-align: center;
+}
+
+.menu-header h1 {
+    margin-bottom: var(--space-md);
+
+    color: var(--color-primary);
+    font-family: var(--font-title);
+    font-size: 3rem;
+}
+
+.menu-header p {
+    max-width: 800px;
+    margin: 0 auto;
+
+    color: var(--color-text);
+    line-height: 1.7;
+}
+
+/* Panneau des filtres */
+.menu-filters {
+
+    /* Dimensions */
+    padding: var(--space-md);
+
+    /* Apparence */
+    background-color: #ffffff;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-card);
+}
+
+.menu-filters h2 {
+    margin-bottom: var(--space-md);
+
+    color: var(--color-primary);
+    font-family: var(--font-title);
+}
+
+.menu-filters p {
+    margin: 0;
+
+    color: var(--color-text);
+}
+
+/* Section principale des menus */
+.menu-layout {
+    padding-bottom: var(--space-xl);
+    background-color: var(--color-background);
+}
+
+/* Aspect des badges d'information */
+.menu-card__badge {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 0.5rem 1rem;
+
+    background-color: var(--color-secondary);
+    border: 1px solid rgba(122, 31, 42, 0.15);
+    border-radius: 999px;
+
+    color: var(--color-text);
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+
+/* Espacement des différents blocs de la carte */
+.menu-card__header {
+    margin-bottom: var(--space-md);
+}
+
+/* Groupes de filtres */
+.filter-group {
+    margin-bottom: var(--space-lg);
+}
+
+.filter-group h3 {
+    margin-bottom: var(--space-sm);
+
+    color: var(--color-primary);
+    font-size: 1.1rem;
+}
+
+.filter-group label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+
+    margin-bottom: var(--space-xs);
+}
+
+.menu-filters button {
+    width: 100%;
+    padding: 0.9rem 1rem;
+
+    border: none;
+    border-radius: var(--border-radius);
+
+    background-color: var(--color-primary);
+    color: #ffffff;
+
+    font-family: var(--font-text);
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.menu-filters button:hover {
+    background-color: var(--color-primary-hover, #641923);
+}
