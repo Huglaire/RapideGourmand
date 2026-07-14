@@ -3,14 +3,16 @@
 namespace App\Controller;
 
 use App\Entity\Menu;
+use App\Repository\DietRepository;
 use App\Repository\MenuRepository;
+use App\Repository\ThemeRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use OpenApi\Attributes as OA;
 
 final class MenuController extends AbstractController
 {
@@ -27,7 +29,6 @@ final class MenuController extends AbstractController
             )
         ]
     )]
-
     public function index(MenuRepository $menuRepository): JsonResponse
     {
         $menus = $menuRepository->findBy(
@@ -38,6 +39,27 @@ final class MenuController extends AbstractController
         $data = [];
 
         foreach ($menus as $menu) {
+
+            $themes = [];
+
+            foreach ($menu->getTheme() as $theme) {
+
+                $themes[] = [
+                    'id' => $theme->getId(),
+                    'title' => $theme->getTitle()
+                ];
+            }
+
+            $diets = [];
+
+            foreach ($menu->getDiets() as $diet) {
+
+                $diets[] = [
+                    'id' => $diet->getId(),
+                    'title' => $diet->getTitle()
+                ];
+            }
+
             $data[] = [
                 'id' => $menu->getId(),
                 'title' => $menu->getTitle(),
@@ -49,6 +71,8 @@ final class MenuController extends AbstractController
                 'isAvailable' => $menu->isAvailable(),
                 'createdAt' => $menu->getCreatedAt()?->format(DATE_ATOM),
                 'updatedAt' => $menu->getUpdatedAt()?->format(DATE_ATOM),
+                'themes' => $themes,
+                'diets' => $diets
             ];
         }
 
@@ -58,7 +82,7 @@ final class MenuController extends AbstractController
     #[Route('/api/menus/{id}', name: 'app_menu_show', methods: ['GET'])]
     #[OA\Get(
         path: '/api/menus/{id}',
-        summary: 'Consulter un menu par id',
+        summary: 'Consulter un menu par ID',
         description: 'Retourne le détail d’un menu disponible.',
         tags: ['Menus'],
         parameters: [
@@ -100,6 +124,26 @@ final class MenuController extends AbstractController
             ], 404);
         }
 
+        $themes = [];
+
+        foreach ($menu->getTheme() as $theme) {
+
+            $themes[] = [
+                'id' => $theme->getId(),
+                'title' => $theme->getTitle()
+            ];
+        }
+
+        $diets = [];
+
+        foreach ($menu->getDiets() as $diet) {
+
+            $diets[] = [
+                'id' => $diet->getId(),
+                'title' => $diet->getTitle()
+            ];
+        }
+
         return $this->json([
             'id' => $menu->getId(),
             'title' => $menu->getTitle(),
@@ -111,6 +155,8 @@ final class MenuController extends AbstractController
             'isAvailable' => $menu->isAvailable(),
             'createdAt' => $menu->getCreatedAt()?->format(DATE_ATOM),
             'updatedAt' => $menu->getUpdatedAt()?->format(DATE_ATOM),
+            'themes' => $themes,
+            'diets' => $diets
         ]);
     }
 
@@ -127,12 +173,14 @@ final class MenuController extends AbstractController
             content: new OA\JsonContent(
                 required: ['title', 'minimumGuestNumber', 'price', 'stock'],
                 properties: [
-                    new OA\Property(property: 'title', type: 'string', example: 'Menu coquin'),
-                    new OA\Property(property: 'description', type: 'string', example: 'Menu avec des blagues'),
-                    new OA\Property(property: 'minimumGuestNumber', type: 'integer', example: 12),
-                    new OA\Property(property: 'price', type: 'number', format: 'float', example: 14.70),
-                    new OA\Property(property: 'stock', type: 'integer', example: 25),
-                    new OA\Property(property: 'conditions', type: 'string', example: 'Aimer se taper sur les cuisses')
+                    new OA\Property(property: 'title', type: 'string', example: 'Buffet Prestige'),
+                    new OA\Property(property: 'description', type: 'string', example: 'Cocktail haut de gamme'),
+                    new OA\Property(property: 'minimumGuestNumber', type: 'integer', example: 30),
+                    new OA\Property(property: 'price', type: 'number', format: 'float', example: 49.90),
+                    new OA\Property(property: 'stock', type: 'integer', example: 12),
+                    new OA\Property(property: 'conditions', type: 'string', example: 'Réservation 15 jours à l’avance'),
+                    new OA\Property(property: 'themes', type: 'array', items: new OA\Items(type: 'integer'), example: [6, 9]),
+                    new OA\Property(property: 'diets', type: 'array', items: new OA\Items(type: 'integer'), example: [4, 5])
                 ]
             )
         ),
@@ -144,7 +192,9 @@ final class MenuController extends AbstractController
     )]
     public function create(
         Request $request,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        ThemeRepository $themeRepository,
+        DietRepository $dietRepository
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
 
@@ -168,6 +218,25 @@ final class MenuController extends AbstractController
         $menu->setStock($data['stock']);
         $menu->setConditions($data['conditions'] ?? null);
 
+        // Associe les thèmes et régimes sélectionnés au menu.
+        foreach ($data['themes'] ?? [] as $themeId) {
+
+            $theme = $themeRepository->find($themeId);
+
+            if ($theme !== null) {
+                $menu->addTheme($theme);
+            }
+        }
+
+        foreach ($data['diets'] ?? [] as $dietId) {
+
+            $diet = $dietRepository->find($dietId);
+
+            if ($diet !== null) {
+                $menu->addDiet($diet);
+            }
+        }
+
         $entityManager->persist($menu);
         $entityManager->flush();
 
@@ -186,24 +255,20 @@ final class MenuController extends AbstractController
         tags: ['Menus'],
         security: [['Bearer' => []]],
         parameters: [
-            new OA\Parameter(
-                name: 'id',
-                in: 'path',
-                description: 'Identifiant du menu',
-                required: true,
-                schema: new OA\Schema(type: 'integer')
-            )
+            new OA\Parameter(name: 'id', in: 'path', description: 'Identifiant du menu', required: true, schema: new OA\Schema(type: 'integer'))
         ],
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(
                 properties: [
-                    new OA\Property(property: 'title', type: 'string', example: 'Menu Radin'),
-                    new OA\Property(property: 'description', type: 'string', example: 'Menu pour les gens sans le sou'),
-                    new OA\Property(property: 'minimumGuestNumber', type: 'integer', example: 10),
-                    new OA\Property(property: 'price', type: 'number', format: 'float', example: 2.30),
-                    new OA\Property(property: 'stock', type: 'integer', example: 25),
-                    new OA\Property(property: 'conditions', type: 'string', example: 'Réglable uniquement en cash')
+                    new OA\Property(property: 'title', type: 'string', example: 'Buffet Prestige'),
+                    new OA\Property(property: 'description', type: 'string', example: 'Cocktail haut de gamme'),
+                    new OA\Property(property: 'minimumGuestNumber', type: 'integer', example: 30),
+                    new OA\Property(property: 'price', type: 'number', format: 'float', example: 49.90),
+                    new OA\Property(property: 'stock', type: 'integer', example: 12),
+                    new OA\Property(property: 'conditions', type: 'string', example: 'Réservation 15 jours à l’avance'),
+                    new OA\Property(property: 'themes', description: 'Liste des identifiants des thèmes.', type: 'array', items: new OA\Items(type: 'integer'), example: [6, 9]),
+                    new OA\Property(property: 'diets', description: 'Liste des identifiants des régimes alimentaires.', type: 'array', items: new OA\Items(type: 'integer'), example: [4, 5])
                 ]
             )
         ),
@@ -217,8 +282,11 @@ final class MenuController extends AbstractController
         int $id,
         Request $request,
         MenuRepository $menuRepository,
+        ThemeRepository $themeRepository,
+        DietRepository $dietRepository,
         EntityManagerInterface $entityManager
     ): JsonResponse {
+
         $menu = $menuRepository->find($id);
 
         if (!$menu) {
@@ -251,6 +319,48 @@ final class MenuController extends AbstractController
 
         if (isset($data['conditions'])) {
             $menu->setConditions($data['conditions']);
+        }
+
+        // Met à jour les thèmes du menu.
+        if (isset($data['themes'])) {
+
+            foreach ($menu->getTheme() as $theme) {
+                $menu->removeTheme($theme);
+            }
+
+            foreach ($data['themes'] as $themeId) {
+
+                $theme = $themeRepository->find($themeId);
+
+                if ($theme === null) {
+                    return $this->json([
+                        'message' => "Le thème d'identifiant $themeId est introuvable."
+                    ], 400);
+                }
+
+                $menu->addTheme($theme);
+            }
+        }
+
+        // Met à jour les régimes alimentaires du menu.
+        if (isset($data['diets'])) {
+
+            foreach ($menu->getDiets() as $diet) {
+                $menu->removeDiet($diet);
+            }
+
+            foreach ($data['diets'] as $dietId) {
+
+                $diet = $dietRepository->find($dietId);
+
+                if ($diet === null) {
+                    return $this->json([
+                        'message' => "Le régime d'identifiant $dietId est introuvable."
+                    ], 400);
+                }
+
+                $menu->addDiet($diet);
+            }
         }
 
         $menu->setUpdatedAt(new \DateTimeImmutable());
