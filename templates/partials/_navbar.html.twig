@@ -1,13 +1,17 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg">
 
     <div class="container">
 
         {# Logo du site #}
         <a class="navbar-brand" href="{{ path('home') }}">
-            Rapide & Gourmand
+            <img
+                src="{{ asset('images/logo.svg') }}"
+                alt="Logo Rapide & Gourmand"
+                class="navbar-logo"
+            >
         </a>
 
-        {# Bouton affiché sur mobile #}
+        {# Bouton du menu mobile #}
         <button
             class="navbar-toggler"
             type="button"

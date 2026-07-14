@@ -6,26 +6,29 @@
 }
 
 /* Logo */
-.navbar-brand {
-    color: var(--color-primary);
-    font-family: var(--font-title);
-    font-size: 1.8rem;
-    font-weight: 700;
-}
-
-.navbar-brand:hover {
-    color: var(--color-primary);
+.navbar-logo {
+    height: 70px;
+    width: auto;
 }
 
 /* Liens de navigation */
+.navbar-nav {
+    gap: 1.5rem;
+}
+
 .nav-link {
     color: var(--color-text);
-    font-weight: 500;
-    margin: 0 0.75rem;
+    font-family: var(--font-text);
+    font-weight: 600;
     transition: color 0.3s ease;
 }
 
 .nav-link:hover,
 .nav-link.active {
     color: var(--color-primary);
+}
+
+/* Bouton "Mon compte" */
+.btn-primary-custom {
+    min-width: 160px;
 }
