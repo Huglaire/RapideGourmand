@@ -1,0 +1,62 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+
+    <div class="container">
+
+        {# Logo du site #}
+        <a class="navbar-brand" href="{{ path('home') }}">
+            Rapide & Gourmand
+        </a>
+
+        {# Bouton affiché sur mobile #}
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#mainNavbar"
+            aria-controls="mainNavbar"
+            aria-expanded="false"
+            aria-label="Ouvrir le menu"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        {# Navigation principale #}
+        <div class="collapse navbar-collapse" id="mainNavbar">
+
+            <ul class="navbar-nav mx-auto">
+
+                <li class="nav-item">
+                    <a class="nav-link active" href="{{ path('home') }}">
+                        Accueil
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        Menus
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        À propos
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        Contact
+                    </a>
+                </li>
+
+            </ul>
+
+            <a href="#" class="btn btn-primary-custom">
+                Mon compte
+            </a>
+
+        </div>
+
+    </div>
+
+</nav>
