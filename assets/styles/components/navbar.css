@@ -1,0 +1,31 @@
+/* Barre de navigation */
+.navbar {
+    background-color: var(--color-secondary);
+    box-shadow: var(--shadow-card);
+    padding: 1rem 0;
+}
+
+/* Logo */
+.navbar-brand {
+    color: var(--color-primary);
+    font-family: var(--font-title);
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.navbar-brand:hover {
+    color: var(--color-primary);
+}
+
+/* Liens de navigation */
+.nav-link {
+    color: var(--color-text);
+    font-weight: 500;
+    margin: 0 0.75rem;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: var(--color-primary);
+}
