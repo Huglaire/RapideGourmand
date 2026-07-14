@@ -1,0 +1,46 @@
+/* Section des engagements */
+.quality {
+    padding: 5rem 0;
+    background-color: var(--color-secondary);
+}
+
+/* Titre de la section */
+.quality-title {
+    font-family: var(--font-title);
+    font-size: 2.5rem;
+    color: var(--color-primary);
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+/* Grille des cartes */
+.quality-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+}
+
+/* Carte */
+.quality-card {
+    background: #ffffff;
+    border: 2px solid var(--color-complementary);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* Emplacement de l'icône */
+.quality-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+    border-radius: 50%;
+    background-color: #d9d9d9;
+}
+
+/* Titre de la carte */
+.quality-card h3 {
+    font-size: 1.1rem;
+    margin: 0;
+}

@@ -1,0 +1,73 @@
+/* Hero de la page d'accueil */
+.hero {
+    position: relative;
+    min-height: 720px;
+    background: url("/images/hero.jpg") center center / cover no-repeat;
+    display: flex;
+    align-items: center;
+}
+
+/* Voile sombre */
+.hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+}
+
+/* Contenu au-dessus du voile */
+.hero-overlay {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+}
+
+/* Bloc contenant les textes */
+.hero-content {
+    max-width: 560px;
+    margin-left: 3rem;
+    padding-top: 8rem;
+}
+
+/* Titre */
+.hero-title {
+    font-family: var(--font-title);
+    font-size: 3.5rem;
+    line-height: 1.2;
+    color: var(--color-secondary);
+    margin-bottom: 1rem;
+}
+
+/* Sous-titre */
+.hero-subtitle {
+    font-size: 1.9rem;
+    color: var(--color-secondary);
+    margin-bottom: 2rem;
+}
+
+/* Bouton principal */
+.btn-hero {
+    display: inline-block;
+    padding: 1rem 3.5rem;
+    background-color: var(--color-primary);
+    color: var(--color-secondary);
+    text-decoration: none;
+    border-radius: 999px;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    transition: background-color 0.3s ease;
+    font-size: 1.1rem;
+}
+
+.btn-hero:hover {
+    background-color: #8f1d24;
+    color: var(--color-secondary);
+}
+
+/* Texte descriptif */
+.hero-description {
+    color: var(--color-secondary);
+    font-size: 1.3rem;
+    line-height: 1.6;
+    max-width: 500px;
+}

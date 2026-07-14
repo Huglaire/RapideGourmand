@@ -7,5 +7,6 @@
 @import "./components/cards.css";
 @import "./components/navbar.css";
 @import "./components/hero.css";
+@import "./components/quality.css";
 
 @import "./layout/page.css";
