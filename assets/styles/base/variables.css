@@ -1,0 +1,23 @@
+:root {
+
+    /* Couleurs principales */
+    --color-primary: #7A1F2A;
+    --color-secondary: #F8F4EE;
+    --color-accent: #C9A66B;
+    --color-text: #2E2E2E;
+    --color-success: #7E9073;
+    --color-background: #EBE5E0;
+
+    /* Typographies */
+    --font-title: "Playfair Display", serif;
+    --font-text: "Montserrat", sans-serif;
+
+    /* Ombres */
+    --shadow-card: 0 4px 10px rgba(0, 0, 0, 0.20);
+
+    /* Bordures */
+    --border-radius: 10px;
+
+    /* Espacements */
+    --spacing-section: 5rem;
+}
