@@ -1,0 +1,27 @@
+/* Conteneur principal de chaque page */
+.page-content {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: var(--space-lg);
+}
+
+/* Espacement entre les sections */
+.section {
+    margin-bottom: var(--space-xl);
+}
+
+/* Titre principal d'une page */
+.page-title {
+    color: var(--color-primary);
+    font-family: var(--font-title);
+    font-size: 3rem;
+    font-weight: 700;
+}
+
+/* Titre d'une section */
+.section-title {
+    color: var(--color-primary);
+    font-family: var(--font-title);
+    font-size: 2.2rem;
+    margin-bottom: 2rem;
+}

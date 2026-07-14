@@ -1,34 +1,37 @@
 /* Barre de navigation */
 .navbar {
-    background-color: var(--color-secondary);
-    box-shadow: var(--shadow-card);
+    background-color: var(--color-primary);
     padding: 1rem 0;
 }
 
 /* Logo */
 .navbar-logo {
-    height: 70px;
+    height: 60px;
     width: auto;
 }
 
-/* Liens de navigation */
+/* Navigation principale */
 .navbar-nav {
-    gap: 1.5rem;
+    gap: 2rem;
 }
 
-.nav-link {
-    color: var(--color-text);
-    font-family: var(--font-text);
-    font-weight: 600;
+/* Liens */
+.navbar .nav-link {
+    color: var(--color-secondary);
+    font-weight: 500;
     transition: color 0.3s ease;
 }
 
-.nav-link:hover,
-.nav-link.active {
-    color: var(--color-primary);
+.navbar .nav-link:hover,
+.navbar .nav-link.active {
+    color: var(--color-accent);
 }
 
-/* Bouton "Mon compte" */
-.btn-primary-custom {
-    min-width: 160px;
+/* Bouton du menu mobile */
+.navbar-toggler {
+    border: none;
+}
+
+.navbar-toggler:focus {
+    box-shadow: none;
 }
