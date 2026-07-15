@@ -246,7 +246,15 @@ final class UserController extends AbstractController
         $entityManager->flush();
 
         return $this->json([
-            'message' => 'Informations mises à jour avec succès.'
+            'id' => $user->getId(),
+            'email' => $user->getEmail(),
+            'roles' => $user->getRoles(),
+            'firstName' => $user->getFirstName(),
+            'lastName' => $user->getLastName(),
+            'phone' => $user->getPhone(),
+            'street' => $user->getStreet(),
+            'postalCode' => $user->getPostalCode(),
+            'city' => $user->getCity(),
         ], Response::HTTP_OK);
     }
 

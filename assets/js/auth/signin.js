@@ -1,5 +1,3 @@
-console.log('signin.js chargé');
-
 // Gestion de la soumission du formulaire de connexion
 const form = document.getElementById('signin-form');
 
