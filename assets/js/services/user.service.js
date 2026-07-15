@@ -18,3 +18,25 @@ export async function getCurrentUser() {
     return await response.json();
 
 }
+
+/**
+ * Met à jour les informations de l'utilisateur connecté.
+ */
+export async function updateCurrentUser(user) {
+
+    const response = await apiFetch('/api/me', {
+        method: 'PATCH',
+        body: JSON.stringify(user)
+    });
+
+    if (!response.ok) {
+
+        throw new Error(
+            'Impossible de mettre à jour le profil.'
+        );
+
+    }
+
+    return await response.json();
+
+}
