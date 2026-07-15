@@ -12,7 +12,10 @@ import './styles/app.css';
 import './js/menu-filters.js';
 
 import './js/auth/signin.js';
+import './js/auth/navbar.js';
+
 import './js/api/client.js';
+
 import './js/profile/profile.js';
 
 console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');
