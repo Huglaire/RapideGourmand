@@ -1,0 +1,89 @@
+/* Section principale */
+.menu-detail {
+    padding: 4rem 0;
+}
+
+/* En-tête de la page */
+.menu-detail-header {
+    background-color: var(--color-primary);
+    color: var(--color-secondary);
+    padding: 4rem 0;
+    text-align: center;
+}
+
+.menu-detail-header h1 {
+    font-family: var(--font-title);
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.menu-detail-header p {
+    max-width: 700px;
+    margin: 0 auto;
+    font-size: 1.1rem;
+}
+
+/* Espacement des composants */
+.menu-gallery,
+.menu-information,
+.menu-composition,
+.menu-order-panel {
+    margin-bottom: 2rem;
+}
+
+/* Apparence des cartes */
+.menu-gallery .card,
+.menu-information .card,
+.menu-composition .card,
+.menu-order-panel .card {
+    border: none;
+    border-radius: 1rem;
+}
+
+/* Image principale */
+.menu-gallery > .card > img {
+    width: 100%;
+    height: 420px;
+    object-fit: cover;
+}
+
+/* Miniatures de la galerie */
+.menu-gallery .card-body img {
+    width: 100%;
+    height: 110px;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+/* Panneau de commande */
+.menu-order-panel {
+    position: sticky;
+    top: 2rem;
+}
+
+/* Bandeau d'information */
+.menu-warning {
+    margin-top: 3rem;
+}
+
+/* Adaptation sur tablette et mobile */
+@media (max-width: 991px) {
+
+    .menu-detail-header {
+        padding: 3rem 0;
+    }
+
+    .menu-detail-header h1 {
+        font-size: 2.3rem;
+    }
+
+    .menu-gallery > .card > img {
+        height: 300px;
+    }
+
+    .menu-order-panel {
+        position: static;
+    }
+
+}

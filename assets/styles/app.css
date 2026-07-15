@@ -11,5 +11,6 @@
 @import "./components/reviews.css";
 @import './components/menu.css';
 @import "./components/profile.css";
+@import './components/menu-detail.css';
 
 @import "./layout/page.css";

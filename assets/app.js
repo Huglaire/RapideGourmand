@@ -10,6 +10,7 @@ import './stimulus_bootstrap.js';
 import './styles/app.css';
 
 import './js/menu-filters.js';
+import './js/menu/show.js';
 
 import './js/auth/signin.js';
 import './js/auth/navbar.js';
