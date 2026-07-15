@@ -44,6 +44,8 @@ function fillProfileForm(user) {
  */
 function enableEditMode() {
 
+    clearMessage();
+
     fillProfileForm(currentUser);
 
     document
@@ -65,6 +67,8 @@ function enableEditMode() {
  */
 function disableEditMode() {
 
+    clearMessage();
+
     document
         .getElementById('profile-edit')
         .classList.add('d-none');
@@ -72,6 +76,49 @@ function disableEditMode() {
     document
         .getElementById('profile-view')
         .classList.remove('d-none');
+
+    document
+        .getElementById('edit-profile-button')
+        .classList.remove('d-none');
+
+}
+
+/**
+ * Affiche un message de succès.
+ */
+function showSuccessMessage(message) {
+
+    const container = document.getElementById('profile-message');
+
+    container.innerHTML = `
+        <div class="alert alert-success" role="alert">
+            ${message}
+        </div>
+    `;
+
+}
+
+/**
+ * Affiche un message d'erreur.
+ */
+function showErrorMessage(message) {
+
+    const container = document.getElementById('profile-message');
+
+    container.innerHTML = `
+        <div class="alert alert-danger" role="alert">
+            ${message}
+        </div>
+    `;
+
+}
+
+/**
+ * Supprime le message affiché.
+ */
+function clearMessage() {
+
+    document.getElementById('profile-message').innerHTML = '';
 
 }
 
@@ -102,7 +149,13 @@ async function saveProfile(event) {
 
         disableEditMode();
 
+        showSuccessMessage(
+            'Vos informations ont été mises à jour avec succès.'
+        );
+
     } catch (error) {
+
+        showErrorMessage(error.message);
 
         console.error(error);
 
