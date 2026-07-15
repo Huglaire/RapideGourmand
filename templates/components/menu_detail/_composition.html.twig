@@ -1,0 +1,42 @@
+<section class="menu-composition">
+
+    <div class="card shadow-sm">
+
+        <div class="card-body">
+
+            <h2 class="h4 mb-4">
+                Composition du menu
+            </h2>
+
+            {{ include(
+                'components/menu_detail/_dish_card.html.twig',
+                {
+                    title: 'Entrée',
+                    description: 'Description de l’entrée.',
+                    allergens: 'Gluten'
+                }
+            ) }}
+
+            {{ include(
+                'components/menu_detail/_dish_card.html.twig',
+                {
+                    title: 'Plat',
+                    description: 'Description du plat.',
+                    allergens: 'Aucun'
+                }
+            ) }}
+
+            {{ include(
+                'components/menu_detail/_dish_card.html.twig',
+                {
+                    title: 'Dessert',
+                    description: 'Description du dessert.',
+                    allergens: 'Lait'
+                }
+            ) }}
+
+        </div>
+
+    </div>
+
+</section>
