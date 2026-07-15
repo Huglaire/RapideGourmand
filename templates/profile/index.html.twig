@@ -6,20 +6,16 @@
 
 {% block body %}
 
-<section class="profile">
+    {{ include('components/profile/_header.html.twig') }}
 
-    <div class="container">
+    <section class="profile">
 
-        <h1>Mon profil</h1>
+        <div class="container">
 
-        <div id="profile-content">
-
-            <p>Chargement des informations...</p>
+            {{ include('components/profile/_card.html.twig') }}
 
         </div>
 
-    </div>
-
-</section>
+    </section>
 
 {% endblock %}

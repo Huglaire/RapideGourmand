@@ -1,13 +1,11 @@
 import { getCurrentUser } from '../services/user.service.js';
 
 /**
- * Charge et affiche les informations de l'utilisateur connecté.
+ * Charge les informations de l'utilisateur connecté.
  */
 async function loadProfile() {
 
-    const container = document.getElementById('profile-content');
-
-    if (!container) {
+    if (!document.getElementById('profile-first-name')) {
         return;
     }
 
@@ -15,37 +13,17 @@ async function loadProfile() {
 
         const user = await getCurrentUser();
 
-        console.log(user);
-
-        container.innerHTML = `
-            <div class="card shadow-sm">
-
-                <div class="card-body">
-
-                    <h2 class="h4 mb-4">
-                        Mes informations
-                    </h2>
-
-                    <p><strong>Prénom :</strong> ${user.firstName}</p>
-
-                    <p><strong>Nom :</strong> ${user.lastName}</p>
-
-                    <p><strong>Email :</strong> ${user.email}</p>
-
-                    <p><strong>Rôle :</strong> ${user.roles.join(', ')}</p>
-
-                </div>
-
-            </div>
-        `;
+        document.getElementById('profile-first-name').textContent = user.firstName;
+        document.getElementById('profile-last-name').textContent = user.lastName;
+        document.getElementById('profile-email').textContent = user.email;
+        document.getElementById('profile-phone').textContent = user.phone;
+        document.getElementById('profile-street').textContent = user.street;
+        document.getElementById('profile-postal-code').textContent = user.postalCode;
+        document.getElementById('profile-city').textContent = user.city;
 
     } catch (error) {
 
-        container.innerHTML = `
-            <div class="alert alert-danger">
-                Impossible de charger votre profil.
-            </div>
-        `;
+        console.error(error);
 
     }
 
