@@ -10,5 +10,6 @@
 @import "./components/quality.css";
 @import "./components/reviews.css";
 @import './components/menu.css';
+@import "./components/profile.css";
 
 @import "./layout/page.css";

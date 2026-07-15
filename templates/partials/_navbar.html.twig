@@ -1,17 +1,24 @@
 <nav class="navbar navbar-expand-lg">
 
-    <div class="container">
+    <div class="container navbar-container">
 
-        {# Logo du site #}
         <a class="navbar-brand" href="{{ path('home') }}">
+
             <img
                 src="{{ asset('images/logo.svg') }}"
                 alt="Logo Rapide & Gourmand"
                 class="navbar-logo"
             >
+
+            <div class="navbar-brand-text">
+
+                <span>Rapide &</span>
+                <span>Gourmand</span>
+
+            </div>
+
         </a>
 
-        {# Bouton du menu mobile #}
         <button
             class="navbar-toggler"
             type="button"
@@ -24,13 +31,12 @@
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        {# Navigation principale #}
         <div class="collapse navbar-collapse" id="mainNavbar">
 
-            <ul class="navbar-nav mx-auto">
+            <ul class="navbar-nav">
 
                 <li class="nav-item">
-                    <a class="nav-link active" href="{{ path('home') }}">
+                    <a class="nav-link" href="{{ path('home') }}">
                         Accueil
                     </a>
                 </li>
@@ -43,21 +49,19 @@
 
                 <li class="nav-item">
                     <a class="nav-link" href="#">
-                        À propos
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="#">
                         Contact
                     </a>
                 </li>
 
             </ul>
 
-            <a href="#" class="btn btn-primary-custom">
-                Mon compte
-            </a>
+            <div class="navbar-actions">
+
+                <a href="#" class="btn btn-primary-custom">
+                    Se connecter
+                </a>
+
+            </div>
 
         </div>
 
