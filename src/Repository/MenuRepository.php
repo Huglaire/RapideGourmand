@@ -76,9 +76,14 @@ class MenuRepository extends ServiceEntityRepository
      */
     public function findFilteredMenus(array $filters): array
     {
+        // Jointure des entités liées (alias : m = Menu, t = Theme, d = Diet, p = Picture)
         $queryBuilder = $this->createQueryBuilder('m')
             ->leftJoin('m.theme', 't')
+            ->addSelect('t')
             ->leftJoin('m.diets', 'd')
+            ->addSelect('d')
+            ->leftJoin('m.pictures', 'p')
+            ->addSelect('p')
             ->andWhere('m.isAvailable = :available')
             ->setParameter('available', true);
 
