@@ -1,73 +1,92 @@
 <section class="menu-order-panel">
 
-    <div class="card shadow-sm">
+	<div class="card shadow-sm">
 
-        <div class="card-body">
+		<div class="card-body">
 
-            <h2 class="h4 mb-4 text-center">
-                Choisissez votre menu
-            </h2>
+			<h2 class="h4 mb-4 text-center">
+				Votre commande
+			</h2>
 
-            <div class="d-grid gap-3 mb-4">
+			{# Informations du menu sélectionné #}
+			<div class="order-panel__menu mb-4">
 
-                <button
-                    type="button"
-                    class="btn btn-outline-primary active"
-                >
-                    Entrée + plat + dessert
+				<h3 id="selected-menu-name" class="h5 mb-2">
+					-
+				</h3>
 
-                    <br>
+				<p id="selected-menu-price" class="text-muted mb-0">
+					-
+				</p>
 
-                    <small id="menu-price">
-                        -
-                    </small>
+			</div>
 
-                </button>
+			<hr>
 
-            </div>
+			{# Nombre de personnes #}
+			<div class="mb-4">
 
-            <div class="mb-4">
+				<label for="guest-number" class="form-label fw-semibold">
+					Nombre de personnes
+				</label>
 
-                <label
-                    for="guest-number"
-                    class="form-label"
-                >
-                    Nombre de personnes
-                </label>
+				<input id="guest-number" type="number" class="form-control" min="1" step="1">
 
-                <input
-                    id="guest-number"
-                    type="number"
-                    class="form-control"
-                >
+				<small id="minimum-guests" class="text-muted d-block">
+					-
+				</small>
 
-            </div>
+				<small id="discount-threshold" class="text-success d-block mt-1">
+					-
+				</small>
 
-            <div class="mb-4">
+			</div>
 
-                <strong>
-                    Prix estimé
-                </strong>
+			<hr>
 
-                <p
-                    id="menu-estimated-price"
-                    class="fs-3 fw-bold text-primary mb-0"
-                >
-                    -
-                </p>
+			{# Récapitulatif du prix #}
+			<div class="order-summary">
 
-            </div>
+				<div class="summary-row">
+					<span>Prix unitaire</span>
+					<span id="unit-price">-</span>
+				</div>
 
-            <button
-                id="order-button"
-                class="btn btn-primary-custom w-100"
-                type="button"
-            >
-                Aller à la commande
-            </button>
+				<div class="summary-row">
+					<span>Personnes</span>
+					<span id="summary-guests">-</span>
+				</div>
 
-        </div>
+				<div class="summary-row">
+					<span>Sous-total</span>
+					<span id="subtotal">-</span>
+				</div>
 
-    </div>
+				<div class="summary-row">
+					<span id="discount-label">Remise</span>
+					<span id="discount">-</span>
+				</div>
+
+				<div class="summary-row">
+					<span>Livraison</span>
+					<span id="delivery">À calculer</span>
+				</div>
+
+				<hr>
+
+				<div class="summary-row summary-total">
+					<span>TOTAL</span>
+					<span id="total">-</span>
+				</div>
+
+			</div>
+
+			<button id="order-button" class="btn btn-primary-custom w-100 mt-4" type="button">
+				Aller à la commande
+			</button>
+
+		</div>
+
+	</div>
 
 </section>

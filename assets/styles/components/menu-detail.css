@@ -94,3 +94,84 @@
     object-fit: cover;
     border-radius: .5rem;
 }
+
+/* Panneau de commande */
+
+/* Informations du menu sélectionné */
+.order-panel__menu h3 {
+    margin-bottom: .5rem;
+    font-family: var(--font-title);
+    font-weight: 700;
+}
+
+.order-panel__menu p {
+    margin-bottom: 0;
+    font-size: 1rem;
+}
+
+/* Récapitulatif tarifaire */
+.order-summary {
+    display: flex;
+    flex-direction: column;
+    gap: .75rem;
+}
+
+/* Une ligne du récapitulatif */
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* Les montants sont alignés à droite */
+.summary-row span:last-child {
+    font-weight: 600;
+    text-align: right;
+}
+
+/* Mise en évidence du total */
+.summary-total {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+/* Champ nombre de personnes */
+#guest-number {
+    text-align: center;
+    font-weight: 600;
+}
+
+/* Information sur le minimum de personnes */
+#minimum-guests {
+    display: block;
+    margin-top: .5rem;
+}
+
+/* Livraison temporairement non calculée */
+#delivery {
+    color: var(--bs-secondary);
+    font-style: italic;
+}
+
+/* Carte du panneau de commande */
+.menu-order-panel .card {
+    overflow: hidden;
+}
+
+/* Espacement des séparateurs */
+.menu-order-panel hr {
+    margin: 1.5rem 0;
+}
+
+/* Le total doit attirer le regard */
+.summary-total {
+    padding-top: .75rem;
+    border-top: 2px solid var(--color-primary);
+}
+
+/* Bouton de commande */
+#order-button {
+    margin-top: 2rem;
+}
