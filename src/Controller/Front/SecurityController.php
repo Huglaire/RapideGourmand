@@ -24,7 +24,6 @@ final class SecurityController extends AbstractController
                 $request->request->get('email'),
                 $request->request->get('password')
             );
-            dd($result);
 
             if ($result['success']) {
 

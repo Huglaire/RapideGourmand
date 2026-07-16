@@ -279,6 +279,28 @@ function bindOrderPanelEvents() {
 
     };
 
+    document
+        .getElementById('order-button')
+        .addEventListener('click', () => {
+
+            sessionStorage.setItem(
+                'currentOrder',
+                JSON.stringify({
+
+                    menuId: currentMenu.id,
+                    menuTitle: currentMenu.title,
+                    guestNumber: orderState.guestNumber,
+                    minimumGuestNumber: orderState.minimumGuestNumber,
+                    unitPrice: orderState.unitPrice,
+                    total: orderState.total
+
+                })
+            );
+
+            window.location.href = '/commande';
+
+        });
+
 }
 
 /**

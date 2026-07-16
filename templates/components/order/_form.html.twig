@@ -1,0 +1,120 @@
+<section class="order-form">
+
+    <div class="card shadow-sm">
+
+        <div class="card-body">
+
+            <h2 class="h4 mb-4">
+                Informations de livraison
+            </h2>
+
+            <form
+                id="order-form"
+            >
+
+                <input
+                    type="hidden"
+                    id="menu-id"
+                    name="menuId"
+                >
+
+                <input
+                    type="hidden"
+                    id="guest-number-hidden"
+                    name="guestNumber"
+                >
+
+                <div class="mb-3">
+
+                    <label
+                        for="delivery-date"
+                        class="form-label"
+                    >
+                        Date de livraison
+                    </label>
+
+                    <input
+                        id="delivery-date"
+                        name="deliveryDate"
+                        type="date"
+                        class="form-control"
+                        required
+                    >
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label
+                        for="delivery-street"
+                        class="form-label"
+                    >
+                        Adresse
+                    </label>
+
+                    <input
+                        id="delivery-street"
+                        name="deliveryStreet"
+                        type="text"
+                        class="form-control"
+                        required
+                    >
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-4">
+
+                        <label
+                            for="delivery-postal-code"
+                            class="form-label"
+                        >
+                            Code postal
+                        </label>
+
+                        <input
+                            id="delivery-postal-code"
+                            name="deliveryPostalCode"
+                            type="text"
+                            class="form-control"
+                            required
+                        >
+
+                    </div>
+
+                    <div class="col-md-8">
+
+                        <label
+                            for="delivery-city"
+                            class="form-label"
+                        >
+                            Ville
+                        </label>
+
+                        <input
+                            id="delivery-city"
+                            name="deliveryCity"
+                            type="text"
+                            class="form-control"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+                <button
+                    class="btn btn-primary-custom w-100 mt-4"
+                    type="submit"
+                >
+                    Valider la commande
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</section>
