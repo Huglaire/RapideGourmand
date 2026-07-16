@@ -231,8 +231,21 @@ final class OrderController extends AbstractController
         $data = [];
 
         foreach ($orders as $order) {
+
+            $menuTitle = null;
+
+            if ($order->getOrderMenus()->count() > 0) {
+
+                $menuTitle = $order
+                    ->getOrderMenus()
+                    ->first()
+                    ->getMenu()
+                    ->getTitle();
+            }
+
             $data[] = [
                 'id' => $order->getId(),
+                'menuTitle' => $menuTitle,
                 'deliveryDate' => $order->getDeliveryDate()->format('Y-m-d'),
                 'guestNumber' => $order->getGuestNumber(),
                 'totalPrice' => $order->getTotalPrice(),

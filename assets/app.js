@@ -21,3 +21,4 @@ import './js/api/client.js';
 import './js/profile/profile.js';
 
 import './js/order/index.js';
+import './js/orderHistory/index.js';
