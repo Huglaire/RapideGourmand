@@ -8,6 +8,7 @@ import './stimulus_bootstrap.js';
  */
 
 import './styles/app.css';
+import './styles/components/order.css';
 
 import './js/menu-filters.js';
 import './js/menu/show.js';
@@ -19,4 +20,4 @@ import './js/api/client.js';
 
 import './js/profile/profile.js';
 
-console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');
+import './js/order/index.js';

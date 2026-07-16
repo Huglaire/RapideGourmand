@@ -12,5 +12,6 @@
 @import './components/menu.css';
 @import "./components/profile.css";
 @import './components/menu-detail.css';
+@import './components/order.css';
 
 @import "./layout/page.css";
