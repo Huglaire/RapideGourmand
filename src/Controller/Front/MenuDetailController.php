@@ -11,7 +11,7 @@ class MenuDetailController extends AbstractController
     #[Route('/menus/{id}', name: 'menu_show', methods: ['GET'])]
     public function show(int $id): Response
     {
-        return $this->render('menu/show.html.twig', [
+        return $this->render('menu_detail/show.html.twig', [
             'menuId' => $id
         ]);
     }

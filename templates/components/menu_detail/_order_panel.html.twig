@@ -4,9 +4,27 @@
 
         <div class="card-body">
 
-            <h2 class="h4 mb-4">
-                Commander
+            <h2 class="h4 mb-4 text-center">
+                Choisissez votre menu
             </h2>
+
+            <div class="d-grid gap-3 mb-4">
+
+                <button
+                    type="button"
+                    class="btn btn-outline-primary active"
+                >
+                    Entrée + plat + dessert
+
+                    <br>
+
+                    <small id="menu-price">
+                        -
+                    </small>
+
+                </button>
+
+            </div>
 
             <div class="mb-4">
 
@@ -14,41 +32,38 @@
                     for="guest-number"
                     class="form-label"
                 >
-                    Nombre de convives
+                    Nombre de personnes
                 </label>
 
                 <input
                     id="guest-number"
                     type="number"
                     class="form-control"
-                    min="1"
-                    value="10"
                 >
 
             </div>
 
             <div class="mb-4">
 
-                <p class="mb-2">
-
-                    <strong>Prix estimé</strong>
-
-                </p>
+                <strong>
+                    Prix estimé
+                </strong>
 
                 <p
                     id="menu-estimated-price"
-                    class="fs-4 fw-bold text-primary mb-0"
+                    class="fs-3 fw-bold text-primary mb-0"
                 >
-                    180 €
+                    -
                 </p>
 
             </div>
 
             <button
+                id="order-button"
                 class="btn btn-primary-custom w-100"
                 type="button"
             >
-                Commander
+                Aller à la commande
             </button>
 
         </div>
