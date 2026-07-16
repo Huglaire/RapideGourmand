@@ -380,3 +380,71 @@
 .menu-warning li+li {
     margin-top: .75rem;
 }
+
+/* ==========================
+   Responsive
+   ========================== */
+
+@media (max-width: 768px) {
+
+    .menu-detail {
+        padding: 2rem 0;
+    }
+
+    .menu-detail-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .menu-detail-header h1 {
+        font-size: 2.2rem;
+    }
+
+    .menu-detail-header p {
+        font-size: 1.1rem;
+    }
+
+    .menu-gallery,
+    .menu-information,
+    .menu-composition,
+    .menu-order-panel,
+    .menu-warning {
+        margin-bottom: 1.5rem;
+    }
+
+    .menu-gallery .card-img-top {
+        height: 260px;
+    }
+
+    .menu-thumbnail {
+        height: 70px;
+    }
+
+    .information-right {
+        border-left: none;
+        border-top: 2px solid #e7dfd4;
+        margin-top: 2rem;
+        padding-top: 2rem;
+    }
+
+    .menu-order-panel {
+        position: static;
+    }
+
+    .dish-card {
+        margin-bottom: 1rem;
+    }
+
+    .dish-picture {
+        height: 220px;
+    }
+
+    .summary-total {
+        font-size: 1.15rem;
+    }
+
+    #order-button {
+        width: 100%;
+    }
+
+}
