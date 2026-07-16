@@ -1,41 +1,66 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-	Détail du menu | Rapide & Gourmand
+    Détail du menu | Rapide & Gourmand
 {% endblock %}
 
 {% block body %}
 
-	{{ include('components/menu_detail/_header.html.twig') }}
+<section
+    class="menu-detail"
+    data-menu-id="{{ menuId }}"
+>
 
-	<section class="menu-detail" data-menu-id="{{ menuId }}">
+    <div class="container-fluid px-5">
 
-		<div class="container">
+        {{ include('components/menu_detail/_header.html.twig') }}
 
-			<div class="row g-5">
+        <div class="row g-4 align-items-start">
 
-				<div class="col-lg-8">
+            {# Colonne principale #}
+            <div class="col-lg-9">
 
-					{{ include('components/menu_detail/_gallery.html.twig') }}
+                <div class="row g-4">
 
-					{{ include('components/menu_detail/_information.html.twig') }}
+                    <div class="col-lg-6">
 
-					{{ include('components/menu_detail/_composition.html.twig') }}
+                        {{ include('components/menu_detail/_gallery.html.twig') }}
 
-				</div>
+                    </div>
 
-				<div class="col-lg-4">
+                    <div class="col-lg-6">
 
-					{{ include('components/menu_detail/_order_panel.html.twig') }}
+                        {{ include('components/menu_detail/_information.html.twig') }}
 
-				</div>
+                    </div>
 
-			</div>
+                </div>
 
-			{{ include('components/menu_detail/_warning.html.twig') }}
+                <div class="mt-4">
 
-		</div>
+                    {{ include('components/menu_detail/_composition.html.twig') }}
 
-	</section>
+                </div>
+
+                <div class="mt-4">
+
+                    {{ include('components/menu_detail/_warning.html.twig') }}
+
+                </div>
+
+            </div>
+
+            {# Panneau de commande #}
+            <div class="col-lg-3">
+
+                {{ include('components/menu_detail/_order_panel.html.twig') }}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
 
 {% endblock %}

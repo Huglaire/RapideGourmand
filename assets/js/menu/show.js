@@ -44,54 +44,43 @@ function displayHeader(menu) {
  */
 function displayGallery(menu) {
 
-    // N'affiche rien si le menu ne possède aucune image.
     if (menu.pictures.length === 0) {
         return;
     }
 
-    // Affiche la première image comme image principale.
-    const picture = menu.pictures[0];
+    const mainPicture =
+        document.getElementById('menu-main-picture');
 
-    const image = document.getElementById('menu-main-picture');
+    mainPicture.src = menu.pictures[0].path;
+    mainPicture.alt = menu.pictures[0].alt;
 
-    image.src = picture.path;
-    image.alt = picture.alt;
+    const container =
+        document.getElementById('menu-gallery-thumbnails');
 
-    // Génère dynamiquement les miniatures de la galerie.
-    const thumbnails = document.getElementById(
-        'menu-gallery-thumbnails'
-    );
+    const template =
+        document.getElementById('gallery-thumbnail-template');
 
-    thumbnails.innerHTML = '';
+    container.innerHTML = '';
 
     menu.pictures.forEach((picture) => {
 
-        const column = document.createElement('div');
+        const clone =
+            template.content.cloneNode(true);
 
-        column.classList.add('col-4');
+        const image =
+            clone.querySelector('.menu-thumbnail');
 
-        const thumbnail = document.createElement('img');
+        image.src = picture.path;
+        image.alt = picture.alt;
 
-        thumbnail.src = picture.path;
-        thumbnail.alt = picture.alt;
+        image.addEventListener('click', () => {
 
-        thumbnail.classList.add(
-            'menu-thumbnail',
-            'img-fluid',
-            'rounded'
-        );
-
-        // Met à jour l'image principale au clic sur une miniature.
-        thumbnail.addEventListener('click', () => {
-
-            image.src = picture.path;
-            image.alt = picture.alt;
+            mainPicture.src = picture.path;
+            mainPicture.alt = picture.alt;
 
         });
 
-        column.appendChild(thumbnail);
-
-        thumbnails.appendChild(column);
+        container.appendChild(clone);
 
     });
 
@@ -129,57 +118,53 @@ function displayComposition(menu) {
 
     const container = document.getElementById('menu-dishes');
 
+    const template =
+        document.getElementById('dish-card-template');
+
     container.innerHTML = '';
 
     menu.dishes.forEach((dish) => {
 
-        const column = document.createElement('div');
+        const clone =
+            template.content.cloneNode(true);
 
-        column.className = 'col-lg-4';
+        const image =
+            clone.querySelector('.dish-picture');
 
-        column.innerHTML = `
-            <div class="card h-100 shadow-sm">
+        const title =
+            clone.querySelector('.dish-title');
 
-                <div class="card-body">
+        const description =
+            clone.querySelector('.dish-description');
 
-                    <h3 class="h5 text-primary mb-3">
-                        ${dish.title}
-                    </h3>
+        const allergens =
+            clone.querySelector('.dish-allergens-list');
 
-                    ${dish.pictures.length > 0
-                ? `
-                            <img
-                                src="${dish.pictures[0].path}"
-                                alt="${dish.pictures[0].alt}"
-                                class="dish-picture mb-3"
-                            >
-                            `
-                : ''
-            }
+        if (dish.pictures.length > 0) {
 
-                    <p>
-                        ${dish.description}
-                    </p>
+            image.src = dish.pictures[0].path;
+            image.alt = dish.pictures[0].alt;
 
-                    <strong>
-                        Allergènes :
-                    </strong>
+        } else {
 
-                    <p>
-                        ${dish.allergens.length > 0
+            image.remove();
+
+        }
+
+        title.textContent =
+            dish.title;
+
+        description.textContent =
+            dish.description;
+
+        allergens.textContent =
+            dish.allergens.length > 0
                 ? dish.allergens
                     .map(allergen => allergen.title)
-                    .join('<br>')
-                : 'Aucun'
-            }
-                    </p>
+                    .join(', ')
+                : 'Aucun';
 
-                </div>
-
-            </div>
-        `;
-
-        container.appendChild(column);
+        container.appendChild(clone);
 
     });
 

@@ -1,11 +1,19 @@
-/* Section principale */
+/* ==========================
+   Page détail menu
+   ========================== */
+
 .menu-detail {
     padding: 4rem 0;
+    max-width: 1800px;
+    margin: auto;
 }
 
-/* En-tête de la page */
+/* ==========================
+   En-tête
+   ========================== */
+
 .menu-detail-header {
-    background-color: var(--color-primary);
+    background: var(--color-primary);
     color: var(--color-secondary);
     padding: 4rem 0;
     text-align: center;
@@ -19,12 +27,15 @@
 }
 
 .menu-detail-header p {
-    max-width: 700px;
-    margin: 0 auto;
+    max-width: 720px;
+    margin: auto;
     font-size: 1.1rem;
 }
 
-/* Espacement des composants */
+/* ==========================
+   Espacements
+   ========================== */
+
 .menu-gallery,
 .menu-information,
 .menu-composition,
@@ -32,43 +43,186 @@
     margin-bottom: 2rem;
 }
 
-/* Apparence des cartes */
+/* ==========================
+   Cartes
+   ========================== */
+
 .menu-gallery .card,
 .menu-information .card,
 .menu-composition .card,
 .menu-order-panel .card {
     border: none;
     border-radius: 1rem;
+    overflow: hidden;
 }
 
-/* Image principale */
-.menu-gallery > .card > img {
+/* ==========================
+   Galerie
+   ========================== */
+
+.menu-gallery>.card>img {
     width: 100%;
-    height: 420px;
+    height: 360px;
     object-fit: cover;
 }
 
-/* Miniatures de la galerie */
 .menu-gallery .card-body img {
     width: 100%;
-    height: 110px;
+    height: 130px;
     object-fit: cover;
     cursor: pointer;
+    transition: .2s;
 }
 
-/* Panneau de commande */
+.menu-gallery .card-body img:hover {
+    transform: scale(1.03);
+}
+
+/* ==========================
+   Informations
+   ========================== */
+
+.menu-information li {
+    padding: .75rem 0;
+    border-bottom: 1px solid #ececec;
+}
+
+.menu-information li:last-child {
+    border-bottom: none;
+}
+
+/* ==========================
+   Panneau de commande
+   ========================== */
+
 .menu-order-panel {
     position: sticky;
     top: 2rem;
 }
 
-/* Bandeau d'information */
+.order-panel__menu h3 {
+    font-family: var(--font-title);
+    font-weight: 700;
+}
+
+.order-summary {
+    display: flex;
+    flex-direction: column;
+    gap: .9rem;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.summary-row span:last-child {
+    font-weight: 600;
+}
+
+.summary-total {
+    margin-top: .5rem;
+    padding-top: 1rem;
+    border-top: 2px solid var(--color-primary);
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+#guest-number {
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+#minimum-guests {
+    display: block;
+    margin-top: .5rem;
+}
+
+#discount-threshold {
+    margin-top: .25rem;
+}
+
+#delivery {
+    color: #888;
+    font-style: italic;
+}
+
+#order-button {
+    margin-top: 2rem;
+    padding: .9rem;
+    font-size: 1.05rem;
+}
+
+/* ==========================
+   Composition
+   ========================== */
+
+.dish-card {
+    border: none;
+    border-radius: 1rem;
+    overflow: hidden;
+    transition: .2s;
+}
+
+.dish-card:hover {
+    transform: translateY(-2px);
+}
+
+.dish-picture {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.dish-card .card-body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 1.25rem;
+}
+
+.dish-title {
+    font-family: var(--font-title);
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-bottom: .75rem;
+}
+
+.dish-description {
+    flex: 1;
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: .75rem;
+}
+
+.dish-allergens {
+    margin-top: .75rem;
+    padding-top: .75rem;
+    border-top: 1px solid #ececec;
+    font-size: .95rem;
+}
+
+.dish-allergens strong {
+    display: block;
+    margin-bottom: .35rem;
+}
+
+/* ==========================
+   Bandeau
+   ========================== */
+
 .menu-warning {
     margin-top: 3rem;
 }
 
-/* Adaptation sur tablette et mobile */
-@media (max-width: 991px) {
+/* ==========================
+   Responsive
+   ========================== */
+
+@media (max-width:991px) {
 
     .menu-detail-header {
         padding: 3rem 0;
@@ -78,100 +232,151 @@
         font-size: 2.3rem;
     }
 
-    .menu-gallery > .card > img {
-        height: 300px;
+    .menu-gallery>.card>img {
+        height: 260px;
     }
 
     .menu-order-panel {
         position: static;
     }
 
+    .dish-picture {
+        height: 220px;
+    }
+
 }
 
-.dish-picture {
-    width: 100%;
-    height: 140px;
-    object-fit: cover;
-    border-radius: .5rem;
+/* ==========================
+   Header
+   ========================== */
+
+.menu-detail-header {
+    background: var(--color-primary);
+    color: var(--color-secondary);
+    padding: 2.75rem 0;
 }
 
-/* Panneau de commande */
-
-/* Informations du menu sélectionné */
-.order-panel__menu h3 {
-    margin-bottom: .5rem;
+.menu-detail-header h1 {
     font-family: var(--font-title);
+    font-size: 3rem;
     font-weight: 700;
+    line-height: 1.2;
+    text-shadow: 0 4px 10px rgba(0, 0, 0, .25);
 }
 
-.order-panel__menu p {
+.menu-detail-header {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+}
+
+.menu-detail-header h1 {
+    color: var(--color-primary);
+    font-family: var(--font-title);
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-shadow: none;
+}
+
+.menu-detail-header p {
+    max-width: 700px;
+    font-size: 1.8rem;
+    line-height: 1.4;
     margin-bottom: 0;
+}
+
+/* ==========================
+   Informations
+   ========================== */
+
+.menu-information .card-body {
+    padding: 2rem;
+}
+
+.information-right {
+    border-left: 2px solid #e7dfd4;
+}
+
+.info-item {
+    margin-bottom: 2rem;
+}
+
+.info-item:last-child {
+    margin-bottom: 0;
+}
+
+.info-item h3 {
     font-size: 1rem;
-}
-
-/* Récapitulatif tarifaire */
-.order-summary {
-    display: flex;
-    flex-direction: column;
-    gap: .75rem;
-}
-
-/* Une ligne du récapitulatif */
-.summary-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-}
-
-/* Les montants sont alignés à droite */
-.summary-row span:last-child {
-    font-weight: 600;
-    text-align: right;
-}
-
-/* Mise en évidence du total */
-.summary-total {
-    font-size: 1.2rem;
     font-weight: 700;
+    margin-bottom: .5rem;
     color: var(--color-primary);
 }
 
-/* Champ nombre de personnes */
-#guest-number {
-    text-align: center;
-    font-weight: 600;
+.info-item p {
+    margin-bottom: 0;
+    line-height: 1.5;
 }
 
-/* Information sur le minimum de personnes */
-#minimum-guests {
-    display: block;
-    margin-top: .5rem;
+@media (max-width: 991px) {
+
+    .information-right {
+        border-left: none;
+        border-top: 2px solid #e7dfd4;
+        margin-top: 2rem;
+        padding-top: 2rem;
+    }
+
 }
 
-/* Livraison temporairement non calculée */
-#delivery {
-    color: var(--bs-secondary);
-    font-style: italic;
+/* ==========================
+   Galerie
+   ========================== */
+
+.menu-gallery .card-img-top {
+    height: 420px;
+    object-fit: cover;
 }
 
-/* Carte du panneau de commande */
-.menu-order-panel .card {
-    overflow: hidden;
+.menu-thumbnail {
+    height: 90px;
+    width: 100%;
+    object-fit: cover;
+    cursor: pointer;
+    border-radius: .5rem;
+    transition: .2s;
 }
 
-/* Espacement des séparateurs */
-.menu-order-panel hr {
-    margin: 1.5rem 0;
+.menu-thumbnail:hover {
+
+    transform: scale(1.04);
+
 }
 
-/* Le total doit attirer le regard */
-.summary-total {
-    padding-top: .75rem;
-    border-top: 2px solid var(--color-primary);
+.menu-thumbnail.active {
+
+    outline: 3px solid var(--color-primary);
+
 }
 
-/* Bouton de commande */
-#order-button {
-    margin-top: 2rem;
+/* ==========================
+   Alerte
+   ========================== */
+
+.menu-warning .alert {
+    padding: 2rem;
+    border-radius: 1rem;
+}
+
+.menu-warning h2 {
+    color: var(--color-primary);
+    font-weight: 700;
+}
+
+.menu-warning ul {
+    padding-left: 1.2rem;
+}
+
+.menu-warning li+li {
+    margin-top: .75rem;
 }
