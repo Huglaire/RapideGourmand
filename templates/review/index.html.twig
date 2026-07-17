@@ -1,62 +1,111 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    Nos avis
+	Nos avis
 {% endblock %}
 
 {% block body %}
 
-<section class="container py-5">
+	<section class="container py-5">
 
-    <div class="text-center mb-5">
+		<div class="text-center mb-5">
 
-        <h1 class="display-5">
-            Les avis de nos clients
-        </h1>
+			<h1 class="display-5">
+				Les avis de nos clients
+			</h1>
 
-        <p class="lead">
-            Découvrez les retours de nos clients sur Rapide & Gourmand.
-        </p>
+			<p class="lead">
+				Découvrez les retours de nos clients sur Rapide & Gourmand.
+			</p>
 
-    </div>
+		</div>
 
-    <div
-        id="reviews-container"
-        class="row g-4"
-    ></div>
+		<div class="card shadow-sm mb-5">
 
-</section>
+			<div class="card-body">
 
-<template id="review-card-template">
+				<h2 class="h4 mb-4">
+					Laisser un avis
+				</h2>
 
-    <div class="col-lg-6">
+				<div id="review-alert" class="alert d-none" role="alert"></div>
 
-        <div class="card shadow-sm h-100">
+				<form id="review-form">
 
-            <div class="card-body">
+					<div class="mb-3">
 
-                <div
-                    class="review-rating fs-4 text-warning mb-3"
-                ></div>
+						<label for="review-rating" class="form-label">
+							Note
+						</label>
 
-                <h5
-                    class="review-author card-title"
-                ></h5>
+						<select id="review-rating" class="form-select" required>
 
-                <p
-                    class="review-comment card-text"
-                ></p>
+							<option value="">
+								Choisir une note
+							</option>
 
-                <small
-                    class="review-date text-muted"
-                ></small>
+							<option value="5">★★★★★</option>
+							<option value="4">★★★★☆</option>
+							<option value="3">★★★☆☆</option>
+							<option value="2">★★☆☆☆</option>
+							<option value="1">★☆☆☆☆</option>
 
-            </div>
+						</select>
 
-        </div>
+					</div>
 
-    </div>
+					<div class="mb-4">
 
-</template>
+						<label for="review-comment" class="form-label">
+							Votre commentaire
+						</label>
+
+						<textarea id="review-comment" class="form-control" rows="5" maxlength="500" required></textarea>
+
+					</div>
+
+					<button id="review-submit" type="submit" class="btn btn-primary">
+
+						<span id="review-submit-spinner" class="spinner-border spinner-border-sm me-2 d-none" aria-hidden="true"></span>
+
+						<span id="review-submit-text">
+							Publier mon avis
+						</span>
+
+					</button>
+
+				</form>
+
+			</div>
+
+		</div>
+
+		<div id="reviews-container" class="row g-4"></div>
+
+	</section>
+
+	<template id="review-card-template">
+
+		<div class="col-lg-6">
+
+			<div class="card shadow-sm h-100">
+
+				<div class="card-body">
+
+					<div class="review-rating fs-4 text-warning mb-3"></div>
+
+					<h5 class="review-author card-title"></h5>
+
+					<p class="review-comment card-text"></p>
+
+					<small class="review-date text-muted"></small>
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</template>
 
 {% endblock %}

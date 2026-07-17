@@ -1,4 +1,7 @@
-import { getReviews } from '../services/review.service.js';
+import {
+    getReviews,
+    createReview
+} from '../services/review.service.js';
 
 // Initialise la page lorsque le DOM est chargé.
 document.addEventListener(
@@ -9,8 +12,7 @@ document.addEventListener(
 /**
  * Initialise la page des avis.
  */
-function initReviewPage()
-{
+function initReviewPage() {
     // Quitte immédiatement le script si nous ne sommes pas
     // sur la page des avis.
     const container =
@@ -21,29 +23,157 @@ function initReviewPage()
     }
 
     loadReviews();
+    bindForm();
+}
+
+/**
+ * Associe le formulaire à son événement.
+ */
+function bindForm() {
+    const form =
+        document.getElementById('review-form');
+
+    if (!form) {
+        return;
+    }
+
+    form.addEventListener(
+        'submit',
+        submitReview
+    );
+}
+
+/**
+ * Affiche une alerte Bootstrap.
+ */
+function showAlert(type, message) {
+
+    const alert =
+        document.getElementById('review-alert');
+
+    alert.className =
+        `alert alert-${type}`;
+
+    alert.textContent =
+        message;
+
+}
+
+/**
+ * Masque l'alerte.
+ */
+function hideAlert() {
+
+    const alert =
+        document.getElementById('review-alert');
+
+    alert.className =
+        'alert d-none';
+
+    alert.textContent =
+        '';
+
+}
+
+/**
+ * Met à jour l'état du bouton d'envoi.
+ */
+function setSubmitLoading(isLoading) {
+
+    const button =
+        document.getElementById('review-submit');
+
+    const spinner =
+        document.getElementById('review-submit-spinner');
+
+    const text =
+        document.getElementById('review-submit-text');
+
+    button.disabled =
+        isLoading;
+
+    spinner.classList.toggle(
+        'd-none',
+        !isLoading
+    );
+
+    text.textContent =
+        isLoading
+            ? 'Publication...'
+            : 'Publier mon avis';
+
+}
+
+/**
+ * Envoie un avis à l'API.
+ */
+async function submitReview(event) {
+
+    event.preventDefault();
+
+    hideAlert();
+
+    // Active le mode chargement.
+    setSubmitLoading(true);
+
+    const rating =
+        Number(
+            document.getElementById('review-rating').value
+        );
+
+    const comment =
+        document.getElementById('review-comment').value.trim();
+
+    try {
+
+        await createReview({
+            rating,
+            comment
+        });
+
+        showAlert(
+            'success',
+            'Votre avis a bien été enregistré. Il sera publié après validation.'
+        );
+
+        event.target.reset();
+
+    } catch (error) {
+
+        console.error(error);
+
+        showAlert(
+            'danger',
+            error.message
+        );
+
+    } finally {
+
+        // Réactive le bouton, que la requête ait réussi ou échoué.
+        setSubmitLoading(false);
+
+    }
+
 }
 
 /**
  * Formate une date.
  */
-function formatDate(date)
-{
+function formatDate(date) {
     return new Date(date).toLocaleDateString('fr-FR');
 }
 
 /**
  * Génère l'affichage des étoiles.
  */
-function generateStars(rating)
-{
+function generateStars(rating) {
     return '★'.repeat(rating) + '☆'.repeat(5 - rating);
 }
 
 /**
  * Charge les avis depuis l'API.
  */
-async function loadReviews()
-{
+async function loadReviews() {
     try {
 
         const response =
@@ -64,8 +194,7 @@ async function loadReviews()
 /**
  * Affiche les avis.
  */
-function displayReviews(reviews)
-{
+function displayReviews(reviews) {
     const container =
         document.getElementById('reviews-container');
 
