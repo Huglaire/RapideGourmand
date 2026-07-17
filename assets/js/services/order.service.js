@@ -22,14 +22,28 @@ export async function getOrders() {
 /**
  * Annule une commande.
  */
-export async function cancelOrder(orderId) {
+export async function cancelOrder(
+    orderId,
+    cancelReason
+) {
 
     const response = await apiFetch(
 
         `/api/orders/${orderId}/cancel`,
 
         {
-            method: 'PATCH'
+            method: 'PATCH',
+
+            headers: {
+                'Content-Type': 'application/json'
+            },
+
+            body: JSON.stringify({
+
+                cancelReason
+
+            })
+
         }
 
     );

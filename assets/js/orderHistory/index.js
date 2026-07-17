@@ -57,6 +57,7 @@ function displayOrders(orders) {
 
     container.innerHTML = '';
 
+    // Affiche un message si aucune commande n'a été passée.
     if (orders.length === 0) {
 
         container.innerHTML = `
@@ -73,54 +74,86 @@ function displayOrders(orders) {
 
     orders.forEach((order) => {
 
-        const clone =
+        // Génère une nouvelle carte à partir du template HTML.
+        const orderCard =
             template.content.cloneNode(true);
 
-        clone.querySelector('.order-title').textContent =
+        orderCard.querySelector('.order-title').textContent =
             order.menuTitle;
 
-        clone.querySelector('.order-date').textContent =
+        orderCard.querySelector('.order-date').textContent =
             formatDate(order.deliveryDate);
 
-        clone.querySelector('.order-guests').textContent =
+        orderCard.querySelector('.order-created-at').textContent =
+            formatDate(order.createdAt);
+
+        orderCard.querySelector('.order-address').textContent =
+            `${order.deliveryStreet}, ${order.deliveryPostalCode} ${order.deliveryCity}`;
+
+        orderCard.querySelector('.order-guests').textContent =
             order.guestNumber;
 
-        clone.querySelector('.order-total').textContent =
+        orderCard.querySelector('.order-total').textContent =
             formatPrice(order.totalPrice);
 
+        // Adapte la couleur du badge selon le statut de la commande.
         const badge =
-            clone.querySelector('.order-status');
+            orderCard.querySelector('.order-status');
 
         badge.textContent = order.status;
         badge.classList.add(...getStatusClass(order.status).split(' '));
 
         const button =
-            clone.querySelector('.cancel-order');
+            orderCard.querySelector('.cancel-order');
 
-        button.addEventListener('click', async () => {
+        // Seules les commandes en attente peuvent être annulées.
+        if (order.status !== 'En attente') {
 
-            try {
+            button.remove();
 
-                await cancelOrder(order.id);
+        } else {
 
-                loadOrders();
+            button.addEventListener('click', async () => {
 
-            } catch (error) {
+                const cancelReason = prompt(
+                    'Veuillez indiquer le motif de votre annulation :'
+                );
 
-                alert(error.message);
+                if (
+                    cancelReason === null ||
+                    cancelReason.trim() === ''
+                ) {
+                    return;
+                }
 
-            }
+                try {
 
-        });
+                    await cancelOrder(
+                        order.id,
+                        cancelReason
+                    );
 
-        container.appendChild(clone);
+                    // Recharge la liste afin d'afficher le nouveau statut.
+                    await loadOrders();
+
+                } catch (error) {
+
+                    alert(error.message);
+
+                }
+
+            });
+
+        }
+
+        container.appendChild(orderCard);
 
     });
 
 }
 
 /**
- * Charge les commandes.
+ * Charge les commandes de l'utilisateur connecté.
  */
 async function loadOrders() {
 

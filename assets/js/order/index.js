@@ -154,7 +154,7 @@ async function submitOrder(event) {
 
         sessionStorage.removeItem('currentOrder');
 
-        window.location.href = '/profile';
+        window.location.href = '/mes-commandes';
 
     } catch (error) {
 

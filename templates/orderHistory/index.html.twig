@@ -1,119 +1,117 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    Mes commandes | Rapide & Gourmand
+	Mes commandes | Rapide & Gourmand
 {% endblock %}
 
 {% block body %}
 
-<section class="py-5">
+	<section class="py-5">
 
-    <div class="container">
+		<div class="container">
 
-        <div class="row mb-5">
+			<div class="row mb-5">
 
-            <div class="col">
+				<div class="col">
 
-                <h1>
-                    Mes commandes
-                </h1>
+					<h1>
+						Mes commandes
+					</h1>
 
-                <p class="lead mb-0">
-                    Retrouvez ici l'ensemble de vos commandes et leur état.
-                </p>
+					<p class="lead mb-0">
+						Retrouvez ici l'ensemble de vos commandes et leur état.
+					</p>
 
-            </div>
+				</div>
 
-        </div>
+			</div>
 
-        <div
-            id="orders-container"
-            class="row g-4"
-        >
+			<div id="orders-container" class="row g-4"></div>
 
-        </div>
+		</div>
 
-    </div>
+	</section>
 
-</section>
+	<template id="order-card-template">
 
-<template id="order-card-template">
+		<div class="col-lg-6">
 
-    <div class="col-lg-6">
+			<div class="card shadow-sm h-100">
 
-        <div class="card shadow-sm h-100">
+				<div class="card-body">
 
-            <div class="card-body">
+					<div class="d-flex justify-content-between align-items-start mb-3">
 
-                <div class="d-flex justify-content-between align-items-start mb-3">
+						<h2 class="h5 mb-0 order-title"></h2>
 
-                    <h2
-                        class="h5 mb-0 order-title"
-                    >
-                    </h2>
+						<span class="badge order-status"></span>
 
-                    <span
-                        class="badge order-status"
-                    >
-                    </span>
+					</div>
 
-                </div>
+					<div class="mb-2">
 
-                <div class="mb-2">
+						<strong>
+							Livraison :
+						</strong>
 
-                    <strong>
-                        Livraison :
-                    </strong>
+						<span class="order-date"></span>
 
-                    <span
-                        class="order-date"
-                    >
-                    </span>
+						<div class="mb-2">
 
-                </div>
+							<strong>
+								Adresse :
+							</strong>
 
-                <div class="mb-2">
+							<span class="order-address"></span>
 
-                    <strong>
-                        Nombre de personnes :
-                    </strong>
+						</div>
 
-                    <span
-                        class="order-guests"
-                    >
-                    </span>
+					</div>
 
-                </div>
+					<div class="mb-2">
 
-                <div class="mb-2">
+						<strong>
+							Commandée le :
+						</strong>
 
-                    <strong>
-                        Montant :
-                    </strong>
+						<span class="order-created-at"></span>
 
-                    <span
-                        class="order-total"
-                    >
-                    </span>
+					</div>
 
-                </div>
+					<div class="mb-2">
 
-                <div class="mt-4">
+						<strong>
+							Nombre de personnes :
+						</strong>
 
-                    <button
-                        class="btn btn-outline-danger cancel-order"
-                    >
-                        Annuler la commande
-                    </button>
+						<span class="order-guests"></span>
 
-                </div>
+					</div>
 
-            </div>
+					<div class="mb-2">
 
-        </div>
+						<strong>
+							Montant :
+						</strong>
 
-    </div>
+						<span class="order-total"></span>
 
-</template>
+					</div>
+
+					<div class="mt-4">
+
+						<button class="btn btn-outline-danger cancel-order">
+							Annuler la commande
+						</button>
+
+					</div>
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</template>
 
 {% endblock %}
