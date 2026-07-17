@@ -3,29 +3,50 @@ import {
     cancelOrder
 } from '../services/order.service.js';
 
+// Initialise la page lorsque le DOM est chargé.
+document.addEventListener(
+    'DOMContentLoaded',
+    initOrderHistoryPage
+);
+
+/**
+ * Initialise la page d'historique des commandes.
+ */
+function initOrderHistoryPage()
+{
+    // Quitte immédiatement le script si on n'est pas
+    // sur la page "Mes commandes".
+    const container =
+        document.getElementById('orders-container');
+
+    if (!container) {
+        return;
+    }
+
+    loadOrders();
+}
+
 /**
  * Formate un prix.
  */
-function formatPrice(price) {
-
+function formatPrice(price)
+{
     return `${Number(price).toFixed(2).replace('.', ',')} €`;
-
 }
 
 /**
  * Formate une date.
  */
-function formatDate(date) {
-
+function formatDate(date)
+{
     return new Date(date).toLocaleDateString('fr-FR');
-
 }
 
 /**
  * Retourne la classe Bootstrap correspondant au statut.
  */
-function getStatusClass(status) {
-
+function getStatusClass(status)
+{
     switch (status) {
 
         case 'En attente':
@@ -41,14 +62,13 @@ function getStatusClass(status) {
             return 'bg-secondary';
 
     }
-
 }
 
 /**
  * Affiche les commandes.
  */
-function displayOrders(orders) {
-
+function displayOrders(orders)
+{
     const container =
         document.getElementById('orders-container');
 
@@ -69,7 +89,6 @@ function displayOrders(orders) {
         `;
 
         return;
-
     }
 
     orders.forEach((order) => {
@@ -96,12 +115,14 @@ function displayOrders(orders) {
         orderCard.querySelector('.order-total').textContent =
             formatPrice(order.totalPrice);
 
-        // Adapte la couleur du badge selon le statut de la commande.
+        // Adapte la couleur du badge selon le statut.
         const badge =
             orderCard.querySelector('.order-status');
 
         badge.textContent = order.status;
-        badge.classList.add(...getStatusClass(order.status).split(' '));
+        badge.classList.add(
+            ...getStatusClass(order.status).split(' ')
+        );
 
         const button =
             orderCard.querySelector('.cancel-order');
@@ -149,18 +170,21 @@ function displayOrders(orders) {
         container.appendChild(orderCard);
 
     });
-
 }
 
 /**
  * Charge les commandes de l'utilisateur connecté.
  */
-async function loadOrders() {
-
+async function loadOrders()
+{
     try {
 
-        const orders =
+        // Récupère les commandes depuis l'API.
+        const response =
             await getOrders();
+
+        const orders =
+            await response.json();
 
         displayOrders(orders);
 
@@ -169,7 +193,4 @@ async function loadOrders() {
         console.error(error);
 
     }
-
 }
-
-loadOrders();

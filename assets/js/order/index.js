@@ -1,19 +1,26 @@
 import { apiFetch } from '../api/client.js';
 
+// Initialise la page lorsque le DOM est chargé.
+document.addEventListener(
+    'DOMContentLoaded',
+    initOrderPage
+);
+
 /**
  * Formate un prix.
  */
-function formatPrice(price) {
-
+function formatPrice(price)
+{
     return `${Number(price).toFixed(2).replace('.', ',')} €`;
-
 }
 
 /**
- * Initialise la page.
+ * Initialise la page de commande.
  */
-function initOrderPage() {
-
+function initOrderPage()
+{
+    // Quitte immédiatement le script si nous ne sommes pas
+    // sur la page de commande.
     const page =
         document.querySelector('.order-form');
 
@@ -23,26 +30,24 @@ function initOrderPage() {
 
     loadOrder();
     bindForm();
-
 }
 
 /**
  * Charge les informations de la commande.
  */
-function loadOrder() {
-
+function loadOrder()
+{
     const order = JSON.parse(
-
         sessionStorage.getItem('currentOrder')
-
     );
 
+    // Redirige l'utilisateur si aucune commande
+    // n'est présente dans la session.
     if (!order) {
 
         window.location.href = '/menus';
 
         return;
-
     }
 
     const subtotal =
@@ -51,10 +56,8 @@ function loadOrder() {
     let discount = 0;
 
     if (
-
         order.guestNumber >=
         order.minimumGuestNumber + 5
-
     ) {
 
         discount = subtotal * 0.10;
@@ -71,7 +74,7 @@ function loadOrder() {
     document.getElementById('guest-number-hidden').value =
         order.guestNumber;
 
-    // Alimente le récapitulatif.
+    // Alimente le récapitulatif de la commande.
     document.getElementById('summary-menu').textContent =
         order.menuTitle;
 
@@ -91,70 +94,80 @@ function loadOrder() {
 
     document.getElementById('summary-total').textContent =
         formatPrice(total);
-
 }
 
 /**
  * Associe les événements du formulaire.
  */
-function bindForm() {
-
+function bindForm()
+{
     document
         .querySelector('.order-form form')
-        .addEventListener('submit', submitOrder);
-
+        .addEventListener(
+            'submit',
+            submitOrder
+        );
 }
 
 /**
  * Envoie la commande à l'API.
  */
-async function submitOrder(event) {
-
+async function submitOrder(event)
+{
     event.preventDefault();
 
-    const order =
-        JSON.parse(sessionStorage.getItem('currentOrder'));
+    const order = JSON.parse(
+        sessionStorage.getItem('currentOrder')
+    );
 
     try {
 
-        const response = await apiFetch('/api/orders', {
+        const response = await apiFetch(
+            '/api/orders',
+            {
+                method: 'POST',
 
-            method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
 
-            headers: {
-                'Content-Type': 'application/json'
-            },
+                body: JSON.stringify({
 
-            body: JSON.stringify({
+                    menuId: order.menuId,
+                    guestNumber: order.guestNumber,
 
-                menuId: order.menuId,
-                guestNumber: order.guestNumber,
+                    deliveryDate:
+                        document.getElementById('delivery-date').value,
 
-                deliveryDate:
-                    document.getElementById('delivery-date').value,
+                    deliveryStreet:
+                        document.getElementById('delivery-street').value,
 
-                deliveryStreet:
-                    document.getElementById('delivery-street').value,
+                    deliveryPostalCode:
+                        document.getElementById('delivery-postal-code').value,
 
-                deliveryPostalCode:
-                    document.getElementById('delivery-postal-code').value,
+                    deliveryCity:
+                        document.getElementById('delivery-city').value
 
-                deliveryCity:
-                    document.getElementById('delivery-city').value
-
-            })
-
-        });
+                })
+            }
+        );
 
         if (!response.ok) {
 
-            throw new Error('Impossible de créer la commande.');
+            throw new Error(
+                'Impossible de créer la commande.'
+            );
 
         }
 
-        sessionStorage.removeItem('currentOrder');
+        // Nettoie la session après la création de la commande.
+        sessionStorage.removeItem(
+            'currentOrder'
+        );
 
-        window.location.href = '/mes-commandes';
+        // Redirige l'utilisateur vers son historique.
+        window.location.href =
+            '/mes-commandes';
 
     } catch (error) {
 
@@ -163,7 +176,4 @@ async function submitOrder(event) {
         alert(error.message);
 
     }
-
 }
-
-initOrderPage();

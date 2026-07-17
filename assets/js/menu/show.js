@@ -17,33 +17,54 @@ const orderState = {
     total: 0
 };
 
+// Initialise la page lorsque le DOM est chargé.
+document.addEventListener(
+    'DOMContentLoaded',
+    initMenuPage
+);
+
+/**
+ * Initialise la page du menu.
+ */
+function initMenuPage()
+{
+    // Quitte immédiatement le script si nous ne sommes pas
+    // sur une page de détail d'un menu.
+    const container =
+        document.querySelector('.menu-detail');
+
+    if (!container) {
+        return;
+    }
+
+    loadMenu(container.dataset.menuId);
+}
+
 /**
  * Formate un montant au format français.
  */
-function formatPrice(price) {
-
+function formatPrice(price)
+{
     return `${Number(price).toFixed(2).replace('.', ',')} €`;
-
 }
 
 /**
  * Affiche l'en-tête du menu.
  */
-function displayHeader(menu) {
-
+function displayHeader(menu)
+{
     document.getElementById('menu-title').textContent =
         menu.title;
 
     document.getElementById('menu-description').textContent =
         menu.description;
-
 }
 
 /**
  * Affiche la galerie du menu.
  */
-function displayGallery(menu) {
-
+function displayGallery(menu)
+{
     if (menu.pictures.length === 0) {
         return;
     }
@@ -83,14 +104,13 @@ function displayGallery(menu) {
         container.appendChild(clone);
 
     });
-
 }
 
 /**
  * Affiche les informations du menu.
  */
-function displayInformation(menu) {
-
+function displayInformation(menu)
+{
     document.getElementById('menu-theme').textContent =
         menu.themes.map(theme => theme.title).join(', ');
 
@@ -108,15 +128,15 @@ function displayInformation(menu) {
 
     document.getElementById('menu-conditions').textContent =
         menu.conditions;
-
 }
 
 /**
  * Affiche la composition du menu.
  */
-function displayComposition(menu) {
-
-    const container = document.getElementById('menu-dishes');
+function displayComposition(menu)
+{
+    const container =
+        document.getElementById('menu-dishes');
 
     const template =
         document.getElementById('dish-card-template');
@@ -167,38 +187,29 @@ function displayComposition(menu) {
         container.appendChild(clone);
 
     });
-
 }
 
 /**
  * Affiche le menu.
  */
-function displayMenu(menu) {
-
+function displayMenu(menu)
+{
     displayHeader(menu);
     displayGallery(menu);
     displayInformation(menu);
     displayComposition(menu);
     displayOrderPanel(menu);
-
 }
 
 /**
  * Charge le menu.
  */
-async function loadMenu() {
-
-    const container = document.querySelector('.menu-detail');
-
-    if (!container) {
-        return;
-    }
-
-    const menuId = container.dataset.menuId;
-
+async function loadMenu(menuId)
+{
     try {
 
-        currentMenu = await getMenu(menuId);
+        currentMenu =
+            await getMenu(menuId);
 
         displayMenu(currentMenu);
 
@@ -207,17 +218,21 @@ async function loadMenu() {
         console.error(error);
 
     }
-
 }
 
 /**
  * Initialise le panneau de commande.
  */
-function displayOrderPanel(menu) {
+function displayOrderPanel(menu)
+{
+    orderState.unitPrice =
+        Number(menu.price);
 
-    orderState.unitPrice = Number(menu.price);
-    orderState.minimumGuestNumber = menu.minimumGuestNumber;
-    orderState.guestNumber = menu.minimumGuestNumber;
+    orderState.minimumGuestNumber =
+        menu.minimumGuestNumber;
+
+    orderState.guestNumber =
+        menu.minimumGuestNumber;
 
     document.getElementById('selected-menu-name').textContent =
         menu.title;
@@ -228,8 +243,11 @@ function displayOrderPanel(menu) {
     const guestNumber =
         document.getElementById('guest-number');
 
-    guestNumber.min = menu.minimumGuestNumber;
-    guestNumber.value = menu.minimumGuestNumber;
+    guestNumber.min =
+        menu.minimumGuestNumber;
+
+    guestNumber.value =
+        menu.minimumGuestNumber;
 
     const minimumGuests =
         document.getElementById('minimum-guests');
@@ -254,26 +272,30 @@ function displayOrderPanel(menu) {
     updateEstimatedPrice();
 
     bindOrderPanelEvents();
-
 }
 
 /**
  * Associe les événements du panneau de commande.
  */
-function bindOrderPanelEvents() {
-
+function bindOrderPanelEvents()
+{
     const guestNumber =
         document.getElementById('guest-number');
 
     guestNumber.oninput = () => {
 
-        if (Number(guestNumber.value) < orderState.minimumGuestNumber) {
+        if (
+            Number(guestNumber.value) <
+            orderState.minimumGuestNumber
+        ) {
 
-            guestNumber.value = orderState.minimumGuestNumber;
+            guestNumber.value =
+                orderState.minimumGuestNumber;
 
         }
 
-        orderState.guestNumber = Number(guestNumber.value);
+        orderState.guestNumber =
+            Number(guestNumber.value);
 
         updateEstimatedPrice();
 
@@ -297,21 +319,23 @@ function bindOrderPanelEvents() {
                 })
             );
 
-            window.location.href = '/commande';
+            window.location.href =
+                '/commande';
 
         });
-
 }
 
 /**
  * Recalcule le récapitulatif de la commande.
  */
-function updateEstimatedPrice() {
-
+function updateEstimatedPrice()
+{
     orderState.subtotal =
-        orderState.unitPrice * orderState.guestNumber;
+        orderState.unitPrice *
+        orderState.guestNumber;
 
-    // Applique la remise prévue pour + de 5 personnes au-delà du nombre minimum
+    // Applique la remise prévue à partir de
+    // cinq personnes au-dessus du minimum.
     if (
         orderState.guestNumber >=
         orderState.minimumGuestNumber + 5
@@ -327,7 +351,8 @@ function updateEstimatedPrice() {
     }
 
     orderState.total =
-        orderState.subtotal - orderState.discount;
+        orderState.subtotal -
+        orderState.discount;
 
     document.getElementById('unit-price').textContent =
         formatPrice(orderState.unitPrice);
@@ -343,14 +368,16 @@ function updateEstimatedPrice() {
 
     if (orderState.discount > 0) {
 
-        discountLabel.textContent = 'Remise (10 %)';
+        discountLabel.textContent =
+            'Remise (10 %)';
 
         document.getElementById('discount').textContent =
             `- ${formatPrice(orderState.discount)}`;
 
     } else {
 
-        discountLabel.textContent = 'Remise';
+        discountLabel.textContent =
+            'Remise';
 
         document.getElementById('discount').textContent =
             formatPrice(0);
@@ -359,7 +386,4 @@ function updateEstimatedPrice() {
 
     document.getElementById('total').textContent =
         formatPrice(orderState.total);
-
 }
-
-loadMenu();
