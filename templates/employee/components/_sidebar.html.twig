@@ -1,0 +1,51 @@
+<div class="d-flex flex-column h-100 text-white">
+
+    <div class="p-4 border-bottom border-secondary">
+        <h4 class="mb-1">Rapide & Gourmand</h4>
+        <small class="text-white-50">Espace Employé</small>
+    </div>
+
+    <nav class="nav flex-column p-3 gap-2">
+
+        <a
+            href="{{ path('employee_dashboard') }}"
+            class="nav-link text-white {% if app.request.attributes.get('_route') == 'employee_dashboard' %}active fw-bold{% endif %}"
+        >
+            🏠 Tableau de bord
+        </a>
+
+        <a
+            href="{{ path('employee_orders') }}"
+            class="nav-link text-white {% if app.request.attributes.get('_route') == 'employee_orders' %}active fw-bold{% endif %}"
+        >
+            📦 Commandes
+        </a>
+
+        <a
+            href="{{ path('employee_menus') }}"
+            class="nav-link text-white {% if app.request.attributes.get('_route') == 'employee_menus' %}active fw-bold{% endif %}"
+        >
+            🍽 Menus
+        </a>
+
+        <a
+            href="{{ path('employee_reviews') }}"
+            class="nav-link text-white {% if app.request.attributes.get('_route') == 'employee_reviews' %}active fw-bold{% endif %}"
+        >
+            ⭐ Avis
+        </a>
+
+    </nav>
+
+    <div class="mt-auto p-3 border-top border-secondary">
+
+        <a
+            href="{{ path('home') }}"
+            class="btn btn-outline-light w-100"
+        >
+            Retour au site
+        </a>
+
+    </div>
+
+</div>

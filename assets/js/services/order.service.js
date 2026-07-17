@@ -71,33 +71,21 @@ export async function cancelOrder(
 )
 {
     const response = await apiFetch(
-
         `/api/orders/${orderId}/cancel`,
-
         {
             method: 'PATCH',
-
             headers: {
                 'Content-Type': 'application/json'
             },
-
             body: JSON.stringify({
-
                 cancelReason
-
             })
-
         }
-
     );
-
     if (!response.ok) {
-
         throw new Error(
             'Impossible d\'annuler cette commande.'
         );
-
     }
-
     return await response.json();
 }
