@@ -1,3 +1,4 @@
+import { addToCart } from '../services/cart.service.js';
 import { getMenu } from '../services/menu.service.js';
 
 /**
@@ -26,8 +27,7 @@ document.addEventListener(
 /**
  * Initialise la page du menu.
  */
-function initMenuPage()
-{
+function initMenuPage() {
     // Quitte immédiatement le script si nous ne sommes pas
     // sur une page de détail d'un menu.
     const container =
@@ -43,16 +43,14 @@ function initMenuPage()
 /**
  * Formate un montant au format français.
  */
-function formatPrice(price)
-{
+function formatPrice(price) {
     return `${Number(price).toFixed(2).replace('.', ',')} €`;
 }
 
 /**
  * Affiche l'en-tête du menu.
  */
-function displayHeader(menu)
-{
+function displayHeader(menu) {
     document.getElementById('menu-title').textContent =
         menu.title;
 
@@ -63,8 +61,7 @@ function displayHeader(menu)
 /**
  * Affiche la galerie du menu.
  */
-function displayGallery(menu)
-{
+function displayGallery(menu) {
     if (menu.pictures.length === 0) {
         return;
     }
@@ -109,8 +106,7 @@ function displayGallery(menu)
 /**
  * Affiche les informations du menu.
  */
-function displayInformation(menu)
-{
+function displayInformation(menu) {
     document.getElementById('menu-theme').textContent =
         menu.themes.map(theme => theme.title).join(', ');
 
@@ -133,8 +129,7 @@ function displayInformation(menu)
 /**
  * Affiche la composition du menu.
  */
-function displayComposition(menu)
-{
+function displayComposition(menu) {
     const container =
         document.getElementById('menu-dishes');
 
@@ -192,8 +187,7 @@ function displayComposition(menu)
 /**
  * Affiche le menu.
  */
-function displayMenu(menu)
-{
+function displayMenu(menu) {
     displayHeader(menu);
     displayGallery(menu);
     displayInformation(menu);
@@ -204,8 +198,7 @@ function displayMenu(menu)
 /**
  * Charge le menu.
  */
-async function loadMenu(menuId)
-{
+async function loadMenu(menuId) {
     try {
 
         currentMenu =
@@ -223,8 +216,7 @@ async function loadMenu(menuId)
 /**
  * Initialise le panneau de commande.
  */
-function displayOrderPanel(menu)
-{
+function displayOrderPanel(menu) {
     orderState.unitPrice =
         Number(menu.price);
 
@@ -277,8 +269,7 @@ function displayOrderPanel(menu)
 /**
  * Associe les événements du panneau de commande.
  */
-function bindOrderPanelEvents()
-{
+function bindOrderPanelEvents() {
     const guestNumber =
         document.getElementById('guest-number');
 
@@ -305,22 +296,12 @@ function bindOrderPanelEvents()
         .getElementById('order-button')
         .addEventListener('click', () => {
 
-            sessionStorage.setItem(
-                'currentOrder',
-                JSON.stringify({
-
-                    menuId: currentMenu.id,
-                    menuTitle: currentMenu.title,
-                    guestNumber: orderState.guestNumber,
-                    minimumGuestNumber: orderState.minimumGuestNumber,
-                    unitPrice: orderState.unitPrice,
-                    total: orderState.total
-
-                })
+            addToCart(
+                currentMenu.id,
+                orderState.guestNumber
             );
 
-            window.location.href =
-                '/commande';
+            window.location.href = '/panier';
 
         });
 }
@@ -328,8 +309,7 @@ function bindOrderPanelEvents()
 /**
  * Recalcule le récapitulatif de la commande.
  */
-function updateEstimatedPrice()
-{
+function updateEstimatedPrice() {
     orderState.subtotal =
         orderState.unitPrice *
         orderState.guestNumber;

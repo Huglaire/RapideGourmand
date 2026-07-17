@@ -22,5 +22,6 @@ import './js/profile/profile.js';
 
 import './js/order/index.js';
 import './js/orderHistory/index.js';
+import './js/order/cart.js';
 
 import './js/review/index.js';

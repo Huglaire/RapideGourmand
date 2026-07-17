@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Panier | Rapide & Gourmand{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('cart') }}
+{% endblock %}
+
+{% block body %}
+
+    {% include 'components/cart/_header.html.twig' %}
+    {% include 'components/cart/_layout.html.twig' %}
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('cart') }}
+{% endblock %}
