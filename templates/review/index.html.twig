@@ -1,23 +1,62 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    Avis clients
+    Nos avis
 {% endblock %}
 
 {% block body %}
 
 <section class="container py-5">
 
-    <h1 class="mb-5">
-        Avis clients
-    </h1>
+    <div class="text-center mb-5">
+
+        <h1 class="display-5">
+            Les avis de nos clients
+        </h1>
+
+        <p class="lead">
+            Découvrez les retours de nos clients sur Rapide & Gourmand.
+        </p>
+
+    </div>
 
     <div
         id="reviews-container"
         class="row g-4"
-    >
-    </div>
+    ></div>
 
 </section>
+
+<template id="review-card-template">
+
+    <div class="col-lg-6">
+
+        <div class="card shadow-sm h-100">
+
+            <div class="card-body">
+
+                <div
+                    class="review-rating fs-4 text-warning mb-3"
+                ></div>
+
+                <h5
+                    class="review-author card-title"
+                ></h5>
+
+                <p
+                    class="review-comment card-text"
+                ></p>
+
+                <small
+                    class="review-date text-muted"
+                ></small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</template>
 
 {% endblock %}
