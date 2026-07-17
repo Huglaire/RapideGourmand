@@ -25,3 +25,5 @@ import './js/orderHistory/index.js';
 import './js/order/cart.js';
 
 import './js/review/index.js';
+
+import './js/employee/orders.js';

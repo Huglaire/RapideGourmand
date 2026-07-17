@@ -16,28 +16,40 @@ class OrderRepository extends ServiceEntityRepository
         parent::__construct($registry, Order::class);
     }
 
-//    /**
-//     * @return Order[] Returns an array of Order objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('o')
-//            ->andWhere('o.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('o.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * Retourne les commandes en appliquant les filtres éventuels.
+     *
+     * @return Order[]
+     */
+    public function findEmployeeOrders(
+        ?string $status = null,
+        ?string $customer = null
+    ): array {
+        $queryBuilder = $this->createQueryBuilder('o')
+            ->leftJoin('o.user', 'u')
+            ->addSelect('u')
+            ->orderBy('o.deliveryDate', 'ASC');
 
-//    public function findOneBySomeField($value): ?Order
-//    {
-//        return $this->createQueryBuilder('o')
-//            ->andWhere('o.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        if ($status) {
+            $queryBuilder
+                ->andWhere('o.status = :status')
+                ->setParameter('status', $status);
+        }
+
+        if ($customer) {
+            $queryBuilder
+                ->andWhere(
+                    'LOWER(u.firstName) LIKE :customer
+                    OR LOWER(u.lastName) LIKE :customer'
+                )
+                ->setParameter(
+                    'customer',
+                    '%' . mb_strtolower($customer) . '%'
+                );
+        }
+
+        return $queryBuilder
+            ->getQuery()
+            ->getResult();
+    }
 }

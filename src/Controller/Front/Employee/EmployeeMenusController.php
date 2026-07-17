@@ -8,7 +8,6 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/employe/menus')]
-#[IsGranted('ROLE_EMPLOYEE')]
 class EmployeeMenusController extends AbstractController
 {
     #[Route('', name: 'employee_menus', methods: ['GET'])]
