@@ -1,4 +1,4 @@
-const STORAGE_KEY = "cart";
+const STORAGE_KEY = 'cart';
 
 /**
  * Retourne le contenu du panier.
@@ -15,7 +15,10 @@ export function getCart()
  */
 function saveCart(cart)
 {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(cart)
+    );
 }
 
 /**
@@ -25,29 +28,58 @@ export function addToCart(menuId, guestNumber)
 {
     const cart = getCart();
 
-    const existingMenu = cart.find(item => item.menuId === menuId);
+    // Le panier est vide.
+    if (cart.length === 0) {
 
-    if (existingMenu)
-    {
-        existingMenu.guestNumber = guestNumber;
+        saveCart([
+            {
+                menuId,
+                guestNumber
+            }
+        ]);
+
+        return true;
     }
-    else
-    {
-        cart.push({
+
+    const currentItem = cart[0];
+
+    // Le même menu est déjà présent.
+    if (currentItem.menuId === menuId) {
+
+        currentItem.guestNumber = guestNumber;
+
+        saveCart(cart);
+
+        return true;
+    }
+
+    // Un autre menu est déjà présent.
+    const confirmed = window.confirm(
+        'Vous avez déjà sélectionné un menu. Souhaitez-vous le remplacer ?'
+    );
+
+    if (!confirmed) {
+        return false;
+    }
+
+    saveCart([
+        {
             menuId,
             guestNumber
-        });
-    }
+        }
+    ]);
 
-    saveCart(cart);
+    return true;
 }
 
 /**
- * Supprime un menu.
+ * Supprime le menu du panier.
  */
 export function removeFromCart(menuId)
 {
-    const cart = getCart().filter(item => item.menuId !== menuId);
+    const cart = getCart().filter(
+        item => item.menuId !== menuId
+    );
 
     saveCart(cart);
 }
@@ -65,5 +97,7 @@ export function clearCart()
  */
 export function isInCart(menuId)
 {
-    return getCart().some(item => item.menuId === menuId);
+    return getCart().some(
+        item => item.menuId === menuId
+    );
 }

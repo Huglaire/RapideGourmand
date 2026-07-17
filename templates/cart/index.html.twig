@@ -1,20 +1,150 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Panier | Rapide & Gourmand{% endblock %}
-
-{% block stylesheets %}
-    {{ parent() }}
-    {{ encore_entry_link_tags('cart') }}
+{% block title %}
+	Panier | Rapide & Gourmand
 {% endblock %}
 
 {% block body %}
 
-    {% include 'components/cart/_header.html.twig' %}
-    {% include 'components/cart/_layout.html.twig' %}
+	{% include 'components/cart/_header.html.twig' %}
+	{% include 'components/cart/_layout.html.twig' %}
 
-{% endblock %}
+	<template id="cart-item-template">
 
-{% block javascripts %}
-    {{ parent() }}
-    {{ encore_entry_script_tags('cart') }}
+		<article class="cart-item card mb-3">
+
+			<div class="card-body">
+
+				<div class="d-flex justify-content-between align-items-start">
+
+					<div>
+
+						<h3 class="cart-item__title h5 mb-2"></h3>
+
+						<p class="cart-item__guests mb-1"></p>
+
+						<p class="cart-item__price mb-1"></p>
+
+						<strong class="cart-item__total"></strong>
+
+					</div>
+
+					<button type="button" class="btn btn-outline-danger cart-item__remove">
+						Supprimer
+					</button>
+
+				</div>
+
+			</div>
+
+		</article>
+
+	</template>
+
+	<template id="cart-summary-template">
+
+		<div class="cart-summary card sticky-top">
+
+			<div class="card-body">
+
+				<h2 class="h4 mb-4">
+					Récapitulatif
+				</h2>
+
+				<div class="d-flex justify-content-between mb-2">
+
+					<span>Sous-total</span>
+
+					<span class="cart-summary__subtotal"></span>
+
+				</div>
+
+				<div class="d-flex justify-content-between mb-2">
+
+					<span>Livraison</span>
+
+					<span class="cart-summary__delivery">
+						5,00 €
+					</span>
+
+				</div>
+
+				<div class="d-flex justify-content-between mb-2">
+
+					<span>Remise</span>
+
+					<span class="cart-summary__discount">
+						—
+					</span>
+
+				</div>
+
+				<hr>
+
+				<div class="d-flex justify-content-between fw-bold fs-5 mb-4">
+
+					<span>Total</span>
+
+					<span class="cart-summary__total"></span>
+
+				</div>
+
+				<div class="mb-3">
+
+					<label for="delivery-date" class="form-label">
+						Date de livraison
+					</label>
+
+					<input type="date" id="delivery-date" class="form-control" required>
+
+				</div>
+
+				<div class="mb-3">
+
+					<label for="delivery-street" class="form-label">
+						Rue
+					</label>
+
+					<input type="text" id="delivery-street" class="form-control" placeholder="12 rue Victor Hugo" required>
+
+				</div>
+
+				<div class="mb-3">
+
+					<label for="delivery-postal-code" class="form-label">
+						Code postal
+					</label>
+
+					<input type="text" id="delivery-postal-code" class="form-control" placeholder="33000" required>
+
+				</div>
+
+				<div class="mb-4">
+
+					<label for="delivery-city" class="form-label">
+						Ville
+					</label>
+
+					<input type="text" id="delivery-city" class="form-control" placeholder="Bordeaux" required>
+
+				</div>
+
+				<div class="d-grid gap-2">
+
+					<button type="button" class="btn btn-outline-secondary cart-summary__clear">
+						Vider le panier
+					</button>
+
+					<button type="button" class="btn btn-primary cart-summary__checkout">
+						Valider la commande
+					</button>
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</template>
+
 {% endblock %}

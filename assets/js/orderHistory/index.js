@@ -12,8 +12,7 @@ document.addEventListener(
 /**
  * Initialise la page d'historique des commandes.
  */
-function initOrderHistoryPage()
-{
+function initOrderHistoryPage() {
     // Quitte immédiatement le script si on n'est pas
     // sur la page "Mes commandes".
     const container =
@@ -29,24 +28,21 @@ function initOrderHistoryPage()
 /**
  * Formate un prix.
  */
-function formatPrice(price)
-{
+function formatPrice(price) {
     return `${Number(price).toFixed(2).replace('.', ',')} €`;
 }
 
 /**
  * Formate une date.
  */
-function formatDate(date)
-{
+function formatDate(date) {
     return new Date(date).toLocaleDateString('fr-FR');
 }
 
 /**
  * Retourne la classe Bootstrap correspondant au statut.
  */
-function getStatusClass(status)
-{
+function getStatusClass(status) {
     switch (status) {
 
         case 'En attente':
@@ -67,8 +63,7 @@ function getStatusClass(status)
 /**
  * Affiche les commandes.
  */
-function displayOrders(orders)
-{
+function displayOrders(orders) {
     const container =
         document.getElementById('orders-container');
 
@@ -175,16 +170,12 @@ function displayOrders(orders)
 /**
  * Charge les commandes de l'utilisateur connecté.
  */
-async function loadOrders()
-{
+async function loadOrders() {
     try {
 
         // Récupère les commandes depuis l'API.
-        const response =
-            await getOrders();
-
         const orders =
-            await response.json();
+            await getOrders();
 
         displayOrders(orders);
 

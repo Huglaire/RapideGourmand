@@ -296,10 +296,14 @@ function bindOrderPanelEvents() {
         .getElementById('order-button')
         .addEventListener('click', () => {
 
-            addToCart(
+            const added = addToCart(
                 currentMenu.id,
                 orderState.guestNumber
             );
+
+            if (!added) {
+                return;
+            }
 
             window.location.href = '/panier';
 
