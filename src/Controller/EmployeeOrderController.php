@@ -9,6 +9,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 #[Route('/api/employee/orders')]
 #[IsGranted('ROLE_EMPLOYEE')]
@@ -97,6 +99,113 @@ final class EmployeeOrderController extends AbstractController
             'status' => $order->getStatus(),
             'cancelReason' => $order->getCancelReason(),
             'createdAt' => $order->getCreatedAt()->format('Y-m-d H:i:s')
+        ]);
+    }
+
+    /**
+     * Met à jour le statut d'une commande.
+     */
+    #[Route('/{id}/status', name: 'api_employee_orders_update_status', methods: ['PATCH'])]
+    public function updateStatus(
+        Request $request,
+        Order $order,
+        EntityManagerInterface $entityManager
+    ): JsonResponse {
+
+        $data = json_decode(
+            $request->getContent(),
+            true
+        );
+
+        $status = $data['status'] ?? null;
+
+        $allowedStatuses = [
+            Order::STATUS_ACCEPTED,
+            Order::STATUS_PREPARING,
+            Order::STATUS_DELIVERING,
+            Order::STATUS_DELIVERED,
+            Order::STATUS_WAITING_EQUIPMENT,
+            Order::STATUS_FINISHED,
+            Order::STATUS_CANCELLED
+        ];
+
+        if (!in_array($status, $allowedStatuses, true)) {
+
+            return $this->json(
+                [
+                    'message' => 'Statut invalide.'
+                ],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        $order->setStatus($status);
+
+        $entityManager->flush();
+
+        return $this->json([
+            'message' => 'Statut mis à jour.',
+            'status' => $order->getStatus()
+        ]);
+    }
+
+    /**
+     * Annule une commande.
+     */
+    #[Route(
+        '/{id}/cancel',
+        name: 'api_employee_orders_cancel',
+        methods: ['PATCH']
+    )]
+    public function cancel(
+        Request $request,
+        Order $order,
+        EntityManagerInterface $entityManager
+    ): JsonResponse {
+
+        $data =
+            json_decode(
+                $request->getContent(),
+                true
+            );
+
+        $reason =
+            trim(
+                $data['reason'] ?? ''
+            );
+
+        if ($reason === '') {
+
+            return $this->json(
+                [
+                    'message' => 'Le motif est obligatoire.'
+                ],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        // Enregistre les informations liées à l'annulation.
+        $order->setStatus(
+            Order::STATUS_CANCELLED
+        );
+
+        $order->setCancelReason(
+            $reason
+        );
+
+        $order->setCancelDate(
+            new \DateTimeImmutable()
+        );
+
+        $order->setUpdatedAt(
+            new \DateTimeImmutable()
+        );
+
+        $entityManager->flush();
+
+        return $this->json([
+            'message' => 'Commande annulée.',
+            'status' => $order->getStatus()
         ]);
     }
 }
