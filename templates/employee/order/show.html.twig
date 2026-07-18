@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Commande{% endblock %}
+
+{% block body %}
+
+<div
+    class="container py-5"
+    id="employee-order-page"
+    data-order-id="{{ app.request.attributes.get('id') }}"
+>
+
+    <h1 class="mb-4">
+        Détail de la commande
+    </h1>
+
+    <div id="order-details"></div>
+
+</div>
+
+{% endblock %}

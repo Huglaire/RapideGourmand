@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des commandes{% endblock %}
+
+{% block body %}
+
+<div class="container py-5">
+
+    <h1 class="mb-4">
+        Gestion des commandes
+    </h1>
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-6">
+
+            <input
+                id="customer-filter"
+                type="text"
+                class="form-control"
+                placeholder="Rechercher un client"
+            >
+
+        </div>
+
+        <div class="col-md-6">
+
+            <select
+                id="status-filter"
+                class="form-select"
+            >
+                <option value="">Tous les statuts</option>
+                <option value="En attente">En attente</option>
+                <option value="Acceptée">Acceptée</option>
+                <option value="En préparation">En préparation</option>
+                <option value="En cours de livraison">En cours de livraison</option>
+                <option value="Livrée">Livrée</option>
+                <option value="En attente du retour de matériel">En attente du retour de matériel</option>
+                <option value="Terminée">Terminée</option>
+                <option value="Annulée">Annulée</option>
+            </select>
+
+        </div>
+
+    </div>
+
+    <div
+        id="orders-container"
+        class="row g-4"
+    ></div>
+
+</div>
+
+{% endblock %}

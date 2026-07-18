@@ -15,4 +15,18 @@ class EmployeeOrdersController extends AbstractController
     {
         return $this->render('employee/order/index.html.twig');
     }
+
+    #[Route('/liste', name: 'employee_orders_list', methods: ['GET'])]
+    public function list(): Response
+    {
+        return $this->render('employee/order/list.html.twig');
+    }
+
+    #[Route('/{id}', name: 'employee_orders_show', methods: ['GET'])]
+    public function show(): Response
+    {
+        return $this->render(
+            'employee/order/show.html.twig'
+        );
+    }
 }
