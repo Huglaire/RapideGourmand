@@ -265,4 +265,32 @@ final class AdminController extends AbstractController
             ]
         ], Response::HTTP_OK);
     }
+
+    #[Route('/api/admin/employees', name: 'app_admin_get_employees', methods: ['GET'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function getEmployees(
+        UserRepository $userRepository
+    ): JsonResponse {
+        $employees = $userRepository->findBy([]);
+
+        $data = [];
+
+        foreach ($employees as $employee) {
+
+            if (!in_array('ROLE_EMPLOYEE', $employee->getRoles())) {
+                continue;
+            }
+
+            $data[] = [
+                'id' => $employee->getId(),
+                'firstName' => $employee->getFirstName(),
+                'lastName' => $employee->getLastName(),
+                'email' => $employee->getEmail(),
+                'phone' => $employee->getPhone(),
+                'isActive' => $employee->isActive(),
+            ];
+        }
+
+        return $this->json($data);
+    }
 }
