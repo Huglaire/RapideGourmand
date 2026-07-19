@@ -14,6 +14,9 @@
         <button
             id="create-employee-button"
             class="btn btn-primary"
+            type="button"
+            data-bs-toggle="modal"
+            data-bs-target="#employeeModal"
         >
             Nouvel employé
         </button>
@@ -21,9 +24,235 @@
     </div>
 
     <div
+        id="employee-alert"
+        class="alert d-none"
+        role="alert"
+    ></div>
+
+    <div
         id="employees-container"
         class="row g-4"
     ></div>
+
+</div>
+
+<div
+    class="modal fade"
+    id="employeeModal"
+    tabindex="-1"
+    aria-labelledby="employeeModalLabel"
+    aria-hidden="true"
+>
+
+    <div class="modal-dialog modal-lg">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h2
+                    class="modal-title fs-5"
+                    id="employeeModalLabel"
+                >
+                    Nouvel employé
+                </h2>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Fermer"
+                ></button>
+
+            </div>
+
+            <form id="employee-form">
+
+                <div class="modal-body">
+
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+
+                            <label
+                                for="firstName"
+                                class="form-label"
+                            >
+                                Prénom
+                            </label>
+
+                            <input
+                                id="firstName"
+                                name="firstName"
+                                type="text"
+                                class="form-control"
+                                required
+                            >
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <label
+                                for="lastName"
+                                class="form-label"
+                            >
+                                Nom
+                            </label>
+
+                            <input
+                                id="lastName"
+                                name="lastName"
+                                type="text"
+                                class="form-control"
+                                required
+                            >
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <label
+                                for="email"
+                                class="form-label"
+                            >
+                                Email
+                            </label>
+
+                            <input
+                                id="email"
+                                name="email"
+                                type="email"
+                                class="form-control"
+                                required
+                            >
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <label
+                                for="password"
+                                class="form-label"
+                            >
+                                Mot de passe
+                            </label>
+
+                            <input
+                                id="password"
+                                name="password"
+                                type="password"
+                                class="form-control"
+                                required
+                            >
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <label
+                                for="phone"
+                                class="form-label"
+                            >
+                                Téléphone
+                            </label>
+
+                            <input
+                                id="phone"
+                                name="phone"
+                                type="text"
+                                class="form-control"
+                                required
+                            >
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <label
+                                for="street"
+                                class="form-label"
+                            >
+                                Rue
+                            </label>
+
+                            <input
+                                id="street"
+                                name="street"
+                                type="text"
+                                class="form-control"
+                                required
+                            >
+
+                        </div>
+
+                        <div class="col-md-4">
+
+                            <label
+                                for="postalCode"
+                                class="form-label"
+                            >
+                                Code postal
+                            </label>
+
+                            <input
+                                id="postalCode"
+                                name="postalCode"
+                                type="text"
+                                class="form-control"
+                                required
+                            >
+
+                        </div>
+
+                        <div class="col-md-8">
+
+                            <label
+                                for="city"
+                                class="form-label"
+                            >
+                                Ville
+                            </label>
+
+                            <input
+                                id="city"
+                                name="city"
+                                type="text"
+                                class="form-control"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                    >
+                        Annuler
+                    </button>
+
+                    <button
+                        id="save-employee-button"
+                        type="submit"
+                        class="btn btn-primary"
+                    >
+                        Créer l'employé
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
 
 </div>
 {% endblock %}

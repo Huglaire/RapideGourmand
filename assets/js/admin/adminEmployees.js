@@ -1,12 +1,29 @@
 import {
     getEmployees,
+    createEmployee,
     disableEmployee,
     restoreEmployee
 } from '../api/adminEmployeeApi.js';
 
+let employeeModal;
+
 document.addEventListener(
     'DOMContentLoaded',
     async () => {
+
+        employeeModal =
+            new bootstrap.Modal(
+                document.getElementById(
+                    'employeeModal'
+                )
+            );
+
+        document
+            .getElementById('employee-form')
+            .addEventListener(
+                'submit',
+                handleEmployeeCreation
+            );
 
         await loadEmployees();
 
@@ -35,17 +52,17 @@ async function loadEmployees() {
 
     } catch (error) {
 
-        console.error(error);
-
-        container.textContent =
-            'Impossible de charger les employés.';
+        showAlert(
+            error.message,
+            'danger'
+        );
 
     }
 
 }
 
 /**
- * Affiche les cartes.
+ * Affiche les employés.
  */
 function displayEmployees(
     container,
@@ -87,13 +104,13 @@ function createEmployeeCard(employee) {
         document.createElement('div');
 
     column.className =
-        'col-md-6 col-lg-4';
+        'col-md-6 col-xl-4';
 
     const card =
         document.createElement('div');
 
     card.className =
-        'card h-100 shadow-sm';
+        'card shadow-sm h-100';
 
     const body =
         document.createElement('div');
@@ -128,15 +145,15 @@ function createEmployeeCard(employee) {
     phone.textContent =
         employee.phone;
 
-    const status =
+    const badge =
         document.createElement('span');
 
-    status.className =
+    badge.className =
         employee.isActive
             ? 'badge text-bg-success mb-3'
             : 'badge text-bg-danger mb-3';
 
-    status.textContent =
+    badge.textContent =
         employee.isActive
             ? 'Actif'
             : 'Désactivé';
@@ -166,10 +183,20 @@ function createEmployeeCard(employee) {
                         employee.id
                     );
 
+                    showAlert(
+                        'Employé désactivé.',
+                        'success'
+                    );
+
                 } else {
 
                     await restoreEmployee(
                         employee.id
+                    );
+
+                    showAlert(
+                        'Employé réactivé.',
+                        'success'
                     );
 
                 }
@@ -178,10 +205,9 @@ function createEmployeeCard(employee) {
 
             } catch (error) {
 
-                console.error(error);
-
-                alert(
-                    'Une erreur est survenue.'
+                showAlert(
+                    error.message,
+                    'danger'
                 );
 
             }
@@ -193,7 +219,7 @@ function createEmployeeCard(employee) {
         title,
         email,
         phone,
-        status,
+        badge,
         button
     );
 
@@ -202,5 +228,111 @@ function createEmployeeCard(employee) {
     column.append(card);
 
     return column;
+
+}
+
+/**
+ * Affiche une alerte Bootstrap.
+ */
+function showAlert(
+    message,
+    type
+) {
+
+    const alert =
+        document.getElementById(
+            'employee-alert'
+        );
+
+    alert.className =
+        `alert alert-${type}`;
+
+    alert.textContent =
+        message;
+
+    setTimeout(
+        () => {
+
+            alert.className =
+                'alert d-none';
+
+        },
+        4000
+    );
+
+}
+
+/**
+ * Gère la création d'un employé.
+ */
+async function handleEmployeeCreation(event) {
+
+    event.preventDefault();
+
+    const form =
+        event.currentTarget;
+
+    const employee = {
+        firstName: form.firstName.value.trim(),
+        lastName: form.lastName.value.trim(),
+        email: form.email.value.trim(),
+        password: form.password.value,
+        phone: form.phone.value.trim(),
+        street: form.street.value.trim(),
+        postalCode: form.postalCode.value.trim(),
+        city: form.city.value.trim()
+    };
+
+    if (
+        Object.values(employee)
+            .some(value => value === '')
+    ) {
+
+        showAlert(
+            'Tous les champs sont obligatoires.',
+            'danger'
+        );
+
+        return;
+
+    }
+
+    const button =
+        document.getElementById(
+            'save-employee-button'
+        );
+
+    button.disabled = true;
+    button.textContent = 'Création...';
+
+    try {
+
+        await createEmployee(employee);
+
+        employeeModal.hide();
+
+        form.reset();
+
+        showAlert(
+            'Employé créé avec succès.',
+            'success'
+        );
+
+        await loadEmployees();
+
+    } catch (error) {
+
+        showAlert(
+            error.message,
+            'danger'
+        );
+
+    } finally {
+
+        button.disabled = false;
+        button.textContent =
+            'Créer l\'employé';
+
+    }
 
 }

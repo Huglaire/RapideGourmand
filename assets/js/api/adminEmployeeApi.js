@@ -18,15 +18,49 @@ export async function getEmployees() {
 
     }
 
+    const data = await response.json();
+
     if (!response.ok) {
 
         throw new Error(
+            data.message ??
             'Impossible de récupérer les employés.'
         );
 
     }
 
-    return response.json();
+    return data;
+
+}
+
+/**
+ * Crée un nouvel employé.
+ */
+export async function createEmployee(employee) {
+
+    const response = await apiFetch(
+        '/api/admin/employees',
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(employee)
+        }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+
+        throw new Error(
+            data.message ??
+            'Impossible de créer le compte employé.'
+        );
+
+    }
+
+    return data;
 
 }
 
@@ -42,15 +76,18 @@ export async function disableEmployee(id) {
         }
     );
 
+    const data = await response.json();
+
     if (!response.ok) {
 
         throw new Error(
+            data.message ??
             'Impossible de désactiver cet employé.'
         );
 
     }
 
-    return response.json();
+    return data;
 
 }
 
@@ -66,14 +103,17 @@ export async function restoreEmployee(id) {
         }
     );
 
+    const data = await response.json();
+
     if (!response.ok) {
 
         throw new Error(
+            data.message ??
             'Impossible de réactiver cet employé.'
         );
 
     }
 
-    return response.json();
+    return data;
 
 }
