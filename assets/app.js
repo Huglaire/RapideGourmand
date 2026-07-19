@@ -28,6 +28,7 @@ import './js/review/index.js';
 
 import './js/employee/orders.js';
 import './js/employee/show.js';
+import './js/employee/orderShow.js';
 
 import './js/admin/adminEmployees.js';
 import './js/admin/adminStatistics.js';

@@ -173,60 +173,37 @@ function createOrdersChart(statistics) {
     // Chart.js dessine automatiquement dans le <canvas>
     // à partir des données fournies.
     ordersChart = new Chart(context, {
-
         type: 'bar',
-
         data: {
-
             labels,
-
             datasets: [
                 {
                     label: 'Nombre de commandes',
                     data
                 }
             ]
-
         },
 
         // Les options permettent de personnaliser l'affichage
         // sans modifier les données.
         options: {
-
             responsive: true,
-
             maintainAspectRatio: false,
-
             plugins: {
-
                 legend: {
-
                     display: false
-
                 }
-
             },
-
             scales: {
-
                 y: {
-
                     beginAtZero: true,
-
                     ticks: {
-
                         precision: 0
-
                     }
-
                 }
-
             }
-
         }
-
     });
-
 }
 
 /**

@@ -71,14 +71,14 @@ class StatisticsQueryService
             // Filtre à partir d'une date de début
             if ($start !== null) {
                 $match
-                    ->field('deliveryDate')
+                    ->field('createdAt')
                     ->gte($start);
             }
 
             // Filtre jusqu'à une date de fin
             if ($end !== null) {
                 $match
-                    ->field('deliveryDate')
+                    ->field('createdAt')
                     ->lte($end);
             }
         }
