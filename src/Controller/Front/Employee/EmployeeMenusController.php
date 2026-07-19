@@ -5,7 +5,6 @@ namespace App\Controller\Front\Employee;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/employe/menus')]
 class EmployeeMenusController extends AbstractController
@@ -13,6 +12,14 @@ class EmployeeMenusController extends AbstractController
     #[Route('', name: 'employee_menus', methods: ['GET'])]
     public function index(): Response
     {
-        return $this->render('employee/menu/index.html.twig');
+        return $this->render('employee/menu/menus.html.twig');
+    }
+
+    #[Route('/{id}/modifier', name: 'employee_menu_edit', methods: ['GET'])]
+    public function edit(int $id): Response
+    {
+        return $this->render('employee/menu/edit.html.twig', [
+            'menuId' => $id
+        ]);
     }
 }

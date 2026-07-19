@@ -18,6 +18,11 @@ document.addEventListener(
     init
 );
 
+document.addEventListener(
+    'turbo:load',
+    init
+);
+
 /**
  * Point d'entrée de la page.
  * Cette fonction est appelée automatiquement lorsque
@@ -27,6 +32,12 @@ document.addEventListener(
  * pour construire l'interface.
  */
 async function init() {
+
+    if (!document.getElementById('menu-select')) {
+
+        return;
+
+    }
 
     try {
 

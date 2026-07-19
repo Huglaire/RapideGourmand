@@ -28,7 +28,8 @@ import './js/review/index.js';
 
 import './js/employee/orders.js';
 import './js/employee/show.js';
-import './js/employee/orderShow.js';
+import './js/employee/menus.js';
+import './js/employee/menuEdit.js';
 
 import './js/admin/adminEmployees.js';
 import './js/admin/adminStatistics.js';

@@ -5,6 +5,11 @@ document.addEventListener(
     initOrdersPage
 );
 
+document.addEventListener(
+    'turbo:load',
+    initOrdersPage
+);
+
 /**
  * Initialise la page.
  */

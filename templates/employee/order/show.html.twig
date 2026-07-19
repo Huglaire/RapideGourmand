@@ -6,35 +6,17 @@ Commande
 
 {% block body %}
 
-<div class="container py-5">
+<div
+    class="container py-5"
+    id="employee-order-page"
+    data-order-id="{{ app.request.attributes.get('id') }}"
+>
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-4">
+        Détail de la commande
+    </h1>
 
-        <h1>
-            Détail de la commande
-        </h1>
-
-        <a
-            href="/employe/commandes"
-            class="btn btn-outline-secondary"
-        >
-            Retour
-        </a>
-
-    </div>
-
-    <div
-        id="order-details"
-        class="card shadow-sm"
-    >
-
-        <div class="card-body">
-
-            Chargement...
-
-        </div>
-
-    </div>
+    <div id="order-details"></div>
 
 </div>
 

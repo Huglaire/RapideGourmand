@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des menus | Rapide & Gourmand{% endblock %}
+
+{% block body %}
+
+<div
+    class="container py-5"
+    id="employee-menus-page"
+>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h1 class="mb-1">
+                Gestion des menus
+            </h1>
+
+            <p class="text-muted mb-0">
+                Créer, modifier ou désactiver les menus.
+            </p>
+
+        </div>
+
+        <button
+            id="create-menu-button"
+            class="btn btn-danger"
+        >
+            Nouveau menu
+        </button>
+
+    </div>
+
+    <div class="table-responsive">
+
+        <table class="table table-striped align-middle">
+
+            <thead>
+
+                <tr>
+
+                    <th>Titre</th>
+                    <th>Prix</th>
+                    <th>Stock</th>
+                    <th>Disponible</th>
+                    <th class="text-end">Actions</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="menus-table-body">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

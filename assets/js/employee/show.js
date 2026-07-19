@@ -10,6 +10,10 @@ document.addEventListener(
     initOrderPage
 );
 
+document.addEventListener(
+    'turbo:load',
+    initOrderPage
+);
 /**
  * Initialise la page de détail d'une commande.
  */
