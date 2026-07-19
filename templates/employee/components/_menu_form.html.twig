@@ -1,120 +1,105 @@
 <form id="menu-form">
 
-    <div class="mb-3">
-        <label
-            for="title"
-            class="form-label"
-        >
-            Titre
-        </label>
+	<div class="mb-3">
 
-        <input
-            type="text"
-            id="title"
-            class="form-control"
-            required
-        >
-    </div>
+		<label for="title" class="form-label">
+			Titre
+		</label>
 
-    <div class="mb-3">
-        <label
-            for="description"
-            class="form-label"
-        >
-            Description
-        </label>
+		<input type="text" id="title" class="form-control" required>
 
-        <textarea
-            id="description"
-            class="form-control"
-            rows="4"
-        ></textarea>
-    </div>
+	</div>
 
-    <div class="row">
+	<div class="mb-3">
 
-        <div class="col-md-4 mb-3">
+		<label for="description" class="form-label">
+			Description
+		</label>
 
-            <label
-                for="minimumGuestNumber"
-                class="form-label"
-            >
-                Nombre minimum de personnes
-            </label>
+		<textarea id="description" class="form-control" rows="4"></textarea>
 
-            <input
-                type="number"
-                id="minimumGuestNumber"
-                class="form-control"
-                min="1"
-                required
-            >
+	</div>
 
-        </div>
+	<div class="row">
 
-        <div class="col-md-4 mb-3">
+		<div class="col-md-4 mb-3">
 
-            <label
-                for="price"
-                class="form-label"
-            >
-                Prix
-            </label>
+			<label for="minimumGuestNumber" class="form-label">
+				Nombre minimum de personnes
+			</label>
 
-            <input
-                type="number"
-                id="price"
-                class="form-control"
-                step="0.01"
-                min="0"
-                required
-            >
+			<input type="number" id="minimumGuestNumber" class="form-control" min="1" required>
 
-        </div>
+		</div>
 
-        <div class="col-md-4 mb-3">
+		<div class="col-md-4 mb-3">
 
-            <label
-                for="stock"
-                class="form-label"
-            >
-                Stock
-            </label>
+			<label for="price" class="form-label">
+				Prix
+			</label>
 
-            <input
-                type="number"
-                id="stock"
-                class="form-control"
-                min="0"
-                required
-            >
+			<input type="number" id="price" class="form-control" step="0.01" min="0" required>
 
-        </div>
+		</div>
 
-    </div>
+		<div class="col-md-4 mb-3">
 
-    <div class="mb-4">
+			<label for="stock" class="form-label">
+				Stock
+			</label>
 
-        <label
-            for="conditions"
-            class="form-label"
-        >
-            Conditions
-        </label>
+			<input type="number" id="stock" class="form-control" min="0" required>
 
-        <textarea
-            id="conditions"
-            class="form-control"
-            rows="3"
-        ></textarea>
+		</div>
 
-    </div>
+	</div>
 
-    <button
-        type="submit"
-        class="btn btn-primary"
-    >
-        Enregistrer
-    </button>
+	<div class="mb-4">
+
+		<label for="conditions" class="form-label">
+			Conditions
+		</label>
+
+		<textarea id="conditions" class="form-control" rows="3"></textarea>
+
+	</div>
+
+	{# Thèmes du menu #}
+	<div class="mb-4">
+
+		<label class="form-label">
+			Thèmes
+		</label>
+
+		<div id="themes" class="d-flex flex-column gap-2"></div>
+
+		{# Régimes alimentaires #}
+		<div class="mb-4">
+
+			<label class="form-label">
+				Régimes alimentaires
+			</label>
+
+			<div id="diets" class="d-flex flex-column gap-2"></div>
+
+		</div>
+
+		{# Plats #}
+		<div class="mb-4">
+
+			<label class="form-label">
+				Plats
+			</label>
+
+			<div id="dishes" class="d-flex flex-column gap-2"></div>
+
+		</div>
+
+
+	</div>
+
+	<button type="submit" class="btn btn-primary">
+		Enregistrer
+	</button>
 
 </form>
