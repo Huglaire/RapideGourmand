@@ -1,0 +1,25 @@
+{% extends 'employee/base.html.twig' %}
+
+{% block title %}
+Créer un menu
+{% endblock %}
+
+{% block body %}
+
+<div class="container py-4">
+
+    <h1 class="mb-4">
+        Créer un menu
+    </h1>
+
+    {% include 'employee/components/_menu_form.html.twig' %}
+
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    {{ importmap('menuCreate') }}
+{% endblock %}

@@ -1,0 +1,138 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un plat | Rapide & Gourmand{% endblock %}
+
+{% block body %}
+
+<div
+    class="container py-5"
+    id="dish-form-page"
+    data-mode="create"
+>
+
+    <div class="mb-4">
+
+        <h1 class="mb-1">
+            Créer un plat
+        </h1>
+
+        <p class="text-muted mb-0">
+            Complétez les informations du plat.
+        </p>
+
+    </div>
+
+    <form id="dish-form">
+
+        <div class="mb-3">
+
+            <label
+                for="dish-title"
+                class="form-label"
+            >
+                Nom du plat
+            </label>
+
+            <input
+                id="dish-title"
+                class="form-control"
+                type="text"
+                required
+            >
+
+        </div>
+
+        <div class="mb-3">
+
+            <label
+                for="dish-description"
+                class="form-label"
+            >
+                Description
+            </label>
+
+            <textarea
+                id="dish-description"
+                class="form-control"
+                rows="4"
+            ></textarea>
+
+        </div>
+
+        <div class="mb-3">
+
+            <label
+                for="dish-price"
+                class="form-label"
+            >
+                Prix
+            </label>
+
+            <input
+                id="dish-price"
+                class="form-control"
+                type="number"
+                step="0.01"
+                min="0"
+                required
+            >
+
+        </div>
+
+        <div class="mb-3">
+
+            <label
+                for="dish-pictures"
+                class="form-label"
+            >
+                Images
+            </label>
+
+            <select
+                id="dish-pictures"
+                class="form-select"
+                multiple
+            ></select>
+
+        </div>
+
+        <div class="mb-4">
+
+            <label
+                for="dish-allergens"
+                class="form-label"
+            >
+                Allergènes
+            </label>
+
+            <select
+                id="dish-allergens"
+                class="form-select"
+                multiple
+            ></select>
+
+        </div>
+
+        <div class="d-flex gap-2">
+
+            <button
+                type="submit"
+                class="btn btn-danger"
+            >
+                Enregistrer
+            </button>
+
+            <a
+                href="{{ path('employee_dishes') }}"
+                class="btn btn-outline-secondary"
+            >
+                Annuler
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

@@ -17,9 +17,11 @@ export async function getMenus() {
             data.message ??
             'Impossible de récupérer les menus.'
         );
+
     }
 
     return data;
+
 }
 
 /**
@@ -38,6 +40,7 @@ export async function getOrdersPerMenu() {
         window.location.href = '/signin';
 
         return [];
+
     }
 
     const data = await response.json();
@@ -48,9 +51,11 @@ export async function getOrdersPerMenu() {
             data.message ??
             'Impossible de récupérer les statistiques.'
         );
+
     }
 
     return data;
+
 }
 
 /**
@@ -65,15 +70,30 @@ export async function getRevenue(
     const params = new URLSearchParams();
 
     if (menuId) {
-        params.append('menuId', menuId);
+
+        params.append(
+            'menuId',
+            menuId
+        );
+
     }
 
     if (start) {
-        params.append('start', start);
+
+        params.append(
+            'start',
+            start
+        );
+
     }
 
     if (end) {
-        params.append('end', end);
+
+        params.append(
+            'end',
+            end
+        );
+
     }
 
     const response = await apiFetch(
@@ -87,6 +107,7 @@ export async function getRevenue(
         window.location.href = '/signin';
 
         return [];
+
     }
 
     const data = await response.json();
@@ -95,9 +116,11 @@ export async function getRevenue(
 
         throw new Error(
             data.message ??
-            'Impossible de récupérer le chiffre d’affaires.'
+            "Impossible de récupérer le chiffre d'affaires."
         );
+
     }
 
     return data;
+
 }
