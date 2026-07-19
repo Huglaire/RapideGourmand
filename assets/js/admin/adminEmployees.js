@@ -11,19 +11,31 @@ document.addEventListener(
     'DOMContentLoaded',
     async () => {
 
-        employeeModal =
-            new bootstrap.Modal(
-                document.getElementById(
-                    'employeeModal'
-                )
+        const modal =
+            document.getElementById(
+                'employeeModal'
             );
 
-        document
-            .getElementById('employee-form')
-            .addEventListener(
+        if (!modal) {
+            return;
+        }
+
+        employeeModal =
+            new bootstrap.Modal(modal);
+
+        const employeeForm =
+            document.getElementById(
+                'employee-form'
+            );
+
+        if (employeeForm) {
+
+            employeeForm.addEventListener(
                 'submit',
                 handleEmployeeCreation
             );
+
+        }
 
         await loadEmployees();
 
@@ -243,6 +255,10 @@ function showAlert(
         document.getElementById(
             'employee-alert'
         );
+
+    if (!alert) {
+        return;
+    }
 
     alert.className =
         `alert alert-${type}`;
