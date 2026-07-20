@@ -13,6 +13,6 @@ class EmployeeDashboardController extends AbstractController
     #[Route('', name: 'employee_dashboard', methods: ['GET'])]
     public function index(): Response
     {
-        return $this->render('employee/dashboard/index.html.twig');
+        return $this->render('employee/dashboard/dashboard.html.twig');
     }
 }
