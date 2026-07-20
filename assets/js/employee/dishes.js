@@ -40,6 +40,20 @@ async function initDishesPage() {
 
     initialized = true;
 
+    const createButton = document.getElementById(
+        'create-dish-button'
+    );
+
+    createButton.addEventListener(
+        'click',
+        () => {
+
+            window.location.href =
+                '/employe/plats/creer';
+
+        }
+    );
+
     await loadDishes();
 
 }
