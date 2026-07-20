@@ -15,6 +15,7 @@ import './js/menu/show.js';
 
 import './js/auth/signin.js';
 import './js/auth/navbar.js';
+import './js/auth/signup.js';
 
 import './js/api/client.js';
 

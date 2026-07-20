@@ -40,4 +40,10 @@ final class SecurityController extends AbstractController
 
         return $this->render('security/signin.html.twig');
     }
+
+    #[Route('/signup', name: 'app_signup', methods: ['GET'])]
+    public function signup(): Response
+    {
+        return $this->render('security/signup.html.twig');
+    }
 }

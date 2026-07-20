@@ -1,7 +1,13 @@
-// Gestion de la soumission du formulaire de connexion
-const form = document.getElementById('signin-form');
+// Initialisation du formulaire de connexion
+function initializeSigninForm() {
 
-if (form) {
+    const form = document.getElementById('signin-form');
+
+    if (!form || form.dataset.initialized) {
+        return;
+    }
+
+    form.dataset.initialized = 'true';
 
     form.addEventListener('submit', async (event) => {
 
@@ -19,7 +25,6 @@ if (form) {
 
         try {
 
-            // Envoi des identifiants à l'API
             const response = await fetch('/api/login_check', {
 
                 method: 'POST',
@@ -37,7 +42,6 @@ if (form) {
 
             const data = await response.json();
 
-            // Affichage d'une erreur si l'authentification échoue
             if (!response.ok) {
 
                 throw new Error(
@@ -46,13 +50,11 @@ if (form) {
 
             }
 
-            // Conservation du jeton JWT pour les futurs appels API
             localStorage.setItem(
                 'jwt',
                 data.token
             );
 
-            // Redirection après une connexion réussie
             window.location.href = '/';
 
         } catch (exception) {
@@ -65,3 +67,9 @@ if (form) {
     });
 
 }
+
+// Chargement classique
+document.addEventListener('DOMContentLoaded', initializeSigninForm);
+
+// Chargement après une navigation Turbo
+document.addEventListener('turbo:load', initializeSigninForm);
