@@ -1,15 +1,27 @@
 <article class="menu-card">
 
 	<div class="menu-card__image">
-		<img src="https://placehold.co/300x180" alt="{{ menu.title }}">
+
+		{% if menu.pictures|length > 0 %}
+
+			<img src="{{ asset(menu.pictures|first.path) }}" alt="{{ menu.pictures|first.alt ?? menu.title }}">
+
+		{% else %}
+
+			<img src="https://placehold.co/300x180" alt="{{ menu.title }}">
+
+		{% endif %}
+
 	</div>
 
 	<div class="menu-card__content">
 
 		<div class="menu-card__header">
+
 			<h2>{{ menu.title }}</h2>
 
 			<p>{{ menu.description }}</p>
+
 		</div>
 
 		<div class="menu-card__infos">
@@ -37,12 +49,24 @@
 
 	<div class="menu-card__aside">
 
-		<p>Thème : À venir</p>
+		{% if menu.theme|length > 0 %}
 
-		<button type="button">
+			<p>
+
+				Thème :
+
+				{% for theme in menu.theme %}
+					{{ theme.title }}
+					{% if not loop.last %},
+					{% endif %}
+				{% endfor %}
+
+			</p>
+
+		{% endif %}
+
+		<a href="{{ path('menu_show', { id: menu.id }) }}" class="btn-primary-custom">
 			Voir les détails
-		</button>
+		</a>
 
-	</div>
-
-</article>
+</div></article>

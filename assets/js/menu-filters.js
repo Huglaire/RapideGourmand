@@ -1,41 +1,97 @@
-document.addEventListener("DOMContentLoaded", () => {
+/**
+ * Initialise les curseurs de filtres.
+ */
+function initMenuFilters() {
+
+    console.log("initMenuFilters");
 
     document.querySelectorAll(".range-filter").forEach((filter) => {
 
-        const range = filter.querySelector('input[type="range"]');
-        const output = filter.querySelector(".range-output");
+        const range =
+            filter.querySelector('input[type="range"]');
 
-        if (!range || !output) {
+        const output =
+            filter.querySelector(".range-output");
+
+        if (
+            !range ||
+            !output
+        ) {
             return;
         }
 
-        const suffix = output.textContent.includes("€") ? " €" : "";
+        // Évite d'initialiser plusieurs fois le même curseur.
+        if (range.dataset.initialized === 'true') {
+            return;
+        }
+
+        range.dataset.initialized = 'true';
+
+        const suffix =
+            output.textContent.includes("€")
+                ? " €"
+                : "";
 
         const updateOutput = () => {
 
-            const value = Number(range.value);
-            const min = Number(range.min);
-            const max = Number(range.max);
+            console.log("update", range.value);
 
-            output.textContent = `${value}${suffix}`;
+            const value =
+                Number(range.value);
 
-            const percent = (value - min) / (max - min);
+            const min =
+                Number(range.min);
 
-            const rangeWidth = range.offsetWidth;
-            const thumbWidth = 18;
+            const max =
+                Number(range.max);
 
-            const x = percent * (rangeWidth - thumbWidth) + thumbWidth / 2;
+            output.textContent =
+                `${value}${suffix}`;
 
-            output.style.left = `${x}px`;
+            const percent =
+                (value - min) /
+                (max - min);
+
+            const rangeWidth =
+                range.offsetWidth;
+
+            const thumbWidth =
+                18;
+
+            const x =
+                percent *
+                (rangeWidth - thumbWidth) +
+                thumbWidth / 2;
+
+            output.style.left =
+                `${x}px`;
 
         };
 
         updateOutput();
 
-        range.addEventListener("input", updateOutput);
+        console.log("binding", range);
 
-        window.addEventListener("resize", updateOutput);
+        range.addEventListener(
+            "input",
+            updateOutput
+        );
+
+        window.addEventListener(
+            "resize",
+            updateOutput
+        );
 
     });
 
-});
+}
+
+document.addEventListener(
+    "DOMContentLoaded",
+    initMenuFilters
+);
+
+document.addEventListener(
+    "turbo:load",
+    initMenuFilters
+);

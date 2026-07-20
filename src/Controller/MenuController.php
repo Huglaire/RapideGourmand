@@ -62,6 +62,18 @@ final class MenuController extends AbstractController
                 ];
             }
 
+            $pictures = [];
+
+            foreach ($menu->getPictures() as $picture) {
+
+                $pictures[] = [
+                    'id' => $picture->getId(),
+                    'title' => $picture->getTitle(),
+                    'alt' => $picture->getAlt(),
+                    'path' => $picture->getPath()
+                ];
+            }
+
             $data[] = [
                 'id' => $menu->getId(),
                 'title' => $menu->getTitle(),
@@ -74,6 +86,7 @@ final class MenuController extends AbstractController
                 'createdAt' => $menu->getCreatedAt()?->format(DATE_ATOM),
                 'updatedAt' => $menu->getUpdatedAt()?->format(DATE_ATOM),
                 'themes' => $themes,
+                'pictures' => $pictures,
                 'diets' => $diets
             ];
         }
