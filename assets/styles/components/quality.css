@@ -30,13 +30,28 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 }
 
-/* Emplacement de l'icône */
+/* Cercle contenant l'icône */
 .quality-icon {
-    width: 80px;
-    height: 80px;
+    width: 5rem;
+    height: 5rem;
     margin: 0 auto 1.5rem;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
     border-radius: 50%;
     background-color: #d9d9d9;
+}
+
+.quality-icon i {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 2.75rem;
+    color: var(--color-success);
+    line-height: 1;
 }
 
 /* Titre de la carte */
