@@ -10,6 +10,8 @@ import './stimulus_bootstrap.js';
 import './styles/app.css';
 import './styles/components/order.css';
 
+import './js/home/reviews.js';
+
 import './js/menu-filters.js';
 import './js/menu/show.js';
 

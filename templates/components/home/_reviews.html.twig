@@ -1,30 +1,34 @@
 <section class="reviews">
 
-    <div class="container">
+	<div class="container">
 
-        <h2 class="reviews-title">
-            Ils ont fait confiance à Rapide & Gourmand
-        </h2>
+		<h2 class="reviews-title">
+			Ils ont fait confiance à Rapide & Gourmand
+		</h2>
 
-        <div class="reviews-grid">
 
-            {% include 'components/review/_review_card.html.twig' with {
-                author: 'Emmett Brown',
-                content: 'J’ai voyagé dans de nombreuses époques, jamais la nourriture n’a été aussi bonne que lors de cet événement.'
-            } %}
+		<div
+			id="home-reviews-container"
+			class="reviews-grid"
+		>
+		</div>
 
-            {% include 'components/review/_review_card.html.twig' with {
-                author: 'Leonardo DiCaprio',
-                content: 'Merci à Rapide & Gourmand d’avoir égayé ma dernière soirée sur ce paquebot !'
-            } %}
 
-            {% include 'components/review/_review_card.html.twig' with {
-                author: 'Jules César',
-                content: 'Je pensais avoir vécu le top avec les orgies romaines. Rapide & Gourmand m’a prouvé que non !'
-            } %}
-
-        </div>
-
-    </div>
+	</div>
 
 </section>
+
+
+<template id="home-review-card-template">
+
+	<article class="review-card">
+
+		<h3 class="review-author"></h3>
+
+		<div class="review-stars"></div>
+
+		<p class="review-content"></p>
+
+	</article>
+
+</template>

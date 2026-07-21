@@ -489,4 +489,38 @@ final class ReviewController extends AbstractController
             'createdAt' => $review->getCreatedAt()?->format('Y-m-d H:i:s'),
         ]);
     }
+
+    #[Route('/api/reviews/home', name: 'app_review_home', methods: ['GET'])]
+    #[OA\Get(
+        path: '/api/reviews/home',
+        summary: 'Afficher quelques avis aléatoires pour la page d’accueil',
+        tags: ['Avis']
+    )]
+    public function home(ReviewRepository $reviewRepository): JsonResponse
+    {
+        $reviews = $reviewRepository->findBy(
+            ['status' => 'Validé']
+        );
+
+        shuffle($reviews);
+
+        $reviews = array_slice($reviews, 0, 3);
+
+        $data = [];
+
+        foreach ($reviews as $review) {
+
+            $data[] = [
+                'id' => $review->getId(),
+                'rating' => $review->getRating(),
+                'comment' => $review->getComment(),
+                'createdAt' => $review->getCreatedAt()?->format('Y-m-d H:i:s'),
+                'user' => [
+                    'firstName' => $review->getUser()->getFirstName(),
+                ],
+            ];
+        }
+
+        return $this->json($data);
+    }
 }
