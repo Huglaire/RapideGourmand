@@ -62,16 +62,22 @@ final class AdminController extends AbstractController
         EntityManagerInterface $entityManager,
         UserRepository $userRepository
     ): JsonResponse {
-        $data = json_decode($request->getContent(), true);
 
-        // Vérifie que le corps de la requête contient un JSON valide
+        $data = json_decode(
+            $request->getContent(),
+            true
+        );
+
+
         if (!is_array($data)) {
+
             return $this->json([
                 'message' => 'Le corps de la requête est invalide.'
             ], Response::HTTP_BAD_REQUEST);
+
         }
 
-        // Vérifie que tous les champs obligatoires sont renseignés
+
         $requiredFields = [
             'email',
             'password',
@@ -83,30 +89,42 @@ final class AdminController extends AbstractController
             'city'
         ];
 
+
         foreach ($requiredFields as $field) {
+
             if (empty($data[$field])) {
+
                 return $this->json([
                     'message' => 'Le champ "' . $field . '" est obligatoire.'
                 ], Response::HTTP_BAD_REQUEST);
+
             }
+
         }
 
-        // Vérifie que l'email n'est pas déjà utilisé
+
         if ($userRepository->findOneBy(['email' => $data['email']])) {
+
             return $this->json([
                 'message' => 'Cet email est déjà utilisé.'
             ], Response::HTTP_CONFLICT);
+
         }
 
-        // Crée le compte employé
+
         $employee = new User();
 
         $employee->setEmail($data['email']);
         $employee->setFirstName($data['firstName']);
         $employee->setLastName($data['lastName']);
+
         $employee->setPassword(
-            $passwordHasher->hashPassword($employee, $data['password'])
+            $passwordHasher->hashPassword(
+                $employee,
+                $data['password']
+            )
         );
+
         $employee->setPhone($data['phone']);
         $employee->setStreet($data['street']);
         $employee->setPostalCode($data['postalCode']);
@@ -114,8 +132,10 @@ final class AdminController extends AbstractController
         $employee->setRoles(['ROLE_EMPLOYEE']);
         $employee->setIsActive(true);
 
+
         $entityManager->persist($employee);
         $entityManager->flush();
+
 
         return $this->json([
             'message' => 'Compte employé créé avec succès.',
@@ -130,156 +150,111 @@ final class AdminController extends AbstractController
         ], Response::HTTP_CREATED);
     }
 
+
     #[Route('/api/admin/employees/{id}/disable', name: 'app_admin_disable_employee', methods: ['PATCH'])]
     #[IsGranted('ROLE_ADMIN')]
     #[OA\Patch(
         path: '/api/admin/employees/{id}/disable',
         summary: 'Désactiver un employé par ID',
         description: 'Désactive le compte d’un employé.',
-        tags: ['Administration'],
-        security: [['Bearer' => []]],
-        parameters: [
-            new OA\Parameter(
-                name: 'id',
-                in: 'path',
-                description: 'Identifiant de l’employé',
-                required: true,
-                schema: new OA\Schema(type: 'integer')
-            )
-        ],
-        responses: [
-            new OA\Response(response: 200, description: 'Compte employé désactivé avec succès.'),
-            new OA\Response(response: 400, description: 'Requête invalide.'),
-            new OA\Response(response: 403, description: 'Accès refusé.'),
-            new OA\Response(response: 404, description: 'Employé introuvable.')
-        ]
+        tags: ['Administration']
     )]
     public function disableEmployee(
         int $id,
         UserRepository $userRepository,
         EntityManagerInterface $entityManager
     ): JsonResponse {
-        // Vérifie que l'employé existe
+
         $employee = $userRepository->find($id);
 
+
         if (!$employee) {
+
             return $this->json([
                 'message' => 'Employé introuvable.'
             ], Response::HTTP_NOT_FOUND);
+
         }
 
-        // Vérifie que le compte est bien un employé
-        if (!in_array('ROLE_EMPLOYEE', $employee->getRoles())) {
-            return $this->json([
-                'message' => 'Ce compte ne correspond pas à un employé.'
-            ], Response::HTTP_BAD_REQUEST);
-        }
 
-        // Vérifie que le compte est encore actif
-        if (!$employee->isActive()) {
-            return $this->json([
-                'message' => 'Ce compte est déjà désactivé.'
-            ], Response::HTTP_BAD_REQUEST);
-        }
-
-        // Désactive le compte employé
         $employee->setIsActive(false);
-        $employee->setUpdatedAt(new \DateTimeImmutable());
+        $employee->setUpdatedAt(
+            new \DateTimeImmutable()
+        );
+
 
         $entityManager->flush();
 
+
         return $this->json([
-            'message' => 'Compte employé désactivé avec succès.',
-            'employee' => [
-                'id' => $employee->getId(),
-                'isActive' => $employee->isActive(),
-                'updatedAt' => $employee->getUpdatedAt()?->format('Y-m-d H:i:s')
-            ]
-        ], Response::HTTP_OK);
+            'message' => 'Compte employé désactivé avec succès.'
+        ]);
     }
+
 
     #[Route('/api/admin/employees/{id}/restore', name: 'app_admin_restore_employee', methods: ['PATCH'])]
     #[IsGranted('ROLE_ADMIN')]
     #[OA\Patch(
         path: '/api/admin/employees/{id}/restore',
         summary: 'Réactiver un employé par ID',
-        description: 'Réactive le compte d’un employé précédemment désactivé.',
-        tags: ['Administration'],
-        security: [['Bearer' => []]],
-        parameters: [
-            new OA\Parameter(
-                name: 'id',
-                in: 'path',
-                description: 'Identifiant de l’employé',
-                required: true,
-                schema: new OA\Schema(type: 'integer')
-            )
-        ],
-        responses: [
-            new OA\Response(response: 200, description: 'Compte employé réactivé avec succès.'),
-            new OA\Response(response: 400, description: 'Requête invalide.'),
-            new OA\Response(response: 403, description: 'Accès refusé.'),
-            new OA\Response(response: 404, description: 'Employé introuvable.')
-        ]
+        description: 'Réactive le compte d’un employé.',
+        tags: ['Administration']
     )]
     public function restoreEmployee(
         int $id,
         UserRepository $userRepository,
         EntityManagerInterface $entityManager
     ): JsonResponse {
-        // Vérifie que l'employé existe
+
         $employee = $userRepository->find($id);
 
+
         if (!$employee) {
+
             return $this->json([
                 'message' => 'Employé introuvable.'
             ], Response::HTTP_NOT_FOUND);
+
         }
 
-        // Vérifie que le compte est bien un employé
-        if (!in_array('ROLE_EMPLOYEE', $employee->getRoles())) {
-            return $this->json([
-                'message' => 'Ce compte ne correspond pas à un employé.'
-            ], Response::HTTP_BAD_REQUEST);
-        }
 
-        // Vérifie que le compte est désactivé
-        if ($employee->isActive()) {
-            return $this->json([
-                'message' => 'Ce compte est déjà actif.'
-            ], Response::HTTP_BAD_REQUEST);
-        }
-
-        // Réactive le compte employé
         $employee->setIsActive(true);
-        $employee->setUpdatedAt(new \DateTimeImmutable());
+        $employee->setUpdatedAt(
+            new \DateTimeImmutable()
+        );
+
 
         $entityManager->flush();
 
+
         return $this->json([
-            'message' => 'Compte employé réactivé avec succès.',
-            'employee' => [
-                'id' => $employee->getId(),
-                'isActive' => $employee->isActive(),
-                'updatedAt' => $employee->getUpdatedAt()?->format('Y-m-d H:i:s')
-            ]
-        ], Response::HTTP_OK);
+            'message' => 'Compte employé réactivé avec succès.'
+        ]);
     }
+
 
     #[Route('/api/admin/employees', name: 'app_admin_get_employees', methods: ['GET'])]
     #[IsGranted('ROLE_ADMIN')]
+    #[OA\Get(
+        path: '/api/admin/employees',
+        summary: 'Lister les employés',
+        tags: ['Administration']
+    )]
     public function getEmployees(
         UserRepository $userRepository
     ): JsonResponse {
-        $employees = $userRepository->findBy([]);
+
+        $employees = $userRepository->findAll();
 
         $data = [];
+
 
         foreach ($employees as $employee) {
 
             if (!in_array('ROLE_EMPLOYEE', $employee->getRoles())) {
                 continue;
             }
+
 
             $data[] = [
                 'id' => $employee->getId(),
@@ -289,7 +264,9 @@ final class AdminController extends AbstractController
                 'phone' => $employee->getPhone(),
                 'isActive' => $employee->isActive(),
             ];
+
         }
+
 
         return $this->json($data);
     }

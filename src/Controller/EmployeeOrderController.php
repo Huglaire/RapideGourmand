@@ -4,19 +4,25 @@ namespace App\Controller;
 
 use App\Entity\Order;
 use App\Repository\OrderRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\Response;
 
 #[Route('/api/employee/orders')]
 #[IsGranted('ROLE_EMPLOYEE')]
 final class EmployeeOrderController extends AbstractController
 {
     #[Route('', name: 'employee_orders_index', methods: ['GET'])]
+    #[OA\Get(
+        path: '/api/employee/orders',
+        summary: 'Lister les commandes',
+        tags: ['Commandes']
+    )]
     public function index(
         Request $request,
         OrderRepository $orderRepository
@@ -66,7 +72,13 @@ final class EmployeeOrderController extends AbstractController
         return $this->json($data);
     }
 
+
     #[Route('/{id}', name: 'api_employee_orders_show', methods: ['GET'])]
+    #[OA\Get(
+        path: '/api/employee/orders/{id}',
+        summary: 'Afficher le détail d’une commande',
+        tags: ['Commandes']
+    )]
     public function show(Order $order): JsonResponse
     {
         $menuTitle = null;
@@ -102,10 +114,13 @@ final class EmployeeOrderController extends AbstractController
         ]);
     }
 
-    /**
-     * Met à jour le statut d'une commande.
-     */
+
     #[Route('/{id}/status', name: 'api_employee_orders_update_status', methods: ['PATCH'])]
+    #[OA\Patch(
+        path: '/api/employee/orders/{id}/status',
+        summary: 'Mettre à jour le statut d’une commande',
+        tags: ['Commandes']
+    )]
     public function updateStatus(
         Request $request,
         Order $order,
@@ -149,13 +164,12 @@ final class EmployeeOrderController extends AbstractController
         ]);
     }
 
-    /**
-     * Annule une commande.
-     */
-    #[Route(
-        '/{id}/cancel',
-        name: 'api_employee_orders_cancel',
-        methods: ['PATCH']
+
+    #[Route('/{id}/cancel', name: 'api_employee_orders_cancel', methods: ['PATCH'])]
+    #[OA\Patch(
+        path: '/api/employee/orders/{id}/cancel',
+        summary: 'Annuler une commande',
+        tags: ['Commandes']
     )]
     public function cancel(
         Request $request,
@@ -163,16 +177,14 @@ final class EmployeeOrderController extends AbstractController
         EntityManagerInterface $entityManager
     ): JsonResponse {
 
-        $data =
-            json_decode(
-                $request->getContent(),
-                true
-            );
+        $data = json_decode(
+            $request->getContent(),
+            true
+        );
 
-        $reason =
-            trim(
-                $data['reason'] ?? ''
-            );
+        $reason = trim(
+            $data['reason'] ?? ''
+        );
 
         if ($reason === '') {
 
@@ -184,7 +196,6 @@ final class EmployeeOrderController extends AbstractController
             );
         }
 
-        // Enregistre les informations liées à l'annulation.
         $order->setStatus(
             Order::STATUS_CANCELLED
         );

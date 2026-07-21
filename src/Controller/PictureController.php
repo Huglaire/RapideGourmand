@@ -53,11 +53,17 @@ final class PictureController extends AbstractController
         return $this->json($data);
     }
 
+
     #[IsGranted(
         'ROLE_EMPLOYEE',
         message: 'Action réservée aux employés ou administrateurs.'
     )]
     #[Route('/api/pictures', name: 'app_picture_create', methods: ['POST'])]
+    #[OA\Post(
+        path: '/api/pictures',
+        summary: 'Ajouter une image',
+        tags: ['Images']
+    )]
     public function create(
         Request $request,
         EntityManagerInterface $entityManager,
@@ -80,10 +86,13 @@ final class PictureController extends AbstractController
             PATHINFO_FILENAME
         );
 
-        $extension = strtolower($file->getClientOriginalExtension());
+        $extension = strtolower(
+            $file->getClientOriginalExtension()
+        );
 
         $filename = $slugger->slug($title);
         $filename .= '-' . uniqid() . '.' . $extension;
+
 
         try {
 
@@ -92,14 +101,17 @@ final class PictureController extends AbstractController
                 $filename
             );
 
+
             $picture = new Picture();
 
             $picture->setTitle($title);
             $picture->setAlt('');
             $picture->setPath('/uploads/' . $filename);
 
+
             $entityManager->persist($picture);
             $entityManager->flush();
+
 
         } catch (\Throwable $e) {
 
@@ -110,6 +122,7 @@ final class PictureController extends AbstractController
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
 
         }
+
 
         return $this->json([
             'id' => $picture->getId(),
