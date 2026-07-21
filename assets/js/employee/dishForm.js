@@ -5,7 +5,8 @@ import {
 } from '../api/employeeDishApi.js';
 
 import {
-    getPictures
+    getPictures,
+    uploadPicture
 } from '../api/pictureApi.js';
 
 import {
@@ -26,6 +27,15 @@ if (page) {
     const priceInput = document.querySelector('#dish-price');
 
     const picturesSelect = document.querySelector('#dish-pictures');
+    const pictureUpload = document.querySelector('#dish-picture-upload');
+
+    const previewContainer = document.querySelector(
+        '#dish-picture-preview-container'
+    );
+
+    const previewImage = document.querySelector(
+        '#dish-picture-preview'
+    );
     const allergensSelect = document.querySelector('#dish-allergens');
 
     init();
@@ -37,6 +47,11 @@ if (page) {
 
         await loadPictures();
         await loadAllergens();
+
+        pictureUpload.addEventListener(
+            'change',
+            handlePictureUpload
+        );
 
         if (mode === 'edit') {
             await loadDish();
@@ -126,6 +141,42 @@ if (page) {
     }
 
     /**
+     * Upload d'une nouvelle image.
+     */
+    async function handlePictureUpload(event) {
+
+        const file = event.target.files[0];
+
+        if (!file) {
+            return;
+        }
+
+        previewImage.src = URL.createObjectURL(file);
+        previewContainer.classList.remove('d-none');
+
+        try {
+
+            const picture = await uploadPicture(file);
+
+            const option = document.createElement('option');
+
+            option.value = picture.id;
+            option.textContent = picture.title;
+            option.selected = true;
+
+            picturesSelect.appendChild(option);
+
+        } catch (error) {
+
+            console.error(error);
+            alert(error.message);
+
+        }
+
+    }
+
+
+    /**
      * Enregistre le plat.
      */
     form.addEventListener('submit', async (event) => {
@@ -146,6 +197,7 @@ if (page) {
 
         };
 
+        console.log(data);
         if (mode === 'create') {
 
             await createDish(data);

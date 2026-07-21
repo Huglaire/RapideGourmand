@@ -7,10 +7,13 @@ use App\Repository\PictureRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 final class PictureController extends AbstractController
 {
@@ -55,76 +58,64 @@ final class PictureController extends AbstractController
         message: 'Action réservée aux employés ou administrateurs.'
     )]
     #[Route('/api/pictures', name: 'app_picture_create', methods: ['POST'])]
-    #[OA\Post(
-        path: '/api/pictures',
-        summary: 'Créer une image',
-        description: 'Ajoute une nouvelle image.',
-        tags: ['Images'],
-        security: [['Bearer' => []]],
-        requestBody: new OA\RequestBody(
-            required: true,
-            content: new OA\JsonContent(
-                required: ['title', 'alt', 'path'],
-                properties: [
-                    new OA\Property(
-                        property: 'title',
-                        type: 'string',
-                        example: 'Buffet Prestige'
-                    ),
-                    new OA\Property(
-                        property: 'alt',
-                        type: 'string',
-                        example: 'Photo du buffet prestige'
-                    ),
-                    new OA\Property(
-                        property: 'path',
-                        type: 'string',
-                        example: '/public/images/menus/AssiettesMains.jpg'
-                    )
-                ]
-            )
-        ),
-        responses: [
-            new OA\Response(
-                response: 201,
-                description: 'Image créée avec succès.'
-            ),
-            new OA\Response(
-                response: 400,
-                description: 'Les champs obligatoires sont manquants.'
-            )
-        ]
-    )]
     public function create(
         Request $request,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        SluggerInterface $slugger
     ): JsonResponse {
 
-        $data = json_decode($request->getContent(), true);
+        /** @var UploadedFile|null $file */
+        $file = $request->files->get('file');
 
-        if (
-            empty($data['title']) ||
-            empty($data['alt']) ||
-            empty($data['path'])
-        ) {
+        if (!$file) {
 
             return $this->json([
-                'message' => 'Les champs obligatoires sont manquants.'
-            ], 400);
+                'message' => 'Le fichier est obligatoire.'
+            ], Response::HTTP_BAD_REQUEST);
+
         }
 
-        $picture = new Picture();
+        $title = pathinfo(
+            $file->getClientOriginalName(),
+            PATHINFO_FILENAME
+        );
 
-        $picture->setTitle($data['title']);
-        $picture->setAlt($data['alt']);
-        $picture->setPath($data['path']);
+        $extension = strtolower($file->getClientOriginalExtension());
 
-        $entityManager->persist($picture);
-        $entityManager->flush();
+        $filename = $slugger->slug($title);
+        $filename .= '-' . uniqid() . '.' . $extension;
+
+        try {
+
+            $file->move(
+                $this->getParameter('kernel.project_dir') . '/public/uploads',
+                $filename
+            );
+
+            $picture = new Picture();
+
+            $picture->setTitle($title);
+            $picture->setAlt('');
+            $picture->setPath('/uploads/' . $filename);
+
+            $entityManager->persist($picture);
+            $entityManager->flush();
+
+        } catch (\Throwable $e) {
+
+            return $this->json([
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+
+        }
 
         return $this->json([
-            'message' => 'Image créée avec succès.',
-            'id' => $picture->getId()
-        ], 201);
+            'id' => $picture->getId(),
+            'title' => $picture->getTitle(),
+            'alt' => $picture->getAlt(),
+            'path' => $picture->getPath()
+        ], Response::HTTP_CREATED);
     }
 }

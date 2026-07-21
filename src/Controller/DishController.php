@@ -174,6 +174,9 @@ final class DishController extends AbstractController
             $picture = $pictureRepository->find($pictureId);
 
             if ($picture !== null) {
+
+                $picture->setAlt($dish->getDescription() ?? '');
+
                 $dish->addPicture($picture);
             }
         }
