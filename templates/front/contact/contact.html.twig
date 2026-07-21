@@ -1,0 +1,105 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Contact
+{% endblock %}
+
+{% block body %}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8">
+
+            <h1 class="mb-4 text-center">
+                Contactez-nous
+            </h1>
+
+            <p class="text-center text-muted mb-5">
+                Une question, une remarque ou une demande particulière ?
+                Remplissez le formulaire ci-dessous et nous vous répondrons
+                dans les meilleurs délais.
+            </p>
+
+            {% for message in app.flashes('success') %}
+
+                <div class="alert alert-success">
+
+                    {{ message }}
+
+                </div>
+
+            {% endfor %}
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body p-4">
+
+                    {{ form_start(form) }}
+
+                        <div class="mb-3">
+
+                            {{ form_label(form.title) }}
+
+                            {{ form_widget(form.title, {
+                                attr: {
+                                    class: 'form-control'
+                                }
+                            }) }}
+
+                            {{ form_errors(form.title) }}
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            {{ form_label(form.email) }}
+
+                            {{ form_widget(form.email, {
+                                attr: {
+                                    class: 'form-control'
+                                }
+                            }) }}
+
+                            {{ form_errors(form.email) }}
+
+                        </div>
+
+                        <div class="mb-4">
+
+                            {{ form_label(form.description) }}
+
+                            {{ form_widget(form.description, {
+                                attr: {
+                                    class: 'form-control'
+                                }
+                            }) }}
+
+                            {{ form_errors(form.description) }}
+
+                        </div>
+
+                        <div class="text-end">
+
+                            {{ form_widget(form.submit, {
+                                attr: {
+                                    class: 'btn btn-primary-custom'
+                                }
+                            }) }}
+
+                        </div>
+
+                    {{ form_end(form) }}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
