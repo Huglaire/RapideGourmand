@@ -22,9 +22,9 @@
 
         <div class="col-md-6 col-lg-4">
 
-            <div class="card h-100 shadow-sm text-muted">
+            <div class="card h-100 shadow-sm">
 
-                <div class="card-body text-center">
+                <div class="card-body text-center d-flex flex-column">
 
                     <i class="bi bi-hourglass-split display-4 text-danger mb-3"></i>
 
@@ -32,9 +32,13 @@
                         Avis à modérer
                     </h3>
 
-                    <p class="mb-0">
-                        Fonctionnalité à venir.
+                    <p class="text-muted flex-grow-1">
+                        Consulter les avis en attente de validation.
                     </p>
+
+                    <a href="{{ path('employee_reviews_pending') }}" class="btn btn-danger">
+                        Accéder
+                    </a>
 
                 </div>
 
@@ -44,9 +48,9 @@
 
         <div class="col-md-6 col-lg-4">
 
-            <div class="card h-100 shadow-sm text-muted">
+            <div class="card h-100 shadow-sm">
 
-                <div class="card-body text-center">
+                <div class="card-body text-center d-flex flex-column">
 
                     <i class="bi bi-check-circle display-4 text-danger mb-3"></i>
 
@@ -54,9 +58,13 @@
                         Avis validés
                     </h3>
 
-                    <p class="mb-0">
-                        Fonctionnalité à venir.
+                    <p class="text-muted flex-grow-1">
+                        Consulter les avis validés.
                     </p>
+
+                    <a href="{{ path('employee_reviews_approved') }}" class="btn btn-danger">
+                        Accéder
+                    </a>
 
                 </div>
 
@@ -66,9 +74,9 @@
 
         <div class="col-md-6 col-lg-4">
 
-            <div class="card h-100 shadow-sm text-muted">
+            <div class="card h-100 shadow-sm">
 
-                <div class="card-body text-center">
+                <div class="card-body text-center d-flex flex-column">
 
                     <i class="bi bi-x-circle display-4 text-danger mb-3"></i>
 
@@ -76,9 +84,13 @@
                         Avis refusés
                     </h3>
 
-                    <p class="mb-0">
-                        Fonctionnalité à venir.
+                    <p class="text-muted flex-grow-1">
+                        Consulter les avis refusés.
                     </p>
+
+                    <a href="{{ path('employee_reviews_rejected') }}" class="btn btn-danger">
+                        Accéder
+                    </a>
 
                 </div>
 
