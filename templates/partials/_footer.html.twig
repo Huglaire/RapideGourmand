@@ -6,6 +6,33 @@
             © {{ "now"|date("Y") }} Rapide & Gourmand
         </p>
 
+        <p class="mb-1">
+            {{ site_infos.address|default('') }}
+        </p>
+
+        <p class="mb-1">
+            📞 {{ site_infos.phone|default('') }}
+        </p>
+
+        <p class="mb-1">
+            ✉️
+            <a href="mailto:{{ site_infos.contact_email|default('') }}">
+                {{ site_infos.contact_email|default('') }}
+            </a>
+        </p>
+
+        <p class="mb-1">
+            {{ site_infos.opening_hours|default('') }}
+        </p>
+
+        <p class="mb-3">
+            <a
+                href="{{ path('terms_and_conditions') }}"
+            >
+                Conditions générales de vente
+            </a>
+        </p>
+
         <p class="mb-0">
             Tous droits réservés.
         </p>
