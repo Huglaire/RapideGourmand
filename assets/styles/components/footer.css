@@ -1,0 +1,12 @@
+footer {
+    background-color: #8B1E2D;
+    color: #fff;
+}
+
+footer a {
+    color: #fff;
+}
+
+footer a:hover {
+    color: #f5e6d3;
+}
