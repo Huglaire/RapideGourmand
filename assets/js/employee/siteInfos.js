@@ -1,81 +1,239 @@
-import { apiFetch } from '../api/client.js';
+import {
+    getSiteInfos,
+    updateSiteInfo
+} from '../api/employeeSiteInfosApi.js';
+
+let initialized = false;
+
+document.addEventListener(
+    'DOMContentLoaded',
+    initSiteInfosPage
+);
+
+document.addEventListener(
+    'turbo:load',
+    initSiteInfosPage
+);
 
 /**
- * Attend que toute la page soit chargée avant d'exécuter le script.
+ * Initialise la page.
  */
-document.addEventListener('DOMContentLoaded', async () => {
+async function initSiteInfosPage() {
 
-    // Conteneur qui accueillera les champs de saisie.
-    const container = document.getElementById('site-infos-container');
+    const container = document.getElementById(
+        'site-infos-container'
+    );
+
+    if (!container) {
+
+        initialized = false;
+
+        return;
+
+    }
+
+    if (initialized) {
+
+        return;
+
+    }
+
+    initialized = true;
+
+    registerEvents();
+
+    await loadSiteInfos();
+
+}
+
+/**
+ * Enregistre les événements.
+ */
+function registerEvents() {
+
+    const saveButton = document.getElementById(
+        'save-site-infos'
+    );
+
+    if (!saveButton) {
+
+        return;
+
+    }
+
+    saveButton.removeEventListener(
+        'click',
+        saveSiteInfos
+    );
+
+    saveButton.addEventListener(
+        'click',
+        saveSiteInfos
+    );
+
+}
+
+/**
+ * Charge les informations.
+ */
+async function loadSiteInfos() {
+
+    const container = document.getElementById(
+        'site-infos-container'
+    );
+
+    container.replaceChildren();
 
     try {
 
-        // Appelle l'API en ajoutant automatiquement le JWT.
-        const response = await apiFetch('/api/site-infos/employee');
+        const siteInfos =
+            await getSiteInfos();
 
-        if (!response.ok) {
-            throw new Error('Erreur lors du chargement des informations du site.');
-        }
-
-        // Convertit la réponse JSON en objet JavaScript.
-        const siteInfos = await response.json();
-
-        // Supprime le message "Chargement...".
-        container.innerHTML = '';
-
-        // Génère un bloc de saisie pour chaque information.
         siteInfos.forEach(siteInfo => {
 
-            container.insertAdjacentHTML('beforeend', `
-                <div class="mb-4">
-
-                    <label class="form-label fw-bold">
-                        ${formatLabel(siteInfo.identifier)}
-                    </label>
-
-                    <textarea
-                        class="form-control site-info-value"
-                        rows="3"
-                        data-id="${siteInfo.id}"
-                    >${siteInfo.value ?? ''}</textarea>
-
-                </div>
-            `);
+            container.appendChild(
+                createField(siteInfo)
+            );
 
         });
 
     } catch (error) {
 
-        // Affiche un message d'erreur si l'appel API échoue.
+        console.error(error);
+
         container.innerHTML = `
             <div class="alert alert-danger">
                 Impossible de charger les informations du site.
             </div>
         `;
 
+    }
+
+}
+
+/**
+ * Sauvegarde toutes les informations.
+ */
+async function saveSiteInfos() {
+
+    const button =
+        document.getElementById(
+            'save-site-infos'
+        );
+
+    button.disabled = true;
+
+    try {
+
+        const textareas =
+            document.querySelectorAll(
+                '.site-info-value'
+            );
+
+        for (const textarea of textareas) {
+
+            await updateSiteInfo(
+                textarea.dataset.id,
+                textarea.value
+            );
+
+        }
+
+        alert(
+            'Les informations ont été enregistrées.'
+        );
+
+    } catch (error) {
+
         console.error(error);
+
+        alert(
+            'Une erreur est survenue lors de la sauvegarde.'
+        );
+
+    } finally {
+
+        button.disabled = false;
 
     }
 
-});
+}
 
 /**
- * Associe les identifiants enregistrés en base
- * à un libellé compréhensible pour l'utilisateur.
- *
- * @param {string} identifier
- * @returns {string}
+ * Crée un champ d'édition.
+ */
+function createField(siteInfo) {
+
+    const wrapper =
+        document.createElement('div');
+
+    wrapper.classList.add(
+        'mb-4'
+    );
+
+    const label =
+        document.createElement('label');
+
+    label.classList.add(
+        'form-label',
+        'fw-bold'
+    );
+
+    label.textContent =
+        formatLabel(
+            siteInfo.identifier
+        );
+
+    const textarea =
+        document.createElement('textarea');
+
+    textarea.classList.add(
+        'form-control',
+        'site-info-value'
+    );
+
+    textarea.rows = 3;
+
+    textarea.dataset.id =
+        siteInfo.id;
+
+    textarea.value =
+        siteInfo.value ?? '';
+
+    wrapper.append(
+        label,
+        textarea
+    );
+
+    return wrapper;
+
+}
+
+/**
+ * Retourne le libellé à afficher.
  */
 function formatLabel(identifier) {
 
-    const labels = {
-        address: 'Adresse',
-        phone: 'Téléphone',
-        contact_email: 'Email de contact',
-        opening_hours: 'Horaires',
-        terms_and_conditions: 'Conditions générales de vente'
-    };
+    switch (identifier) {
 
-    return labels[identifier] ?? identifier;
+        case 'address':
+            return 'Adresse';
+
+        case 'phone':
+            return 'Téléphone';
+
+        case 'contact_email':
+            return 'Email de contact';
+
+        case 'opening_hours':
+            return 'Horaires';
+
+        case 'terms_and_conditions':
+            return 'Conditions générales de vente';
+
+        default:
+            return identifier;
+
+    }
 
 }
