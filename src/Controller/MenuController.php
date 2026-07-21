@@ -42,6 +42,24 @@ final class MenuController extends AbstractController
 
         foreach ($menus as $menu) {
 
+            // Recherche la première image des plats du menu.
+            $coverPicture = null;
+
+            foreach ($menu->getDishes() as $dish) {
+
+                foreach ($dish->getPictures() as $picture) {
+
+                    $coverPicture = [
+                        'id' => $picture->getId(),
+                        'path' => $picture->getPath(),
+                        'alt' => $picture->getAlt()
+                    ];
+
+                    break 2;
+                }
+            }
+
+            // Prépare les thèmes.
             $themes = [];
 
             foreach ($menu->getTheme() as $theme) {
@@ -52,6 +70,7 @@ final class MenuController extends AbstractController
                 ];
             }
 
+            // Prépare les régimes.
             $diets = [];
 
             foreach ($menu->getDiets() as $diet) {
@@ -62,6 +81,7 @@ final class MenuController extends AbstractController
                 ];
             }
 
+            // Prépare les images directement associées au menu.
             $pictures = [];
 
             foreach ($menu->getPictures() as $picture) {
@@ -86,8 +106,9 @@ final class MenuController extends AbstractController
                 'createdAt' => $menu->getCreatedAt()?->format(DATE_ATOM),
                 'updatedAt' => $menu->getUpdatedAt()?->format(DATE_ATOM),
                 'themes' => $themes,
+                'diets' => $diets,
                 'pictures' => $pictures,
-                'diets' => $diets
+                'coverPicture' => $coverPicture
             ];
         }
 

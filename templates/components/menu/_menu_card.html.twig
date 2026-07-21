@@ -2,13 +2,19 @@
 
 	<div class="menu-card__image">
 
-		{% if menu.pictures|length > 0 %}
+		{% if menu.coverPicture %}
 
-			<img src="{{ asset(menu.pictures|first.path) }}" alt="{{ menu.pictures|first.alt ?? menu.title }}">
+			<img
+				src="{{ asset(menu.coverPicture.path) }}"
+				alt="{{ menu.coverPicture.alt ?: menu.title }}"
+			>
 
 		{% else %}
 
-			<img src="https://placehold.co/300x180" alt="{{ menu.title }}">
+			<img
+				src="https://placehold.co/300x180"
+				alt="{{ menu.title }}"
+			>
 
 		{% endif %}
 

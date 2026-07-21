@@ -319,4 +319,15 @@ class Menu
 
         return $this;
     }
+
+    public function getCoverPicture(): ?Picture
+    {
+        foreach ($this->getDishes() as $dish) {
+            foreach ($dish->getPictures() as $picture) {
+                return $picture;
+            }
+        }
+
+        return null;
+    }
 }
