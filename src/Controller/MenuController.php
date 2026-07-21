@@ -164,6 +164,23 @@ final class MenuController extends AbstractController
             ], 404);
         }
 
+        // Recherche la première image des plats du menu.
+        $coverPicture = null;
+
+        foreach ($menu->getDishes() as $dish) {
+
+            foreach ($dish->getPictures() as $picture) {
+
+                $coverPicture = [
+                    'id' => $picture->getId(),
+                    'path' => $picture->getPath(),
+                    'alt' => $picture->getAlt()
+                ];
+
+                break 2;
+            }
+        }
+
         // Prépare les thèmes du menu.
         $themes = [];
 
@@ -186,7 +203,7 @@ final class MenuController extends AbstractController
             ];
         }
 
-        // Prépare les images du menu.
+        // Prépare les images directement associées au menu.
         $pictures = [];
 
         foreach ($menu->getPictures() as $picture) {
@@ -249,6 +266,7 @@ final class MenuController extends AbstractController
             'updatedAt' => $menu->getUpdatedAt()?->format(DATE_ATOM),
             'themes' => $themes,
             'diets' => $diets,
+            'coverPicture' => $coverPicture,
             'pictures' => $pictures,
             'dishes' => $dishes
         ]);

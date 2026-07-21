@@ -62,15 +62,9 @@ function displayHeader(menu) {
  * Affiche la galerie du menu.
  */
 function displayGallery(menu) {
-    if (menu.pictures.length === 0) {
-        return;
-    }
 
     const mainPicture =
         document.getElementById('menu-main-picture');
-
-    mainPicture.src = menu.pictures[0].path;
-    mainPicture.alt = menu.pictures[0].alt;
 
     const container =
         document.getElementById('menu-gallery-thumbnails');
@@ -80,7 +74,44 @@ function displayGallery(menu) {
 
     container.innerHTML = '';
 
+    // Affiche en priorité l'image de couverture.
+    if (menu.coverPicture) {
+
+        mainPicture.src = menu.coverPicture.path;
+        mainPicture.alt = menu.coverPicture.alt;
+
+    } else if (menu.pictures.length > 0) {
+
+        mainPicture.src = menu.pictures[0].path;
+        mainPicture.alt = menu.pictures[0].alt;
+
+    } else {
+
+        mainPicture.src = 'https://placehold.co/800x500';
+        mainPicture.alt = menu.title;
+
+        return;
+    }
+
+    // Construit la galerie avec l'image de couverture en premier.
+    const gallery = [];
+
+    if (menu.coverPicture) {
+        gallery.push(menu.coverPicture);
+    }
+
     menu.pictures.forEach((picture) => {
+
+        if (
+            !menu.coverPicture ||
+            picture.id !== menu.coverPicture.id
+        ) {
+            gallery.push(picture);
+        }
+
+    });
+
+    gallery.forEach((picture) => {
 
         const clone =
             template.content.cloneNode(true);
