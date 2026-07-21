@@ -205,8 +205,8 @@ function createStatusBadge(order) {
 
     badge.classList.add(
         'badge',
-        'text-bg-primary',
-        'mb-3'
+        'mb-3',
+        getStatusClass(order.status)
     );
 
     badge.textContent =
@@ -229,9 +229,7 @@ function createButtons(order) {
     );
 
     container.append(
-        createViewButton(order),
-        createStatusButton(order),
-        createCancelButton(order)
+        createViewButton(order)
     );
 
     return container;
@@ -244,7 +242,7 @@ function createViewButton(order) {
     const button =
         createButton(
             'Voir',
-            'btn-outline-primary'
+            'btn-primary-custom'
         );
 
     button.dataset.orderId =
@@ -255,52 +253,6 @@ function createViewButton(order) {
         () => {
             window.location.href =
                 `/employe/commandes/${order.id}`;
-        }
-    );
-
-    return button;
-}
-
-/**
- * Crée le bouton Statut.
- */
-function createStatusButton(order) {
-    const button =
-        createButton(
-            'Statut',
-            'btn-outline-warning'
-        );
-
-    button.dataset.orderId =
-        order.id;
-
-    button.addEventListener(
-        'click',
-        () => {
-            console.log('Statut', order.id);
-        }
-    );
-
-    return button;
-}
-
-/**
- * Crée le bouton Annuler.
- */
-function createCancelButton(order) {
-    const button =
-        createButton(
-            'Annuler',
-            'btn-outline-danger'
-        );
-
-    button.dataset.orderId =
-        order.id;
-
-    button.addEventListener(
-        'click',
-        () => {
-            console.log('Annuler', order.id);
         }
     );
 
@@ -350,4 +302,22 @@ function createEmptyMessage() {
     column.append(alert);
 
     return column;
+}
+
+function getStatusClass(status) {
+    switch (status) {
+
+        case 'En attente':
+            return 'text-bg-warning';
+
+        case 'Validée':
+            return 'text-bg-success';
+
+        case 'Annulée':
+            return 'text-bg-danger';
+
+        default:
+            return 'text-bg-secondary';
+
+    }
 }
