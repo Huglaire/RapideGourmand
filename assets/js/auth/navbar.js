@@ -11,6 +11,7 @@ async function updateNavbar() {
     const profileLink = document.getElementById('profile-link');
     const logoutButton = document.getElementById('logout-button');
     const employeeSpaceItem = document.getElementById('employee-space-item');
+    const adminCard = document.getElementById('admin-card');
 
     if (!loginLink || !profileLink || !logoutButton || !employeeSpaceItem) {
         return;
@@ -28,6 +29,7 @@ async function updateNavbar() {
 
         try {
 
+            // Affiche les accès selon le rôle de l'utilisateur
             const currentUser = await getCurrentUser();
             const roles = currentUser.roles ?? [];
 
@@ -35,7 +37,11 @@ async function updateNavbar() {
                 roles.includes('ROLE_EMPLOYEE') ||
                 roles.includes('ROLE_ADMIN')
             ) {
-                employeeSpaceItem.classList.remove('d-none');
+                employeeSpaceItem?.classList.remove('d-none');
+            }
+
+            if (roles.includes('ROLE_ADMIN')) {
+                adminCard?.classList.remove('d-none');
             }
 
         } catch (error) {
