@@ -1,152 +1,243 @@
 <div class="profile-card">
 
-	<div class="card shadow-sm">
+    <div class="card shadow-sm">
 
-		<div class="card-body">
+        <div class="card-body">
 
-			<div class="profile-card-header">
+            <div class="profile-card-header">
 
-				<h2 class="h4 mb-0">
-					Mes informations
-				</h2>
+                <h2 class="h4 mb-0">
+                    Mes informations
+                </h2>
 
-				<button id="edit-profile-button" type="button" class="btn btn-primary-custom">
-					Modifier
-				</button>
+                <button id="edit-profile-button" type="button" class="btn btn-primary-custom">
+                    Modifier
+                </button>
 
-			</div>
+            </div>
 
-			<div id="profile-message"></div>
+            <div id="profile-message"></div>
 
-			<div id="profile-view">
+            <div id="profile-view">
 
-				<p>
-					<strong>Prénom :</strong>
-					<span id="profile-first-name"></span>
-				</p>
+                <p>
+                    <strong>Prénom :</strong>
+                    <span id="profile-first-name"></span>
+                </p>
 
-				<p>
-					<strong>Nom :</strong>
-					<span id="profile-last-name"></span>
-				</p>
+                <p>
+                    <strong>Nom :</strong>
+                    <span id="profile-last-name"></span>
+                </p>
 
-				<p>
-					<strong>Email :</strong>
-					<span id="profile-email"></span>
-				</p>
+                <p>
+                    <strong>Email :</strong>
+                    <span id="profile-email"></span>
+                </p>
 
-				<p>
-					<strong>Téléphone :</strong>
-					<span id="profile-phone"></span>
-				</p>
+                <p>
+                    <strong>Téléphone :</strong>
+                    <span id="profile-phone"></span>
+                </p>
 
-				<p>
-					<strong>Adresse :</strong>
-					<span id="profile-street"></span>
-				</p>
+                <p>
+                    <strong>Adresse :</strong>
+                    <span id="profile-street"></span>
+                </p>
 
-				<p>
-					<strong>Code postal :</strong>
-					<span id="profile-postal-code"></span>
-				</p>
+                <p>
+                    <strong>Code postal :</strong>
+                    <span id="profile-postal-code"></span>
+                </p>
 
-				<p>
-					<strong>Ville :</strong>
-					<span id="profile-city"></span>
-				</p>
+                <p>
+                    <strong>Ville :</strong>
+                    <span id="profile-city"></span>
+                </p>
 
-			</div>
+            </div>
 
-			<div class="mt-4 d-flex flex-wrap gap-2">
+            <div class="mt-4 d-flex flex-wrap gap-2">
 
-				<a href="{{ path('order_history') }}" class="btn btn-outline-primary">
-					Mes commandes
-				</a>
+                <a href="{{ path('order_history') }}" class="btn btn-primary-custom">
+                    Mes commandes
+                </a>
 
-			</div>
+            </div>
 
-			<div id="profile-edit" class="d-none">
+            <hr class="my-4">
 
-				<form id="profile-form">
+            <div class="review-section">
 
-					<div class="row">
+                <h3 class="h5 mb-3">
+                    Laisser un avis
+                </h3>
 
-						<div class="col-md-6 mb-3">
-							<label for="firstName" class="form-label">
-								Prénom
-							</label>
+                <div id="review-message"></div>
 
-							<input type="text" id="firstName" class="form-control">
-						</div>
+                <div id="review-already-sent" class="alert alert-info d-none">
+                    Vous avez déjà publié un avis. Merci pour votre retour !
+                </div>
 
-						<div class="col-md-6 mb-3">
-							<label for="lastName" class="form-label">
-								Nom
-							</label>
+                <form id="review-form">
 
-							<input type="text" id="lastName" class="form-control">
-						</div>
+                    <div class="mb-3">
 
-						<div class="col-12 mb-3">
-							<label for="email" class="form-label">
-								Email
-							</label>
+                        <label for="review-rating" class="form-label">
+                            Note
+                        </label>
 
-							<input type="email" id="email" class="form-control">
-						</div>
+                        <select id="review-rating" class="form-select" required>
 
-						<div class="col-md-6 mb-3">
-							<label for="phone" class="form-label">
-								Téléphone
-							</label>
+                            <option value="">
+                                Choisir une note
+                            </option>
 
-							<input type="text" id="phone" class="form-control">
-						</div>
+                            <option value="5">
+                                5 / 5
+                            </option>
 
-						<div class="col-md-6 mb-3">
-							<label for="postalCode" class="form-label">
-								Code postal
-							</label>
+                            <option value="4">
+                                4 / 5
+                            </option>
 
-							<input type="text" id="postalCode" class="form-control">
-						</div>
+                            <option value="3">
+                                3 / 5
+                            </option>
 
-						<div class="col-12 mb-3">
-							<label for="street" class="form-label">
-								Adresse
-							</label>
+                            <option value="2">
+                                2 / 5
+                            </option>
 
-							<input type="text" id="street" class="form-control">
-						</div>
+                            <option value="1">
+                                1 / 5
+                            </option>
 
-						<div class="col-12 mb-4">
-							<label for="city" class="form-label">
-								Ville
-							</label>
+                        </select>
 
-							<input type="text" id="city" class="form-control">
-						</div>
+                    </div>
 
-					</div>
+                    <div class="mb-4">
 
-					<div class="profile-form-actions">
+                        <label for="review-comment" class="form-label">
+                            Commentaire
+                        </label>
 
-						<button type="submit" class="btn btn-primary-custom">
-							Enregistrer
-						</button>
+                        <textarea
+                            id="review-comment"
+                            class="form-control"
+                            rows="5"
+                            maxlength="1000"
+                            placeholder="Partagez votre expérience avec Rapide & Gourmand..."
+                            required
+                        ></textarea>
 
-						<button type="button" id="cancel-profile-edit" class="btn btn-outline-secondary">
-							Annuler
-						</button>
+                    </div>
 
-					</div>
+                    <button type="submit" class="btn btn-primary-custom">
+                        Envoyer mon avis
+                    </button>
 
-				</form>
+                </form>
 
-			</div>
+            </div>
 
-		</div>
+            <div id="profile-edit" class="d-none">
 
-	</div>
+                <form id="profile-form">
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label for="firstName" class="form-label">
+                                Prénom
+                            </label>
+
+                            <input type="text" id="firstName" class="form-control">
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label for="lastName" class="form-label">
+                                Nom
+                            </label>
+
+                            <input type="text" id="lastName" class="form-control">
+
+                        </div>
+
+                        <div class="col-12 mb-3">
+
+                            <label for="email" class="form-label">
+                                Email
+                            </label>
+
+                            <input type="email" id="email" class="form-control">
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label for="phone" class="form-label">
+                                Téléphone
+                            </label>
+
+                            <input type="text" id="phone" class="form-control">
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label for="postalCode" class="form-label">
+                                Code postal
+                            </label>
+
+                            <input type="text" id="postalCode" class="form-control">
+
+                        </div>
+
+                        <div class="col-12 mb-3">
+
+                            <label for="street" class="form-label">
+                                Adresse
+                            </label>
+
+                            <input type="text" id="street" class="form-control">
+
+                        </div>
+
+                        <div class="col-12 mb-4">
+
+                            <label for="city" class="form-label">
+                                Ville
+                            </label>
+
+                            <input type="text" id="city" class="form-control">
+
+                        </div>
+
+                    </div>
+
+                    <div class="profile-form-actions">
+
+                        <button type="submit" class="btn btn-primary-custom">
+                            Enregistrer
+                        </button>
+
+                        <button type="button" id="cancel-profile-edit" class="btn btn-outline-secondary">
+                            Annuler
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>

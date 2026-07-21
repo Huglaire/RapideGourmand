@@ -455,4 +455,38 @@ final class ReviewController extends AbstractController
             ]
         ], Response::HTTP_OK);
     }
+
+    #[Route('/api/reviews/me', name: 'app_review_me', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    #[OA\Get(
+        path: '/api/reviews/me',
+        summary: 'Récupérer mon avis',
+        description: 'Retourne l’avis de l’utilisateur connecté.',
+        tags: ['Avis'],
+        security: [['Bearer' => []]],
+        responses: [
+            new OA\Response(response: 200, description: 'Avis trouvé.'),
+            new OA\Response(response: 404, description: 'Aucun avis trouvé.')
+        ]
+    )]
+    public function me(ReviewRepository $reviewRepository): JsonResponse
+    {
+        $review = $reviewRepository->findOneBy([
+            'user' => $this->getUser()
+        ]);
+
+        if (!$review) {
+            return $this->json([
+                'message' => 'Aucun avis.'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        return $this->json([
+            'id' => $review->getId(),
+            'rating' => $review->getRating(),
+            'comment' => $review->getComment(),
+            'status' => $review->getStatus(),
+            'createdAt' => $review->getCreatedAt()?->format('Y-m-d H:i:s'),
+        ]);
+    }
 }
