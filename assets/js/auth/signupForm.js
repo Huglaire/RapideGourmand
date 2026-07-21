@@ -1,4 +1,3 @@
-console.log('signupForm.js chargé');
 function initializeSignupForm() {
 
     const form = document.getElementById('signup-form');
