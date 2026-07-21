@@ -1,4 +1,4 @@
-console.log('signup.js chargé');
+console.log('signupForm.js chargé');
 function initializeSignupForm() {
 
     const form = document.getElementById('signup-form');
@@ -19,7 +19,7 @@ function initializeSignupForm() {
         errorBox.textContent = '';
 
         const password = document.getElementById('password').value;
-        const confirmPassword = document.getElementById('confirm-password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
 
         if (password !== confirmPassword) {
 
@@ -30,8 +30,8 @@ function initializeSignupForm() {
         }
 
         const payload = {
-            firstName: document.getElementById('firstname').value.trim(),
-            lastName: document.getElementById('lastname').value.trim(),
+            firstName: document.getElementById('firstName').value.trim(),
+            lastName: document.getElementById('lastName').value.trim(),
             email: document.getElementById('email').value.trim(),
             password,
             phone: document.getElementById('phone').value.trim(),
