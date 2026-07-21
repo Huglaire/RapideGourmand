@@ -12,7 +12,8 @@ class SiteInfosService
     }
 
     /**
-     * Retourne les informations du site sous forme d'un tableau associatif.
+     * Retourne les informations du site
+     * sous forme d'un tableau associatif.
      */
     public function getAll(): array
     {
@@ -25,5 +26,18 @@ class SiteInfosService
         }
 
         return $siteInfos;
+    }
+
+    /**
+     * Retourne une information du site
+     * à partir de son identifiant.
+     */
+    public function get(string $identifier): ?string
+    {
+        $siteInfo = $this->siteInfosRepository->findOneBy([
+            'identifier' => $identifier,
+        ]);
+
+        return $siteInfo?->getValue();
     }
 }
