@@ -3,7 +3,7 @@ security:
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
 
-    # Définition du fournisseur d'utilisateurs (lecture depuis la base de données)
+    # Fournisseur d'utilisateurs Doctrine
     providers:
         app_user_provider:
             entity:
@@ -11,23 +11,23 @@ security:
                 property: email
 
     # Hiérarchie des rôles
-    # Un administrateur hérite des droits d'un employé,
-    # qui hérite lui-même des droits d'un utilisateur.
     role_hierarchy:
         ROLE_EMPLOYEE: ROLE_USER
         ROLE_ADMIN: ROLE_EMPLOYEE
 
     firewalls:
-        # Désactive la sécurité pour les outils de développement Symfony
+
+        # Outils Symfony
         dev:
             pattern: ^/(_profiler|_wdt|assets|build)/
             security: false
 
-        # Authentification via l'endpoint de connexion JWT
+        # Connexion JWT
         login:
-            pattern: ^/api/login_check
+            pattern: ^/api/login_check$
             stateless: true
             provider: app_user_provider
+
             json_login:
                 check_path: /api/login_check
                 username_path: email
@@ -35,43 +35,46 @@ security:
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
 
-        # Protège toutes les routes de l'API avec un JWT
+        # API protégée JWT
         api:
             pattern: ^/api
             stateless: true
+            provider: app_user_provider
             jwt: ~
 
-        # Firewall principal de l'application
+        # Application Symfony classique
         main:
             lazy: true
             provider: app_user_provider
 
+
     access_control:
-        # Routes accessibles sans authentification
-        - { path: ^/api/login_check, roles: PUBLIC_ACCESS }
-        - { path: ^/api/register, roles: PUBLIC_ACCESS }
+
+        # Authentification
+        - { path: ^/api/login_check$, roles: PUBLIC_ACCESS }
+        - { path: ^/api/register$, roles: PUBLIC_ACCESS }
         - { path: ^/api/account/restore$, roles: PUBLIC_ACCESS }
 
-        # Documentation Swagger
+        # Documentation API
         - { path: ^/api/doc$, roles: PUBLIC_ACCESS }
         - { path: ^/api/doc\.json$, roles: PUBLIC_ACCESS }
 
-        # Consultation publique des menus
+        # Menus publics
         - { path: ^/api/menus$, roles: PUBLIC_ACCESS, methods: [GET] }
         - { path: ^/api/menus/\d+$, roles: PUBLIC_ACCESS, methods: [GET] }
 
-        # Consultation publique des avis
+        # Avis publics
         - { path: ^/api/reviews$, roles: PUBLIC_ACCESS, methods: [GET] }
         - { path: ^/api/reviews/home$, roles: PUBLIC_ACCESS, methods: [GET] }
         - { path: ^/api/reviews/\d+$, roles: PUBLIC_ACCESS, methods: [GET] }
 
-        # Toutes les autres routes de l'API nécessitent un utilisateur authentifié
+        # Tout le reste de l'API nécessite un JWT
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
+
 
 when@test:
     security:
         password_hashers:
-            # Réduction du coût de hachage afin d'accélérer les tests
             Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
                 algorithm: auto
                 cost: 4
