@@ -60,8 +60,9 @@ security:
         - { path: ^/api/menus$, roles: PUBLIC_ACCESS, methods: [GET] }
         - { path: ^/api/menus/\d+$, roles: PUBLIC_ACCESS, methods: [GET] }
 
-        # Consultation publique des avis validés
+        # Consultation publique des avis
         - { path: ^/api/reviews$, roles: PUBLIC_ACCESS, methods: [GET] }
+        - { path: ^/api/reviews/home$, roles: PUBLIC_ACCESS, methods: [GET] }
         - { path: ^/api/reviews/\d+$, roles: PUBLIC_ACCESS, methods: [GET] }
 
         # Toutes les autres routes de l'API nécessitent un utilisateur authentifié

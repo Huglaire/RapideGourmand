@@ -1,18 +1,13 @@
-
 services:
-###> doctrine/doctrine-bundle ###
-  database:
-    ports:
-      - "5432"
-###< doctrine/doctrine-bundle ###
 
-###> symfony/mailer ###
-  mailer:
-    image: axllent/mailpit
-    ports:
-      - "1025"
-      - "8025"
+  php:
     environment:
-      MP_SMTP_AUTH_ACCEPT_ANY: 1
-      MP_SMTP_AUTH_ALLOW_INSECURE: 1
-###< symfony/mailer ###
+      APP_ENV: dev
+      PHP_IDE_CONFIG: "serverName=RapideGourmand"
+
+    volumes:
+      - ./:/var/www/html:cached
+
+  nginx:
+    ports:
+      - "8000:80"
