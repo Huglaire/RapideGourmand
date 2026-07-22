@@ -1,12 +1,13 @@
 FROM php:8.2-fpm
 
-# Dépendances système
+# Dépendances système + nginx + supervisor
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
     zip \
     curl \
-    nano \
+    nginx \
+    supervisor \
     libicu-dev \
     libzip-dev \
     libpng-dev \
@@ -35,19 +36,30 @@ RUN docker-php-ext-install -j$(nproc) \
     opcache \
     exif
 
-# Extension MongoDB
-RUN pecl install mongodb-1.21.2 \
+# MongoDB
+RUN pecl install mongodb \
     && docker-php-ext-enable mongodb
 
-# Autoriser les plugins Composer
+# Composer
 ENV COMPOSER_ALLOW_SUPERUSER=1
+COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
 
-# Exécuter Symfony en mode production pendant le build
 ENV APP_ENV=prod
 ENV APP_DEBUG=0
 
-# Composer
-COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
+WORKDIR /var/www/html
+
+COPY . .
+
+RUN composer install \
+    --no-dev \
+    --optimize-autoloader \
+    --no-interaction
+
+RUN php bin/console asset-map:compile || true
+
+RUN mkdir -p var/cache var/log var/sessions \
+    && chown -R www-data:www-data var
 
 # Configuration PHP
 COPY docker/php/php.ini /usr/local/etc/php/conf.d/custom.ini
@@ -56,25 +68,10 @@ COPY docker/php/php.ini /usr/local/etc/php/conf.d/custom.ini
 COPY docker/php/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-# Dossier de travail
-WORKDIR /var/www/html
-
-# Copie de l'application
-COPY . .
-
-# Installation des dépendances PHP
-RUN composer install \
-    --no-dev \
-    --optimize-autoloader \
-    --no-interaction
-
-# Compilation des assets AssetMapper
-RUN php bin/console asset-map:compile || true
-
-# Préparation des dossiers Symfony
-RUN mkdir -p var/cache var/log var/sessions \
-    && chown -R www-data:www-data var
+# Les deux fichiers que nous allons créer juste après
+COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 
-CMD ["php-fpm"]
+CMD ["/usr/bin/supervisord","-c","/etc/supervisor/conf.d/supervisord.conf"]
