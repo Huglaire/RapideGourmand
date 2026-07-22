@@ -35,22 +35,35 @@ RUN docker-php-ext-install -j$(nproc) \
     opcache \
     exif
 
-# MongoDB (version compatible avec le composer.lock)
+# MongoDB
 RUN pecl install mongodb-1.21.2 \
     && docker-php-ext-enable mongodb
 
 # Composer
 COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
 
-# PHP personnalisé
+# Configuration PHP
 COPY docker/php/php.ini /usr/local/etc/php/conf.d/custom.ini
 
 # Entrypoint
 COPY docker/php/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 WORKDIR /var/www/html
+
+# >>>>>>> LA PARTIE QUI MANQUAIT <<<<<<<
+
+COPY . .
+
+RUN composer install \
+    --no-dev \
+    --optimize-autoloader \
+    --no-interaction
+
+RUN php bin/console asset-map:compile || true
+
+RUN mkdir -p var/cache var/log var/sessions \
+    && chown -R www-data:www-data var
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 
