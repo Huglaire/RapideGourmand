@@ -39,8 +39,12 @@ RUN docker-php-ext-install -j$(nproc) \
 RUN pecl install mongodb-1.21.2 \
     && docker-php-ext-enable mongodb
 
-# Autoriser les plugins Composer pendant le build
+# Autoriser les plugins Composer
 ENV COMPOSER_ALLOW_SUPERUSER=1
+
+# Exécuter Symfony en mode production pendant le build
+ENV APP_ENV=prod
+ENV APP_DEBUG=0
 
 # Composer
 COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
@@ -64,7 +68,7 @@ RUN composer install \
     --optimize-autoloader \
     --no-interaction
 
-# Compilation des assets Symfony (AssetMapper)
+# Compilation des assets AssetMapper
 RUN php bin/console asset-map:compile || true
 
 # Préparation des dossiers Symfony
