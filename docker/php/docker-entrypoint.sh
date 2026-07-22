@@ -31,8 +31,8 @@ cat > .env.local <<EOF
 APP_ENV=prod
 APP_DEBUG=0
 
-JWT_SECRET_KEY=/var/www/html/config/jwt/private.pem
-JWT_PUBLIC_KEY=/var/www/html/config/jwt/public.pem
+JWT_PRIVATE_KEY=/var/www/html/config/jwt/private.pem
+JWT_PUBLIC_KEY_CONTENT=/var/www/html/config/jwt/public.pem
 JWT_PASSPHRASE=${JWT_PASSPHRASE}
 EOF
 
