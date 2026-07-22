@@ -14,12 +14,14 @@ mkdir -p config/jwt
 
 if [ -n "$JWT_PRIVATE_KEY" ]; then
     printf "%s" "$JWT_PRIVATE_KEY" > config/jwt/private.pem
-    chmod 600 config/jwt/private.pem
+    chown www-data:www-data config/jwt/private.pem
+    chmod 640 config/jwt/private.pem
     echo "Clé privée JWT générée."
 fi
 
 if [ -n "$JWT_PUBLIC_KEY_CONTENT" ]; then
     printf "%s" "$JWT_PUBLIC_KEY_CONTENT" > config/jwt/public.pem
+    chown www-data:www-data config/jwt/public.pem
     chmod 644 config/jwt/public.pem
     echo "Clé publique JWT générée."
 fi
@@ -36,7 +38,7 @@ EOF
 
 echo "Configuration JWT terminée."
 
-# Nettoyage du cache Symfony pour prendre en compte les nouvelles variables
+# Nettoyage du cache Symfony pour prendre en compte la configuration
 echo "Vidage du cache Symfony..."
 rm -rf var/cache/prod
 
