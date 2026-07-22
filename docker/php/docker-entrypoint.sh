@@ -24,8 +24,17 @@ if [ -n "$JWT_PUBLIC_KEY_CONTENT" ]; then
     echo "Clé publique JWT générée."
 fi
 
-export JWT_SECRET_KEY="/var/www/html/config/jwt/private.pem"
-export JWT_PUBLIC_KEY="/var/www/html/config/jwt/public.pem"
+# Configuration JWT pour Symfony/Lexik
+cat > .env.local <<EOF
+APP_ENV=prod
+APP_DEBUG=0
+
+JWT_SECRET_KEY=/var/www/html/config/jwt/private.pem
+JWT_PUBLIC_KEY=/var/www/html/config/jwt/public.pem
+JWT_PASSPHRASE=${JWT_PASSPHRASE}
+EOF
+
+echo "Configuration JWT terminée."
 
 # Préparation des dossiers Symfony
 mkdir -p var/cache var/log var/sessions
@@ -33,7 +42,7 @@ mkdir -p var/cache var/log var/sessions
 chown -R www-data:www-data var || true
 chmod -R 775 var || true
 
-# Si Railway fournit un port, on l'injecte dans nginx
+# Si Railway fournit un port, on l'injecte dans la config nginx
 if [ -n "$PORT" ]; then
     echo "Utilisation du port Railway : $PORT"
     sed -i "s/listen 80 default_server;/listen ${PORT} default_server;/g" /etc/nginx/conf.d/default.conf
