@@ -35,9 +35,12 @@ RUN docker-php-ext-install -j$(nproc) \
     opcache \
     exif
 
-# MongoDB
+# Extension MongoDB
 RUN pecl install mongodb-1.21.2 \
     && docker-php-ext-enable mongodb
+
+# Autoriser les plugins Composer pendant le build
+ENV COMPOSER_ALLOW_SUPERUSER=1
 
 # Composer
 COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
@@ -49,19 +52,22 @@ COPY docker/php/php.ini /usr/local/etc/php/conf.d/custom.ini
 COPY docker/php/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
+# Dossier de travail
 WORKDIR /var/www/html
 
-# >>>>>>> LA PARTIE QUI MANQUAIT <<<<<<<
-
+# Copie de l'application
 COPY . .
 
+# Installation des dépendances PHP
 RUN composer install \
     --no-dev \
     --optimize-autoloader \
     --no-interaction
 
+# Compilation des assets Symfony (AssetMapper)
 RUN php bin/console asset-map:compile || true
 
+# Préparation des dossiers Symfony
 RUN mkdir -p var/cache var/log var/sessions \
     && chown -R www-data:www-data var
 
