@@ -13,26 +13,16 @@ echo "Configuration des clés JWT..."
 mkdir -p config/jwt
 
 if [ -n "$JWT_PRIVATE_KEY" ]; then
-    printf '%s' "$JWT_PRIVATE_KEY" \
-    | sed 's/-----BEGIN ENCRYPTED PRIVATE KEY----- /-----BEGIN ENCRYPTED PRIVATE KEY-----\n/' \
-    | sed 's/ -----END ENCRYPTED PRIVATE KEY-----/\n-----END ENCRYPTED PRIVATE KEY-----/' \
-    > config/jwt/private.pem
-
+    printf "%s" "$JWT_PRIVATE_KEY" > config/jwt/private.pem
     chown www-data:www-data config/jwt/private.pem
     chmod 640 config/jwt/private.pem
-
     echo "Clé privée JWT générée."
 fi
 
 if [ -n "$JWT_PUBLIC_KEY_CONTENT" ]; then
-    printf '%s' "$JWT_PUBLIC_KEY_CONTENT" \
-    | sed 's/-----BEGIN PUBLIC KEY----- /-----BEGIN PUBLIC KEY-----\n/' \
-    | sed 's/ -----END PUBLIC KEY-----/\n-----END PUBLIC KEY-----/' \
-    > config/jwt/public.pem
-
+    printf "%s" "$JWT_PUBLIC_KEY_CONTENT" > config/jwt/public.pem
     chown www-data:www-data config/jwt/public.pem
     chmod 644 config/jwt/public.pem
-
     echo "Clé publique JWT générée."
 fi
 
@@ -50,7 +40,7 @@ echo "Configuration JWT terminée."
 
 # Vérification configuration JWT
 echo "Vérification configuration JWT..."
-php bin/console debug:config lexik_jwt_authentication --env=prod || true
+php bin/console debug:config lexik_jwt_authentication || true
 
 # Nettoyage du cache Symfony pour prendre en compte la configuration
 echo "Vidage du cache Symfony..."
