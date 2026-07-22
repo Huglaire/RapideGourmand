@@ -17,6 +17,8 @@ if [ -n "$JWT_PRIVATE_KEY" ]; then
     chown www-data:www-data config/jwt/private.pem
     chmod 640 config/jwt/private.pem
     echo "Clé privée JWT générée."
+else
+    echo "ATTENTION : JWT_PRIVATE_KEY absente."
 fi
 
 if [ -n "$JWT_PUBLIC_KEY_CONTENT" ]; then
@@ -24,6 +26,8 @@ if [ -n "$JWT_PUBLIC_KEY_CONTENT" ]; then
     chown www-data:www-data config/jwt/public.pem
     chmod 644 config/jwt/public.pem
     echo "Clé publique JWT générée."
+else
+    echo "ATTENTION : JWT_PUBLIC_KEY_CONTENT absente."
 fi
 
 # Configuration JWT pour Symfony/Lexik
@@ -38,21 +42,29 @@ EOF
 
 echo "Configuration JWT terminée."
 
-# Nettoyage du cache Symfony pour prendre en compte la configuration
+echo "Vérification configuration JWT..."
+
+php bin/console debug:config lexik_jwt_authentication | grep -A3 "secret_key" || true
+
 echo "Vidage du cache Symfony..."
+
 rm -rf var/cache/prod
 
 # Préparation des dossiers Symfony
+
 mkdir -p var/cache var/log var/sessions
 
 chown -R www-data:www-data var || true
 chmod -R 775 var || true
 
-# Si Railway fournit un port, on l'injecte dans la configuration nginx
+
+# Si Railway fournit un port, on l'injecte dans nginx
+
 if [ -n "$PORT" ]; then
     echo "Utilisation du port Railway : $PORT"
     sed -i "s/listen 80 default_server;/listen ${PORT} default_server;/g" /etc/nginx/conf.d/default.conf
 fi
+
 
 echo "========================================="
 echo " Lancement de Supervisor"
