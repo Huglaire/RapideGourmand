@@ -2,27 +2,14 @@
 
 namespace App\Service;
 
-use Brevo\Client\Api\TransactionalEmailsApi;
-use Brevo\Client\Model\SendSmtpEmail;
-use Brevo\Client\Model\SendSmtpEmailSender;
-use Brevo\Client\Model\SendSmtpEmailTo;
-use GuzzleHttp\Client;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class BrevoMailerService
 {
-    private TransactionalEmailsApi $api;
-
-
     public function __construct(
-        string $brevoApiKey
+        private HttpClientInterface $client,
+        private string $brevoApiKey
     ) {
-
-        $this->api = new TransactionalEmailsApi(
-            new Client(),
-            [
-                'api-key' => $brevoApiKey
-            ]
-        );
     }
 
 
@@ -32,47 +19,49 @@ class BrevoMailerService
         string $senderEmail
     ): void {
 
-        $email = new SendSmtpEmail();
+        $response = $this->client->request(
+            'POST',
+            'https://api.brevo.com/v3/smtp/email',
+            [
+                'headers' => [
+                    'api-key' => $this->brevoApiKey,
+                    'Content-Type' => 'application/json',
+                ],
 
+                'json' => [
 
-        $email->setSender(
-            new SendSmtpEmailSender([
-                'email' => 'pollon.hugo@gmail.com',
-                'name' => 'Rapide & Gourmand',
-            ])
+                    'sender' => [
+                        'name' => 'Rapide & Gourmand',
+                        'email' => 'pollon.hugo@gmail.com',
+                    ],
+
+                    'to' => [
+                        [
+                            'email' => 'pollon.hugo@gmail.com',
+                        ]
+                    ],
+
+                    'subject' => $title,
+
+                    'htmlContent' => sprintf(
+                        '
+                        <h2>%s</h2>
+
+                        <p>%s</p>
+
+                        <hr>
+
+                        <p>Email du client : %s</p>
+                        ',
+                        htmlspecialchars($title),
+                        nl2br(htmlspecialchars($description)),
+                        htmlspecialchars($senderEmail)
+                    ),
+                ],
+            ]
         );
 
 
-        $email->setTo([
-            new SendSmtpEmailTo([
-                'email' => 'pollon.hugo@gmail.com',
-            ])
-        ]);
-
-
-        $email->setSubject(
-            $title
-        );
-
-
-        $email->setHtmlContent(
-            sprintf(
-                '
-                <h2>%s</h2>
-
-                <p>%s</p>
-
-                <hr>
-
-                <p>Email du client : %s</p>
-                ',
-                htmlspecialchars($title),
-                nl2br(htmlspecialchars($description)),
-                htmlspecialchars($senderEmail)
-            )
-        );
-
-
-        $this->api->sendTransacEmail($email);
+        $response->getContent();
     }
 }
