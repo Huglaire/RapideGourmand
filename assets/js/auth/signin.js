@@ -9,88 +9,138 @@ function initializeSigninForm() {
 
     form.dataset.initialized = 'true';
 
-    form.addEventListener('submit', async (event) => {
 
-        event.preventDefault();
+    form.addEventListener(
+        'submit',
+        async (event) => {
 
-        console.log('Formulaire envoyé');
-
-        const error = document.getElementById('signin-error');
-
-        error.classList.add('d-none');
-        error.textContent = '';
-
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-
-        try {
-
-            const response = await fetch('/api/login_check', {
-
-                method: 'POST',
-
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-
-                body: JSON.stringify({
-                    email,
-                    password
-                })
-
-            });
+            event.preventDefault();
 
 
-            const data = await response.json();
+            console.log('Formulaire envoyé');
 
 
-            if (!response.ok) {
+            const error =
+                document.getElementById('signin-error');
 
 
-                if (data.code === 'ACCOUNT_DISABLED') {
+            error.classList.add('d-none');
 
-                    sessionStorage.setItem(
-                        'restore_email',
-                        email
+            error.textContent = '';
+
+
+
+            const email =
+                document.getElementById('email').value;
+
+
+            const password =
+                document.getElementById('password').value;
+
+
+
+            try {
+
+
+                const response =
+                    await fetch(
+                        '/api/login_check',
+                        {
+
+                            method: 'POST',
+
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+
+
+                            body: JSON.stringify({
+                                email,
+                                password
+                            })
+
+                        }
                     );
 
 
-                    window.location.href =
-                        '/account/reactivate';
+
+                const data =
+                    await response.json();
 
 
-                    return;
+
+                if (!response.ok) {
+
+
+                    /**
+                     * Compte désactivé :
+                     * on conserve l'email pour la page
+                     * de réactivation.
+                     */
+                    if (
+                        data.message ===
+                        'Votre compte est désactivé.'
+                    ) {
+
+
+                        sessionStorage.setItem(
+                            'restore_email',
+                            email
+                        );
+
+
+                        window.location.href =
+                            '/account/reactivate';
+
+
+                        return;
+
+                    }
+
+
+
+                    throw new Error(
+                        data.message ??
+                        'Identifiants invalides.'
+                    );
 
                 }
 
 
-                throw new Error(
-                    data.message ?? 'Identifiants invalides.'
+
+                localStorage.setItem(
+                    'jwt',
+                    data.token
+                );
+
+
+
+                window.location.href =
+                    '/';
+
+
+
+            } catch (exception) {
+
+
+                console.error(exception);
+
+
+                error.textContent =
+                    exception.message;
+
+
+                error.classList.remove(
+                    'd-none'
                 );
 
             }
 
-
-            localStorage.setItem(
-                'jwt',
-                data.token
-            );
-
-
-            window.location.href = '/';
-
-
-        } catch (exception) {
-
-            error.textContent = exception.message;
-
-            error.classList.remove('d-none');
-
         }
-
-    });
+    );
 
 }
+
 
 
 // Chargement classique
@@ -98,6 +148,7 @@ document.addEventListener(
     'DOMContentLoaded',
     initializeSigninForm
 );
+
 
 
 // Chargement après une navigation Turbo

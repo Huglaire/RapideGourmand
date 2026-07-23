@@ -48,6 +48,8 @@ security:
 
             provider: app_user_provider
 
+            user_checker: App\Security\UserChecker
+
 
             json_login:
 
@@ -57,10 +59,9 @@ security:
 
                 password_path: password
 
-
                 success_handler: lexik_jwt_authentication.handler.authentication_success
 
-                failure_handler: App\Security\LoginFailureHandler
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
 
 
 

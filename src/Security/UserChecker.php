@@ -3,11 +3,11 @@
 namespace App\Security;
 
 use App\Entity\User;
-use Symfony\Component\Security\Core\User\UserCheckerInterface;
-use Symfony\Component\Security\Core\Exception\CustomUserMessageAccountStatusException;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\UserCheckerInterface;
+use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 
-class UserChecker implements UserCheckerInterface
+final class UserChecker implements UserCheckerInterface
 {
     public function checkPreAuth(UserInterface $user): void
     {
@@ -18,7 +18,7 @@ class UserChecker implements UserCheckerInterface
 
         if (!$user->isActive()) {
 
-            throw new CustomUserMessageAccountStatusException(
+            throw new CustomUserMessageAuthenticationException(
                 'Votre compte est désactivé.'
             );
 
@@ -26,8 +26,7 @@ class UserChecker implements UserCheckerInterface
     }
 
 
-    public function checkPostAuth(
-        UserInterface $user
-    ): void {
+    public function checkPostAuth(UserInterface $user): void
+    {
     }
 }
