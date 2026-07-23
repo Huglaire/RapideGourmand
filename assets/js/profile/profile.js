@@ -1,7 +1,9 @@
 import {
     getCurrentUser,
-    updateCurrentUser
+    updateCurrentUser,
+    deleteCurrentUser
 } from '../services/user.service.js';
+
 
 /**
  * Contient les informations de l'utilisateur connecté.
@@ -9,19 +11,19 @@ import {
  */
 let currentUser = null;
 
+
 // Initialise la page lorsque le DOM est chargé.
 document.addEventListener(
     'DOMContentLoaded',
     initProfilePage
 );
 
+
 /**
  * Initialise la page du profil.
  */
 function initProfilePage()
 {
-    // Quitte immédiatement le script si nous ne sommes pas
-    // sur la page du profil.
     const profile =
         document.getElementById('profile-first-name');
 
@@ -31,6 +33,7 @@ function initProfilePage()
 
     loadProfile();
 }
+
 
 /**
  * Affiche les informations de l'utilisateur.
@@ -57,7 +60,30 @@ function displayProfile(user)
 
     document.getElementById('profile-city').textContent =
         user.city;
+
+
+    const deleteButton =
+        document.getElementById('delete-account-button');
+
+
+    if (deleteButton) {
+
+        if (
+            user.roles &&
+            user.roles.includes('ROLE_ADMIN')
+        ) {
+
+            deleteButton.classList.add('d-none');
+
+        } else {
+
+            deleteButton.classList.remove('d-none');
+
+        }
+
+    }
 }
+
 
 /**
  * Remplit le formulaire d'édition.
@@ -86,6 +112,7 @@ function fillProfileForm(user)
         user.city ?? '';
 }
 
+
 /**
  * Affiche le formulaire d'édition.
  */
@@ -108,6 +135,7 @@ function enableEditMode()
         .classList.remove('d-none');
 }
 
+
 /**
  * Revient à l'affichage du profil.
  */
@@ -128,6 +156,7 @@ function disableEditMode()
         .classList.remove('d-none');
 }
 
+
 /**
  * Affiche un message de succès.
  */
@@ -142,6 +171,7 @@ function showSuccessMessage(message)
         </div>
     `;
 }
+
 
 /**
  * Affiche un message d'erreur.
@@ -158,6 +188,7 @@ function showErrorMessage(message)
     `;
 }
 
+
 /**
  * Supprime le message affiché.
  */
@@ -165,6 +196,7 @@ function clearMessage()
 {
     document.getElementById('profile-message').innerHTML = '';
 }
+
 
 /**
  * Enregistre les modifications du profil.
@@ -198,6 +230,7 @@ async function saveProfile(event)
 
     };
 
+
     try {
 
         currentUser =
@@ -211,6 +244,7 @@ async function saveProfile(event)
             'Vos informations ont été mises à jour avec succès.'
         );
 
+
     } catch (error) {
 
         console.error(error);
@@ -219,6 +253,50 @@ async function saveProfile(event)
 
     }
 }
+
+
+/**
+ * Désactive le profil utilisateur.
+ */
+async function disableAccount()
+{
+    const confirmed =
+        confirm(
+            'Voulez-vous vraiment désactiver votre profil ?'
+        );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    try {
+
+        await deleteCurrentUser();
+
+
+        localStorage.removeItem(
+            'token'
+        );
+
+
+        window.location.href = '/signin';
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        showErrorMessage(
+            'Une erreur est survenue lors de la désactivation du profil.'
+        );
+
+    }
+}
+
 
 /**
  * Associe les événements de la page.
@@ -232,6 +310,7 @@ function registerEvents()
             enableEditMode
         );
 
+
     document
         .getElementById('cancel-profile-edit')
         .addEventListener(
@@ -239,13 +318,29 @@ function registerEvents()
             disableEditMode
         );
 
+
     document
         .getElementById('profile-form')
         .addEventListener(
             'submit',
             saveProfile
         );
+
+
+    const deleteButton =
+        document.getElementById('delete-account-button');
+
+
+    if (deleteButton) {
+
+        deleteButton.addEventListener(
+            'click',
+            disableAccount
+        );
+
+    }
 }
+
 
 /**
  * Charge les informations de l'utilisateur connecté.
@@ -257,9 +352,11 @@ async function loadProfile()
         currentUser =
             await getCurrentUser();
 
+
         displayProfile(currentUser);
 
         registerEvents();
+
 
     } catch (error) {
 

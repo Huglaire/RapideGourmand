@@ -1,5 +1,6 @@
 import { apiFetch } from '../api/client.js';
 
+
 /**
  * Retourne les informations de l'utilisateur connecté.
  */
@@ -19,6 +20,7 @@ export async function getCurrentUser() {
 
 }
 
+
 /**
  * Met à jour les informations de l'utilisateur connecté.
  */
@@ -29,6 +31,7 @@ export async function updateCurrentUser(user) {
         body: JSON.stringify(user)
     });
 
+
     if (!response.ok) {
 
         throw new Error(
@@ -38,5 +41,26 @@ export async function updateCurrentUser(user) {
     }
 
     return await response.json();
+
+}
+
+
+/**
+ * Désactive le compte de l'utilisateur connecté.
+ */
+export async function deleteCurrentUser() {
+
+    const response = await apiFetch('/api/me', {
+        method: 'DELETE'
+    });
+
+
+    if (!response.ok) {
+
+        throw new Error(
+            'Impossible de désactiver le profil.'
+        );
+
+    }
 
 }
