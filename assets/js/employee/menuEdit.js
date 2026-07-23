@@ -30,13 +30,15 @@ document.addEventListener(
  */
 async function init() {
 
-    const menuContainer = document.getElementById('menu-id');
+    const page = document.querySelector(
+        '#menu-edit-page'
+    );
 
-    if (!menuContainer) {
+    if (!page) {
         return;
     }
 
-    const menuId = menuContainer.dataset.menuId;
+    const menuId = page.dataset.menuId;
 
     // Charge simultanément le menu, les thèmes, les régimes et les plats
     const [menu, themes, diets, dishes] = await Promise.all([

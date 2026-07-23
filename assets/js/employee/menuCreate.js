@@ -31,11 +31,23 @@ document.addEventListener(
  */
 async function init() {
 
-    const form = document.querySelector('#menu-form');
+    const page = document.querySelector(
+        '#menu-create-page'
+    );
+
+    if (!page) {
+        return;
+    }
+
+
+    const form = document.querySelector(
+        '#menu-form'
+    );
 
     if (!form) {
         return;
     }
+
 
     const [
         themes,
@@ -208,7 +220,7 @@ function displayDishes(dishes) {
 
 
 /**
- * Récupère les thèmes sélectionnés.
+ * Récupère les éléments sélectionnés.
  */
 function getSelected(name) {
 
@@ -230,7 +242,8 @@ async function saveMenu() {
 
     const data = {
 
-        title: document.getElementById('title').value.trim(),
+        title:
+            document.getElementById('title').value.trim(),
 
         description:
             document.getElementById('description').value.trim(),
@@ -271,7 +284,9 @@ async function saveMenu() {
 
         await createMenu(data);
 
-        window.location.href = '/employe/menus';
+        window.location.href =
+            '/employe/menus';
+
 
     } catch (error) {
 

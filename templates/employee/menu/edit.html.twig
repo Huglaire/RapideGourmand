@@ -1,19 +1,20 @@
-{% extends 'base.html.twig' %}
+{% extends 'employee/base.html.twig' %}
 
-{% block title %}Modifier un menu{% endblock %}
+{% block title %}
+Modifier un menu
+{% endblock %}
 
 {% block body %}
 
-<div class="container py-5">
+<div
+    class="container py-4"
+    id="menu-edit-page"
+    data-menu-id="{{ menuId }}"
+>
 
     <h1 class="mb-4">
-        Modifier le menu
+        Modifier un menu
     </h1>
-
-    <div
-        id="menu-id"
-        data-menu-id="{{ menuId }}"
-    ></div>
 
     {% include 'employee/components/_menu_form.html.twig' %}
 
