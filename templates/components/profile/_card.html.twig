@@ -16,7 +16,9 @@
 
             </div>
 
+
             <div id="profile-message"></div>
+
 
             <div id="profile-view">
 
@@ -57,15 +59,27 @@
 
             </div>
 
+
             <div class="mt-4 d-flex flex-wrap gap-2">
 
                 <a href="{{ path('order_history') }}" class="btn btn-primary-custom">
                     Mes commandes
                 </a>
 
+
+                <button
+                    id="delete-account-button"
+                    type="button"
+                    class="btn btn-outline-danger d-none"
+                >
+                    Désactiver mon profil
+                </button>
+
             </div>
 
+
             <hr class="my-4">
+
 
             <div class="review-section">
 
@@ -73,11 +87,16 @@
                     Laisser un avis
                 </h3>
 
+
                 <div id="review-message"></div>
 
+
                 <div id="review-already-sent" class="alert alert-info d-none">
+
                     Vous avez déjà publié un avis. Merci pour votre retour !
+
                 </div>
+
 
                 <form id="review-form">
 
@@ -86,6 +105,7 @@
                         <label for="review-rating" class="form-label">
                             Note
                         </label>
+
 
                         <select id="review-rating" class="form-select" required>
 
@@ -117,11 +137,13 @@
 
                     </div>
 
+
                     <div class="mb-4">
 
                         <label for="review-comment" class="form-label">
                             Commentaire
                         </label>
+
 
                         <textarea
                             id="review-comment"
@@ -134,107 +156,153 @@
 
                     </div>
 
+
                     <button type="submit" class="btn btn-primary-custom">
                         Envoyer mon avis
                     </button>
 
+
                 </form>
+
 
             </div>
 
+
             <div id="profile-edit" class="d-none">
+
 
                 <form id="profile-form">
 
+
                     <div class="row">
 
+
                         <div class="col-md-6 mb-3">
+
 
                             <label for="firstName" class="form-label">
                                 Prénom
                             </label>
 
+
                             <input type="text" id="firstName" class="form-control">
+
 
                         </div>
 
+
                         <div class="col-md-6 mb-3">
+
 
                             <label for="lastName" class="form-label">
                                 Nom
                             </label>
 
+
                             <input type="text" id="lastName" class="form-control">
+
 
                         </div>
 
+
                         <div class="col-12 mb-3">
+
 
                             <label for="email" class="form-label">
                                 Email
                             </label>
 
+
                             <input type="email" id="email" class="form-control">
+
 
                         </div>
 
+
                         <div class="col-md-6 mb-3">
+
 
                             <label for="phone" class="form-label">
                                 Téléphone
                             </label>
 
+
                             <input type="text" id="phone" class="form-control">
+
 
                         </div>
 
+
                         <div class="col-md-6 mb-3">
+
 
                             <label for="postalCode" class="form-label">
                                 Code postal
                             </label>
 
+
                             <input type="text" id="postalCode" class="form-control">
+
 
                         </div>
 
+
                         <div class="col-12 mb-3">
+
 
                             <label for="street" class="form-label">
                                 Adresse
                             </label>
 
+
                             <input type="text" id="street" class="form-control">
+
 
                         </div>
 
+
                         <div class="col-12 mb-4">
+
 
                             <label for="city" class="form-label">
                                 Ville
                             </label>
 
+
                             <input type="text" id="city" class="form-control">
+
 
                         </div>
 
+
                     </div>
 
+
                     <div class="profile-form-actions">
+
 
                         <button type="submit" class="btn btn-primary-custom">
                             Enregistrer
                         </button>
 
-                        <button type="button" id="cancel-profile-edit" class="btn btn-outline-secondary">
+
+                        <button
+                            type="button"
+                            id="cancel-profile-edit"
+                            class="btn btn-outline-secondary"
+                        >
                             Annuler
                         </button>
 
+
                     </div>
+
 
                 </form>
 
+
             </div>
+
 
         </div>
 
