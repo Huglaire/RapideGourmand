@@ -18,6 +18,7 @@ import './js/menu/show.js';
 import './js/auth/signin.js';
 import './js/auth/navbar.js';
 import './js/auth/signupForm.js';
+import './js/auth/reactivate.js';
 
 
 import './js/api/client.js';

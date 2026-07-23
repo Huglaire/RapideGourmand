@@ -40,9 +40,29 @@ function initializeSigninForm() {
 
             });
 
+
             const data = await response.json();
 
+
             if (!response.ok) {
+
+
+                if (data.code === 'ACCOUNT_DISABLED') {
+
+                    sessionStorage.setItem(
+                        'restore_email',
+                        email
+                    );
+
+
+                    window.location.href =
+                        '/account/reactivate';
+
+
+                    return;
+
+                }
+
 
                 throw new Error(
                     data.message ?? 'Identifiants invalides.'
@@ -50,16 +70,20 @@ function initializeSigninForm() {
 
             }
 
+
             localStorage.setItem(
                 'jwt',
                 data.token
             );
 
+
             window.location.href = '/';
+
 
         } catch (exception) {
 
             error.textContent = exception.message;
+
             error.classList.remove('d-none');
 
         }
@@ -68,8 +92,16 @@ function initializeSigninForm() {
 
 }
 
+
 // Chargement classique
-document.addEventListener('DOMContentLoaded', initializeSigninForm);
+document.addEventListener(
+    'DOMContentLoaded',
+    initializeSigninForm
+);
+
 
 // Chargement après une navigation Turbo
-document.addEventListener('turbo:load', initializeSigninForm);
+document.addEventListener(
+    'turbo:load',
+    initializeSigninForm
+);

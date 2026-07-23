@@ -1,0 +1,117 @@
+{% extends 'base.html.twig' %}
+
+
+{% block title %}
+    Réactiver mon compte | Rapide & Gourmand
+{% endblock %}
+
+
+{% block body %}
+
+<section class="container py-5">
+
+
+    <div class="row justify-content-center">
+
+
+        <div class="col-md-6">
+
+
+            <div class="card shadow-sm">
+
+
+                <div class="card-body">
+
+
+                    <h1 class="h3 mb-4">
+                        Réactiver mon compte
+                    </h1>
+
+
+                    <p>
+                        Votre compte est actuellement désactivé.
+                    </p>
+
+
+                    <p>
+                        Entrez votre mot de passe pour le réactiver.
+                    </p>
+
+
+                    <div id="reactivate-message"></div>
+
+
+                    <form id="reactivate-form">
+
+
+                        <div class="mb-3">
+
+
+                            <label
+                                for="reactivate-email"
+                                class="form-label"
+                            >
+                                Adresse email
+                            </label>
+
+
+                            <input
+                                type="email"
+                                id="reactivate-email"
+                                class="form-control"
+                                readonly
+                            >
+
+
+                        </div>
+
+
+                        <div class="mb-4">
+
+
+                            <label
+                                for="reactivate-password"
+                                class="form-label"
+                            >
+                                Mot de passe
+                            </label>
+
+
+                            <input
+                                type="password"
+                                id="reactivate-password"
+                                class="form-control"
+                                required
+                            >
+
+
+                        </div>
+
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary-custom"
+                        >
+                            Réactiver mon compte
+                        </button>
+
+
+                    </form>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+</section>
+
+
+{% endblock %}
