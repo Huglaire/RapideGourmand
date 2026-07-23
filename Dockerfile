@@ -66,9 +66,10 @@ RUN composer install \
 # Compilation des assets
 RUN php bin/console asset-map:compile || true
 
-# Préparation des dossiers Symfony
-RUN mkdir -p var/cache var/log var/sessions \
-    && chown -R www-data:www-data var
+# Préparation des dossiers Symfony + uploads
+RUN mkdir -p var/cache var/log var/sessions public/uploads \
+    && chown -R www-data:www-data var public/uploads \
+    && chmod -R 775 var public/uploads
 
 # Configuration nginx
 COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf
