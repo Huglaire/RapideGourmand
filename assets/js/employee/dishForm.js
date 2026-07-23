@@ -36,9 +36,14 @@ if (page) {
     const previewImage = document.querySelector(
         '#dish-picture-preview'
     );
+
     const allergensSelect = document.querySelector('#dish-allergens');
 
+    console.log('MODE :', mode);
+    console.log('ID :', dishId);
+
     init();
+
 
     /**
      * Initialise la page.
@@ -48,16 +53,21 @@ if (page) {
         await loadPictures();
         await loadAllergens();
 
-        pictureUpload.addEventListener(
-            'change',
-            handlePictureUpload
-        );
+        if (pictureUpload) {
+
+            pictureUpload.addEventListener(
+                'change',
+                handlePictureUpload
+            );
+
+        }
 
         if (mode === 'edit') {
             await loadDish();
         }
 
     }
+
 
     /**
      * Charge les images.
@@ -81,6 +91,7 @@ if (page) {
 
     }
 
+
     /**
      * Charge les allergènes.
      */
@@ -103,42 +114,60 @@ if (page) {
 
     }
 
+
     /**
-     * Charge un plat.
+     * Charge un plat existant.
      */
     async function loadDish() {
 
-        const dish = await getDish(dishId);
+        try {
 
-        titleInput.value = dish.title;
-        descriptionInput.value = dish.description ?? '';
-        priceInput.value = dish.price;
+            const dish = await getDish(dishId);
 
-        dish.pictures.forEach((picture) => {
+            console.log('Plat récupéré :', dish);
 
-            [...picturesSelect.options].forEach((option) => {
+            titleInput.value = dish.title;
+            descriptionInput.value = dish.description ?? '';
+            priceInput.value = dish.price;
 
-                if (Number(option.value) === picture.id) {
-                    option.selected = true;
-                }
 
-            });
+            dish.pictures.forEach((picture) => {
 
-        });
+                [...picturesSelect.options].forEach((option) => {
 
-        dish.allergens.forEach((allergen) => {
+                    if (Number(option.value) === picture.id) {
+                        option.selected = true;
+                    }
 
-            [...allergensSelect.options].forEach((option) => {
-
-                if (Number(option.value) === allergen.id) {
-                    option.selected = true;
-                }
+                });
 
             });
 
-        });
+
+            dish.allergens.forEach((allergen) => {
+
+                [...allergensSelect.options].forEach((option) => {
+
+                    if (Number(option.value) === allergen.id) {
+                        option.selected = true;
+                    }
+
+                });
+
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                'Erreur lors du chargement du plat :',
+                error
+            );
+
+        }
 
     }
+
 
     /**
      * Upload d'une nouvelle image.
@@ -151,8 +180,15 @@ if (page) {
             return;
         }
 
-        previewImage.src = URL.createObjectURL(file);
-        previewContainer.classList.remove('d-none');
+
+        if (previewImage && previewContainer) {
+
+            previewImage.src = URL.createObjectURL(file);
+
+            previewContainer.classList.remove('d-none');
+
+        }
+
 
         try {
 
@@ -166,9 +202,11 @@ if (page) {
 
             picturesSelect.appendChild(option);
 
+
         } catch (error) {
 
             console.error(error);
+
             alert(error.message);
 
         }
@@ -183,6 +221,7 @@ if (page) {
 
         event.preventDefault();
 
+
         const data = {
 
             title: titleInput.value.trim(),
@@ -191,13 +230,20 @@ if (page) {
 
             price: Number(priceInput.value),
 
-            pictures: [...picturesSelect.selectedOptions].map(option => Number(option.value)),
+            pictures: [
+                ...picturesSelect.selectedOptions
+            ].map(option => Number(option.value)),
 
-            allergens: [...allergensSelect.selectedOptions].map(option => Number(option.value))
+            allergens: [
+                ...allergensSelect.selectedOptions
+            ].map(option => Number(option.value))
 
         };
 
+
         console.log(data);
+
+
         if (mode === 'create') {
 
             await createDish(data);
@@ -207,6 +253,7 @@ if (page) {
             await updateDish(dishId, data);
 
         }
+
 
         window.location.href = '/employe/plats';
 
