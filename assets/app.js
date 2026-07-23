@@ -35,6 +35,7 @@ import './js/employee/orders.js';
 import './js/employee/show.js';
 import './js/employee/menus.js';
 import './js/employee/menuEdit.js';
+import './js/employee/menuCreate.js';
 import './js/employee/dishForm.js';
 import './js/employee/dishes.js';
 import './js/employee/employeeReviews.js';
