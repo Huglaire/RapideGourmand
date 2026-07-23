@@ -3,10 +3,10 @@
 namespace App\Service;
 
 use Brevo\Client\Api\TransactionalEmailsApi;
-use Brevo\Client\Configuration;
 use Brevo\Client\Model\SendSmtpEmail;
 use Brevo\Client\Model\SendSmtpEmailSender;
 use Brevo\Client\Model\SendSmtpEmailTo;
+use GuzzleHttp\Client;
 
 class BrevoMailerService
 {
@@ -17,16 +17,11 @@ class BrevoMailerService
         string $brevoApiKey
     ) {
 
-        $config = Configuration::getDefaultConfiguration()
-            ->setApiKey(
-                'api-key',
-                $brevoApiKey
-            );
-
-
         $this->api = new TransactionalEmailsApi(
-            null,
-            $config
+            new Client(),
+            [
+                'api-key' => $brevoApiKey
+            ]
         );
     }
 
@@ -78,8 +73,6 @@ class BrevoMailerService
         );
 
 
-        $this->api->sendTransacEmail(
-            $email
-        );
+        $this->api->sendTransacEmail($email);
     }
 }
