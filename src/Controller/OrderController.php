@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Service\StatisticsService;
+use App\Service\DeliveryCalculatorService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\User;
@@ -59,7 +60,8 @@ final class OrderController extends AbstractController
     public function create(
         Request $request,
         EntityManagerInterface $entityManager,
-        StatisticsService $statisticsService
+        StatisticsService $statisticsService,
+        DeliveryCalculatorService $deliveryCalculator
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
 
@@ -171,15 +173,24 @@ final class OrderController extends AbstractController
             $totalPrice *= 0.9;
         }
 
-        // Frais de livraison
-        $deliveryFee = 5.00;
+        // Calcul des frais de livraison
+        $deliveryFee = $deliveryCalculator->calculate(
+            $data['deliveryStreet'],
+            $data['deliveryPostalCode'],
+            $data['deliveryCity']
+        );
 
-        // le calcul kilométrique sera ajouté ultérieurement.
-
-        $order->setDeliveryFee(number_format($deliveryFee, 2, '.', ''));
+        $order->setDeliveryFee(
+            number_format($deliveryFee, 2, '.', '')
+        );
 
         $order->setTotalPrice(
-            number_format($totalPrice + $deliveryFee, 2, '.', '')
+            number_format(
+                $totalPrice + $deliveryFee,
+                2,
+                '.',
+                ''
+            )
         );
 
         //Décrémentation du stock du menu sélectionné
