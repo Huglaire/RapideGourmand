@@ -3,8 +3,6 @@
  */
 function initMenuFilters() {
 
-    console.log("initMenuFilters");
-
     document.querySelectorAll(".range-filter").forEach((filter) => {
 
         const range =
