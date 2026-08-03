@@ -46,19 +46,6 @@ function formatPrice(price) {
 }
 
 /**
- * Transforme un chemin d'image stocké en BDD
- * en chemin exploitable par AssetMapper.
- */
-function getAssetPath(path) {
-
-    if (!path) {
-        return '';
-    }
-
-    return `/assets/${path}`;
-}
-
-/**
  * Affiche l'en-tête du menu.
  */
 function displayHeader(menu) {
@@ -103,7 +90,7 @@ function displayGallery(menu) {
 
 
     mainPicture.src =
-        getAssetPath(gallery[0].path);
+        gallery[0].path;
 
     mainPicture.alt =
         gallery[0].alt;
@@ -119,7 +106,7 @@ function displayGallery(menu) {
 
 
         image.src =
-            getAssetPath(picture.path);
+            picture.path;
 
         image.alt =
             picture.alt;
@@ -128,7 +115,7 @@ function displayGallery(menu) {
         image.addEventListener('click', () => {
 
             mainPicture.src =
-                getAssetPath(picture.path);
+                picture.path;
 
             mainPicture.alt =
                 picture.alt;
@@ -205,7 +192,7 @@ function displayComposition(menu) {
         if (dish.pictures.length > 0) {
 
             image.src =
-                getAssetPath(dish.pictures[0].path);
+                dish.pictures[0].path;
 
             image.alt =
                 dish.pictures[0].alt;
@@ -400,6 +387,9 @@ function updateEstimatedPrice() {
 
     document.getElementById('subtotal').textContent =
         formatPrice(orderState.subtotal);
+
+    document.getElementById('discount').textContent =
+        formatPrice(orderState.discount);
 
     document.getElementById('total').textContent =
         formatPrice(orderState.total);
