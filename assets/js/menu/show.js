@@ -74,18 +74,14 @@ function displayGallery(menu) {
 
     container.innerHTML = '';
 
-    // Affiche en priorité l'image de couverture.
-    if (menu.coverPicture) {
+    /**
+     * Récupère toutes les images associées aux plats du menu.
+     */
+    const gallery = menu.dishes
+        .flatMap(dish => dish.pictures);
 
-        mainPicture.src = menu.coverPicture.path;
-        mainPicture.alt = menu.coverPicture.alt;
 
-    } else if (menu.pictures.length > 0) {
-
-        mainPicture.src = menu.pictures[0].path;
-        mainPicture.alt = menu.pictures[0].alt;
-
-    } else {
+    if (gallery.length === 0) {
 
         mainPicture.src = 'https://placehold.co/800x500';
         mainPicture.alt = menu.title;
@@ -93,23 +89,11 @@ function displayGallery(menu) {
         return;
     }
 
-    // Construit la galerie avec l'image de couverture en premier.
-    const gallery = [];
 
-    if (menu.coverPicture) {
-        gallery.push(menu.coverPicture);
-    }
+    // Première image utilisée comme image principale.
+    mainPicture.src = gallery[0].path;
+    mainPicture.alt = gallery[0].alt;
 
-    menu.pictures.forEach((picture) => {
-
-        if (
-            !menu.coverPicture ||
-            picture.id !== menu.coverPicture.id
-        ) {
-            gallery.push(picture);
-        }
-
-    });
 
     gallery.forEach((picture) => {
 
@@ -122,6 +106,7 @@ function displayGallery(menu) {
         image.src = picture.path;
         image.alt = picture.alt;
 
+
         image.addEventListener('click', () => {
 
             mainPicture.src = picture.path;
@@ -129,9 +114,51 @@ function displayGallery(menu) {
 
         });
 
+
         container.appendChild(clone);
 
     });
+}
+
+// Construit la galerie avec l'image de couverture en premier.
+const gallery = [];
+
+if (menu.coverPicture) {
+    gallery.push(menu.coverPicture);
+}
+
+menu.pictures.forEach((picture) => {
+
+    if (
+        !menu.coverPicture ||
+        picture.id !== menu.coverPicture.id
+    ) {
+        gallery.push(picture);
+    }
+
+});
+
+gallery.forEach((picture) => {
+
+    const clone =
+        template.content.cloneNode(true);
+
+    const image =
+        clone.querySelector('.menu-thumbnail');
+
+    image.src = picture.path;
+    image.alt = picture.alt;
+
+    image.addEventListener('click', () => {
+
+        mainPicture.src = picture.path;
+        mainPicture.alt = picture.alt;
+
+    });
+
+    container.appendChild(clone);
+
+});
 }
 
 /**
