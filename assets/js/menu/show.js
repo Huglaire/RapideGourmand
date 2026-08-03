@@ -18,7 +18,6 @@ const orderState = {
     total: 0
 };
 
-// Initialise la page lorsque le DOM est chargé.
 document.addEventListener(
     'DOMContentLoaded',
     initMenuPage
@@ -44,6 +43,19 @@ function initMenuPage() {
  */
 function formatPrice(price) {
     return `${Number(price).toFixed(2).replace('.', ',')} €`;
+}
+
+/**
+ * Transforme un chemin d'image stocké en BDD
+ * en chemin exploitable par AssetMapper.
+ */
+function getAssetPath(path) {
+
+    if (!path) {
+        return '';
+    }
+
+    return `/assets/${path}`;
 }
 
 /**
@@ -74,11 +86,8 @@ function displayGallery(menu) {
 
     container.innerHTML = '';
 
-    /**
-     * Les images sont liées aux plats du menu.
-     */
-    const gallery = menu.dishes
-        .flatMap(dish => dish.pictures);
+    const gallery =
+        menu.dishes.flatMap(dish => dish.pictures);
 
 
     if (gallery.length === 0) {
@@ -93,9 +102,8 @@ function displayGallery(menu) {
     }
 
 
-    // Première image utilisée comme image principale.
     mainPicture.src =
-        gallery[0].path;
+        getAssetPath(gallery[0].path);
 
     mainPicture.alt =
         gallery[0].alt;
@@ -111,7 +119,7 @@ function displayGallery(menu) {
 
 
         image.src =
-            picture.path;
+            getAssetPath(picture.path);
 
         image.alt =
             picture.alt;
@@ -120,7 +128,7 @@ function displayGallery(menu) {
         image.addEventListener('click', () => {
 
             mainPicture.src =
-                picture.path;
+                getAssetPath(picture.path);
 
             mainPicture.alt =
                 picture.alt;
@@ -197,7 +205,7 @@ function displayComposition(menu) {
         if (dish.pictures.length > 0) {
 
             image.src =
-                dish.pictures[0].path;
+                getAssetPath(dish.pictures[0].path);
 
             image.alt =
                 dish.pictures[0].alt;
@@ -211,6 +219,7 @@ function displayComposition(menu) {
 
         title.textContent =
             dish.title;
+
 
         description.textContent =
             dish.description;
@@ -235,13 +244,9 @@ function displayComposition(menu) {
 function displayMenu(menu) {
 
     displayHeader(menu);
-
     displayGallery(menu);
-
     displayInformation(menu);
-
     displayComposition(menu);
-
     displayOrderPanel(menu);
 }
 
@@ -297,30 +302,6 @@ function displayOrderPanel(menu) {
 
     guestNumber.value =
         menu.minimumGuestNumber;
-
-
-    const minimumGuests =
-        document.getElementById('minimum-guests');
-
-
-    if (minimumGuests) {
-
-        minimumGuests.textContent =
-            `Minimum de commande : ${menu.minimumGuestNumber} personne${menu.minimumGuestNumber > 1 ? 's' : ''}`;
-
-    }
-
-
-    const discountThreshold =
-        document.getElementById('discount-threshold');
-
-
-    if (discountThreshold) {
-
-        discountThreshold.textContent =
-            `10 % de remise à partir de ${menu.minimumGuestNumber + 5} personnes`;
-
-    }
 
 
     updateEstimatedPrice();
@@ -414,37 +395,11 @@ function updateEstimatedPrice() {
     document.getElementById('unit-price').textContent =
         formatPrice(orderState.unitPrice);
 
-
     document.getElementById('summary-guests').textContent =
         orderState.guestNumber;
 
-
     document.getElementById('subtotal').textContent =
         formatPrice(orderState.subtotal);
-
-
-    const discountLabel =
-        document.getElementById('discount-label');
-
-
-    if (orderState.discount > 0) {
-
-        discountLabel.textContent =
-            'Remise (10 %)';
-
-        document.getElementById('discount').textContent =
-            `- ${formatPrice(orderState.discount)}`;
-
-    } else {
-
-        discountLabel.textContent =
-            'Remise';
-
-        document.getElementById('discount').textContent =
-            formatPrice(0);
-
-    }
-
 
     document.getElementById('total').textContent =
         formatPrice(orderState.total);
