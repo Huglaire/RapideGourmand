@@ -86,7 +86,7 @@ async function initCartPage() {
 }
 
 /**
- * Affiche le panier.
+ * Affiche le contenu du panier ainsi que son récapitulatif.
  */
 function renderCart(
     items,
@@ -105,11 +105,13 @@ function renderCart(
 
     let subtotal = 0;
 
+    // Génération de chaque ligne du panier.
     items.forEach((item) => {
 
         const clone =
             itemTemplate.content.cloneNode(true);
 
+        // Calcul du montant correspondant au menu sélectionné.
         const total =
             Number(item.menu.price) *
             item.guestNumber;
@@ -136,6 +138,7 @@ function renderCart(
         ).textContent =
             `${total.toFixed(2)} €`;
 
+        // Suppression du menu sélectionné du panier.
         clone.querySelector(
             '.cart-item__remove'
         ).addEventListener(
@@ -153,9 +156,11 @@ function renderCart(
 
     });
 
+    // Création du récapitulatif de commande.
     const summaryClone =
         summaryTemplate.content.cloneNode(true);
 
+    // Récupération des champs de livraison.
     const deliveryStreetInput =
         summaryClone.querySelector('#delivery-street');
 
@@ -168,6 +173,7 @@ function renderCart(
     const deliveryDateInput =
         summaryClone.querySelector('#delivery-date');
 
+    // Affichage du sous-total.
     summaryClone.querySelector(
         '.cart-summary__subtotal'
     ).textContent =
@@ -178,6 +184,7 @@ function renderCart(
     ).textContent =
         `${subtotal.toFixed(2)} €`;
 
+    // Éléments qui seront mis à jour dynamiquement.
     const deliveryElement =
         summaryClone.querySelector(
             '.cart-summary__delivery'
@@ -190,6 +197,10 @@ function renderCart(
 
     let debounceTimer;
 
+    /**
+     * Calcule dynamiquement les frais de livraison
+     * à partir de l'adresse saisie.
+     */
     async function refreshDeliveryFee() {
 
         const deliveryStreet =
@@ -201,6 +212,7 @@ function renderCart(
         const deliveryCity =
             deliveryCityInput.value.trim();
 
+        // Attente que tous les champs soient renseignés.
         if (
             !deliveryStreet ||
             !deliveryPostalCode ||
@@ -219,6 +231,7 @@ function renderCart(
 
         try {
 
+            // Appel du backend afin de calculer les frais.
             const result =
                 await calculateDeliveryFee(
                     deliveryStreet,
@@ -226,9 +239,11 @@ function renderCart(
                     deliveryCity
                 );
 
+            // Mise à jour des frais de livraison.
             deliveryElement.textContent =
                 `${Number(result.deliveryFee).toFixed(2)} €`;
 
+            // Mise à jour du montant total.
             totalElement.textContent =
                 `${(
                     subtotal +
@@ -243,6 +258,7 @@ function renderCart(
 
     }
 
+    // Vidage complet du panier.
     summaryClone.querySelector(
         '.cart-summary__clear'
     ).addEventListener(
@@ -256,6 +272,7 @@ function renderCart(
         }
     );
 
+    // Validation de la commande.
     summaryClone.querySelector(
         '.cart-summary__checkout'
     ).addEventListener(
@@ -286,6 +303,7 @@ function renderCart(
                 const deliveryCity =
                     deliveryCityInput.value.trim();
 
+                // Vérification que tous les champs obligatoires sont renseignés.
                 if (
                     !deliveryDate ||
                     !deliveryStreet ||
@@ -301,6 +319,7 @@ function renderCart(
 
                 }
 
+                // Envoi de la commande au backend Symfony.
                 await createOrder({
 
                     menuId:
@@ -339,8 +358,11 @@ function renderCart(
         summaryClone
     );
 
+    // Calcul initial des frais de livraison.
     refreshDeliveryFee();
 
+    // Recalcul automatique des frais à chaque modification
+    // de l'adresse de livraison.
     [
         deliveryStreetInput,
         deliveryPostalCodeInput,
@@ -351,6 +373,7 @@ function renderCart(
             'input',
             () => {
 
+                // Évite de solliciter l'API à chaque frappe.
                 clearTimeout(
                     debounceTimer
                 );

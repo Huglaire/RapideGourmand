@@ -15,7 +15,7 @@ class DeliveryCalculatorService
 
     /**
      * Calcule la distance et les frais de livraison
-     * à partir d'une adresse.
+     * à partir d'une adresse de livraison.
      */
     public function calculate(
         string $street,
@@ -23,7 +23,8 @@ class DeliveryCalculatorService
         string $city
     ): array {
 
-        // Cas particulier : Bordeaux
+        // Cas particulier : toute livraison dans Bordeaux
+        // bénéficie du tarif fixe de 5 €.
         if (mb_strtolower(trim($city)) === 'bordeaux') {
 
             return [
@@ -35,12 +36,15 @@ class DeliveryCalculatorService
             ];
         }
 
+        // Récupération des coordonnées GPS de l'adresse client.
         $coordinates = $this->geocodingService->geocode(
             $street,
             $postalCode,
             $city
         );
 
+        // Calcul de la distance entre Rapide & Gourmand
+        // (Bordeaux) et l'adresse de livraison.
         $distance = $this->distanceCalculator->calculate(
             $this->originLatitude,
             $this->originLongitude,
@@ -48,6 +52,8 @@ class DeliveryCalculatorService
             $coordinates['lon']
         );
 
+        // Calcul des frais de livraison à partir
+        // de la distance obtenue.
         return [
             'distance' => $distance,
             'deliveryFee' => $this->deliveryFeeService->calculate(
