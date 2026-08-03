@@ -28,8 +28,7 @@ document.addEventListener(
  * Initialise la page du menu.
  */
 function initMenuPage() {
-    // Quitte immédiatement le script si nous ne sommes pas
-    // sur une page de détail d'un menu.
+
     const container =
         document.querySelector('.menu-detail');
 
@@ -51,6 +50,7 @@ function formatPrice(price) {
  * Affiche l'en-tête du menu.
  */
 function displayHeader(menu) {
+
     document.getElementById('menu-title').textContent =
         menu.title;
 
@@ -75,7 +75,7 @@ function displayGallery(menu) {
     container.innerHTML = '';
 
     /**
-     * Récupère toutes les images associées aux plats du menu.
+     * Les images sont liées aux plats du menu.
      */
     const gallery = menu.dishes
         .flatMap(dish => dish.pictures);
@@ -83,16 +83,22 @@ function displayGallery(menu) {
 
     if (gallery.length === 0) {
 
-        mainPicture.src = 'https://placehold.co/800x500';
-        mainPicture.alt = menu.title;
+        mainPicture.src =
+            'https://placehold.co/800x500';
+
+        mainPicture.alt =
+            menu.title;
 
         return;
     }
 
 
     // Première image utilisée comme image principale.
-    mainPicture.src = gallery[0].path;
-    mainPicture.alt = gallery[0].alt;
+    mainPicture.src =
+        gallery[0].path;
+
+    mainPicture.alt =
+        gallery[0].alt;
 
 
     gallery.forEach((picture) => {
@@ -103,14 +109,21 @@ function displayGallery(menu) {
         const image =
             clone.querySelector('.menu-thumbnail');
 
-        image.src = picture.path;
-        image.alt = picture.alt;
+
+        image.src =
+            picture.path;
+
+        image.alt =
+            picture.alt;
 
 
         image.addEventListener('click', () => {
 
-            mainPicture.src = picture.path;
-            mainPicture.alt = picture.alt;
+            mainPicture.src =
+                picture.path;
+
+            mainPicture.alt =
+                picture.alt;
 
         });
 
@@ -120,56 +133,20 @@ function displayGallery(menu) {
     });
 }
 
-// Construit la galerie avec l'image de couverture en premier.
-const gallery = [];
-
-if (menu.coverPicture) {
-    gallery.push(menu.coverPicture);
-}
-
-menu.pictures.forEach((picture) => {
-
-    if (
-        !menu.coverPicture ||
-        picture.id !== menu.coverPicture.id
-    ) {
-        gallery.push(picture);
-    }
-
-});
-
-gallery.forEach((picture) => {
-
-    const clone =
-        template.content.cloneNode(true);
-
-    const image =
-        clone.querySelector('.menu-thumbnail');
-
-    image.src = picture.path;
-    image.alt = picture.alt;
-
-    image.addEventListener('click', () => {
-
-        mainPicture.src = picture.path;
-        mainPicture.alt = picture.alt;
-
-    });
-
-    container.appendChild(clone);
-
-});
-}
-
 /**
  * Affiche les informations du menu.
  */
 function displayInformation(menu) {
+
     document.getElementById('menu-theme').textContent =
-        menu.themes.map(theme => theme.title).join(', ');
+        menu.themes
+            .map(theme => theme.title)
+            .join(', ');
 
     document.getElementById('menu-diets').textContent =
-        menu.diets.map(diet => diet.title).join(', ');
+        menu.diets
+            .map(diet => diet.title)
+            .join(', ');
 
     document.getElementById('menu-min-guests').textContent =
         `${menu.minimumGuestNumber} personnes`;
@@ -188,6 +165,7 @@ function displayInformation(menu) {
  * Affiche la composition du menu.
  */
 function displayComposition(menu) {
+
     const container =
         document.getElementById('menu-dishes');
 
@@ -196,10 +174,12 @@ function displayComposition(menu) {
 
     container.innerHTML = '';
 
+
     menu.dishes.forEach((dish) => {
 
         const clone =
             template.content.cloneNode(true);
+
 
         const image =
             clone.querySelector('.dish-picture');
@@ -213,10 +193,14 @@ function displayComposition(menu) {
         const allergens =
             clone.querySelector('.dish-allergens-list');
 
+
         if (dish.pictures.length > 0) {
 
-            image.src = dish.pictures[0].path;
-            image.alt = dish.pictures[0].alt;
+            image.src =
+                dish.pictures[0].path;
+
+            image.alt =
+                dish.pictures[0].alt;
 
         } else {
 
@@ -224,11 +208,13 @@ function displayComposition(menu) {
 
         }
 
+
         title.textContent =
             dish.title;
 
         description.textContent =
             dish.description;
+
 
         allergens.textContent =
             dish.allergens.length > 0
@@ -236,6 +222,7 @@ function displayComposition(menu) {
                     .map(allergen => allergen.title)
                     .join(', ')
                 : 'Aucun';
+
 
         container.appendChild(clone);
 
@@ -246,10 +233,15 @@ function displayComposition(menu) {
  * Affiche le menu.
  */
 function displayMenu(menu) {
+
     displayHeader(menu);
+
     displayGallery(menu);
+
     displayInformation(menu);
+
     displayComposition(menu);
+
     displayOrderPanel(menu);
 }
 
@@ -257,6 +249,7 @@ function displayMenu(menu) {
  * Charge le menu.
  */
 async function loadMenu(menuId) {
+
     try {
 
         currentMenu =
@@ -275,6 +268,7 @@ async function loadMenu(menuId) {
  * Initialise le panneau de commande.
  */
 function displayOrderPanel(menu) {
+
     orderState.unitPrice =
         Number(menu.price);
 
@@ -284,23 +278,30 @@ function displayOrderPanel(menu) {
     orderState.guestNumber =
         menu.minimumGuestNumber;
 
+
     document.getElementById('selected-menu-name').textContent =
         menu.title;
+
 
     document.getElementById('selected-menu-price').textContent =
         `${formatPrice(menu.price)} / personne`;
 
+
     const guestNumber =
         document.getElementById('guest-number');
+
 
     guestNumber.min =
         menu.minimumGuestNumber;
 
+
     guestNumber.value =
         menu.minimumGuestNumber;
 
+
     const minimumGuests =
         document.getElementById('minimum-guests');
+
 
     if (minimumGuests) {
 
@@ -309,15 +310,18 @@ function displayOrderPanel(menu) {
 
     }
 
+
     const discountThreshold =
         document.getElementById('discount-threshold');
+
 
     if (discountThreshold) {
 
         discountThreshold.textContent =
-            `10 % de remise à partir de ${menu.minimumGuestNumber + 5} personnes.`;
+            `10 % de remise à partir de ${menu.minimumGuestNumber + 5} personnes`;
 
     }
+
 
     updateEstimatedPrice();
 
@@ -328,8 +332,10 @@ function displayOrderPanel(menu) {
  * Associe les événements du panneau de commande.
  */
 function bindOrderPanelEvents() {
+
     const guestNumber =
         document.getElementById('guest-number');
+
 
     guestNumber.oninput = () => {
 
@@ -343,27 +349,34 @@ function bindOrderPanelEvents() {
 
         }
 
+
         orderState.guestNumber =
             Number(guestNumber.value);
+
 
         updateEstimatedPrice();
 
     };
 
+
     document
         .getElementById('order-button')
         .addEventListener('click', () => {
 
-            const added = addToCart(
-                currentMenu.id,
-                orderState.guestNumber
-            );
+            const added =
+                addToCart(
+                    currentMenu.id,
+                    orderState.guestNumber
+                );
+
 
             if (!added) {
                 return;
             }
 
-            window.location.href = '/panier';
+
+            window.location.href =
+                '/panier';
 
         });
 }
@@ -372,12 +385,12 @@ function bindOrderPanelEvents() {
  * Recalcule le récapitulatif de la commande.
  */
 function updateEstimatedPrice() {
+
     orderState.subtotal =
         orderState.unitPrice *
         orderState.guestNumber;
 
-    // Applique la remise prévue à partir de
-    // cinq personnes au-dessus du minimum.
+
     if (
         orderState.guestNumber >=
         orderState.minimumGuestNumber + 5
@@ -392,21 +405,27 @@ function updateEstimatedPrice() {
 
     }
 
+
     orderState.total =
         orderState.subtotal -
         orderState.discount;
 
+
     document.getElementById('unit-price').textContent =
         formatPrice(orderState.unitPrice);
+
 
     document.getElementById('summary-guests').textContent =
         orderState.guestNumber;
 
+
     document.getElementById('subtotal').textContent =
         formatPrice(orderState.subtotal);
 
+
     const discountLabel =
         document.getElementById('discount-label');
+
 
     if (orderState.discount > 0) {
 
@@ -425,6 +444,7 @@ function updateEstimatedPrice() {
             formatPrice(0);
 
     }
+
 
     document.getElementById('total').textContent =
         formatPrice(orderState.total);
