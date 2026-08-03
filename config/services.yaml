@@ -11,8 +11,6 @@ parameters:
 
     brevo_api_key: '%env(BREVO_API_KEY)%'
 
-    geocoding.url: 'https://nominatim.openstreetmap.org/search'
-
     delivery.origin.latitude: 44.837789
 
     delivery.origin.longitude: -0.579180
@@ -20,23 +18,27 @@ parameters:
 services:
 
     # default configuration for services in *this* file
+
     _defaults:
+
         autowire: true
         autoconfigure: true
 
     # makes classes in src/ available to be used as services
+
     App\:
+
         resource: '../src/'
 
     App\Service\BrevoMailerService:
+
         arguments:
+
             $brevoApiKey: '%brevo_api_key%'
 
-    App\Service\GeocodingService:
-        arguments:
-            $geocodingUrl: '%geocoding.url%'
-
     App\Service\DeliveryCalculatorService:
+
         arguments:
+
             $originLatitude: '%delivery.origin.latitude%'
             $originLongitude: '%delivery.origin.longitude%'
