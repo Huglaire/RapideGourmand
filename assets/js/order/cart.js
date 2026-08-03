@@ -9,7 +9,8 @@ import {
 } from '../services/menu.service.js';
 
 import {
-    createOrder
+    createOrder,
+    calculateDeliveryFee
 } from '../services/order.service.js';
 
 // Initialise la page panier.
@@ -155,6 +156,18 @@ function renderCart(
     const summaryClone =
         summaryTemplate.content.cloneNode(true);
 
+    const deliveryStreetInput =
+        summaryClone.querySelector('#delivery-street');
+
+    const deliveryPostalCodeInput =
+        summaryClone.querySelector('#delivery-postal-code');
+
+    const deliveryCityInput =
+        summaryClone.querySelector('#delivery-city');
+
+    const deliveryDateInput =
+        summaryClone.querySelector('#delivery-date');
+
     summaryClone.querySelector(
         '.cart-summary__subtotal'
     ).textContent =
@@ -164,6 +177,71 @@ function renderCart(
         '.cart-summary__total'
     ).textContent =
         `${subtotal.toFixed(2)} €`;
+
+    const deliveryElement =
+        summaryClone.querySelector(
+            '.cart-summary__delivery'
+        );
+
+    const totalElement =
+        summaryClone.querySelector(
+            '.cart-summary__total'
+        );
+
+    let debounceTimer;
+
+    async function refreshDeliveryFee() {
+
+        const deliveryStreet =
+            deliveryStreetInput.value.trim();
+
+        const deliveryPostalCode =
+            deliveryPostalCodeInput.value.trim();
+
+        const deliveryCity =
+            deliveryCityInput.value.trim();
+
+        if (
+            !deliveryStreet ||
+            !deliveryPostalCode ||
+            !deliveryCity
+        ) {
+
+            deliveryElement.textContent =
+                '5,00 €';
+
+            totalElement.textContent =
+                `${subtotal.toFixed(2)} €`;
+
+            return;
+
+        }
+
+        try {
+
+            const result =
+                await calculateDeliveryFee(
+                    deliveryStreet,
+                    deliveryPostalCode,
+                    deliveryCity
+                );
+
+            deliveryElement.textContent =
+                `${Number(result.deliveryFee).toFixed(2)} €`;
+
+            totalElement.textContent =
+                `${(
+                    subtotal +
+                    Number(result.deliveryFee)
+                ).toFixed(2)} €`;
+
+        } catch (error) {
+
+            console.error(error);
+
+        }
+
+    }
 
     summaryClone.querySelector(
         '.cart-summary__clear'
@@ -197,24 +275,16 @@ function renderCart(
                 }
 
                 const deliveryDate =
-                    document.getElementById(
-                        'delivery-date'
-                    ).value;
+                    deliveryDateInput.value;
 
                 const deliveryStreet =
-                    document.getElementById(
-                        'delivery-street'
-                    ).value.trim();
+                    deliveryStreetInput.value.trim();
 
                 const deliveryPostalCode =
-                    document.getElementById(
-                        'delivery-postal-code'
-                    ).value.trim();
+                    deliveryPostalCodeInput.value.trim();
 
                 const deliveryCity =
-                    document.getElementById(
-                        'delivery-city'
-                    ).value.trim();
+                    deliveryCityInput.value.trim();
 
                 if (
                     !deliveryDate ||
@@ -268,4 +338,31 @@ function renderCart(
     summaryContainer.appendChild(
         summaryClone
     );
+
+    refreshDeliveryFee();
+
+    [
+        deliveryStreetInput,
+        deliveryPostalCodeInput,
+        deliveryCityInput
+    ].forEach((input) => {
+
+        input.addEventListener(
+            'input',
+            () => {
+
+                clearTimeout(
+                    debounceTimer
+                );
+
+                debounceTimer =
+                    setTimeout(
+                        refreshDeliveryFee,
+                        500
+                    );
+
+            }
+        );
+
+    });
 }

@@ -174,19 +174,24 @@ final class OrderController extends AbstractController
         }
 
         // Calcul des frais de livraison
-        $deliveryFee = $deliveryCalculator->calculate(
+        $delivery = $deliveryCalculator->calculate(
             $data['deliveryStreet'],
             $data['deliveryPostalCode'],
             $data['deliveryCity']
         );
 
         $order->setDeliveryFee(
-            number_format($deliveryFee, 2, '.', '')
+            number_format(
+                $delivery['deliveryFee'],
+                2,
+                '.',
+                ''
+            )
         );
 
         $order->setTotalPrice(
             number_format(
-                $totalPrice + $deliveryFee,
+                $totalPrice + $delivery['deliveryFee'],
                 2,
                 '.',
                 ''
@@ -559,5 +564,43 @@ final class OrderController extends AbstractController
         return $this->json([
             'message' => 'La commande a été annulée avec succès.'
         ]);
+    }
+
+    #[IsGranted('ROLE_USER')]
+    #[Route('/delivery-fee', name: 'app_order_delivery_fee', methods: ['POST'])]
+    public function calculateDeliveryFee(
+        Request $request,
+        DeliveryCalculatorService $deliveryCalculator
+    ): JsonResponse {
+
+        $data = json_decode($request->getContent(), true);
+
+        if (
+            !isset(
+                $data['deliveryStreet'],
+                $data['deliveryPostalCode'],
+                $data['deliveryCity']
+            )
+        ) {
+            return $this->json([
+                'message' => 'Les informations de livraison sont incomplètes.'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        try {
+
+            return $this->json(
+                $deliveryCalculator->calculate(
+                    $data['deliveryStreet'],
+                    $data['deliveryPostalCode'],
+                    $data['deliveryCity']
+                )
+            );
+        } catch (\Throwable $exception) {
+
+            return $this->json([
+                'message' => $exception->getMessage()
+            ], Response::HTTP_BAD_REQUEST);
+        }
     }
 }

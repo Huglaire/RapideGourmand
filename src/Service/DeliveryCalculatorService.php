@@ -14,17 +14,25 @@ class DeliveryCalculatorService
     }
 
     /**
-     * Calcule les frais de livraison à partir d'une adresse.
+     * Calcule la distance et les frais de livraison
+     * à partir d'une adresse.
      */
     public function calculate(
         string $street,
         string $postalCode,
         string $city
-    ): float {
+    ): array {
 
         // Cas particulier : Bordeaux
         if (mb_strtolower(trim($city)) === 'bordeaux') {
-            return $this->deliveryFeeService->calculate(0, true);
+
+            return [
+                'distance' => 0,
+                'deliveryFee' => $this->deliveryFeeService->calculate(
+                    0,
+                    true
+                )
+            ];
         }
 
         $coordinates = $this->geocodingService->geocode(
@@ -40,9 +48,12 @@ class DeliveryCalculatorService
             $coordinates['lon']
         );
 
-        return $this->deliveryFeeService->calculate(
-            $distance,
-            false
-        );
+        return [
+            'distance' => $distance,
+            'deliveryFee' => $this->deliveryFeeService->calculate(
+                $distance,
+                false
+            )
+        ];
     }
 }

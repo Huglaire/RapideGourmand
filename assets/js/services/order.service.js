@@ -19,6 +19,58 @@ export async function getOrders()
 }
 
 /**
+ * Calcule les frais de livraison.
+ */
+export async function calculateDeliveryFee(
+    deliveryStreet,
+    deliveryPostalCode,
+    deliveryCity
+)
+{
+    const response = await apiFetch(
+        '/api/orders/delivery-fee',
+        {
+            method: 'POST',
+
+            headers: {
+                'Content-Type': 'application/json'
+            },
+
+            body: JSON.stringify({
+                deliveryStreet,
+                deliveryPostalCode,
+                deliveryCity
+            })
+        }
+    );
+
+    if (!response.ok) {
+
+        let message =
+            'Impossible de calculer les frais de livraison.';
+
+        try {
+
+            const error =
+                await response.json();
+
+            if (error.message) {
+                message = error.message;
+            }
+
+        } catch {
+
+            // Aucune information complémentaire renvoyée par l'API.
+
+        }
+
+        throw new Error(message);
+    }
+
+    return await response.json();
+}
+
+/**
  * Crée une commande.
  */
 export async function createOrder(orderData)
@@ -82,10 +134,12 @@ export async function cancelOrder(
             })
         }
     );
+
     if (!response.ok) {
         throw new Error(
             'Impossible d\'annuler cette commande.'
         );
     }
+
     return await response.json();
 }
