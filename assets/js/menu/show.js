@@ -234,23 +234,12 @@ function displayComposition(menu) {
 
 
     menu.dishes.forEach((dish) => {
-
-
         const clone =
             template.content.cloneNode(true);
-
-
-
         const image =
             clone.querySelector('.dish-picture');
-
-
-
         const title =
             clone.querySelector('.dish-title');
-
-
-
         const description =
             clone.querySelector('.dish-description');
 
@@ -285,9 +274,6 @@ function displayComposition(menu) {
 
         title.textContent =
             dish.title;
-
-
-
         description.textContent =
             dish.description;
 

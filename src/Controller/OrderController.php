@@ -407,8 +407,6 @@ final class OrderController extends AbstractController
             ], Response::HTTP_BAD_REQUEST);
         }
         // Règle métier : le client peut uniquement reporter la date de livraison.
-        // Toute modification susceptible d'impacter la tarification ou l'organisation
-        // de la prestation (menu, nombre d'invités, adresse...) doit être traitée par l'entreprise.
 
         if (
             count($data) !== 1 ||

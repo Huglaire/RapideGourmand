@@ -42,7 +42,7 @@ final class RegisterController extends AbstractController
                     new OA\Property(
                         property: 'password',
                         type: 'string',
-                        example: 'password'
+                        example: 'Password1!'
                     ),
                     new OA\Property(
                         property: 'firstName',
@@ -80,29 +80,15 @@ final class RegisterController extends AbstractController
         responses: [
             new OA\Response(
                 response: 201,
-                description: 'Utilisateur créé avec succès.',
-                content: new OA\JsonContent(
-                    properties: [
-                        new OA\Property(
-                            property: 'message',
-                            type: 'string',
-                            example: 'Utilisateur créé avec succès.'
-                        )
-                    ]
-                )
+                description: 'Utilisateur créé avec succès.'
+            ),
+            new OA\Response(
+                response: 400,
+                description: 'Adresse e-mail ou mot de passe invalide.'
             ),
             new OA\Response(
                 response: 409,
-                description: 'Adresse e-mail déjà utilisée.',
-                content: new OA\JsonContent(
-                    properties: [
-                        new OA\Property(
-                            property: 'message',
-                            type: 'string',
-                            example: 'Cet email est déjà utilisé.'
-                        )
-                    ]
-                )
+                description: 'Adresse e-mail déjà utilisée.'
             )
         ]
     )]
@@ -112,35 +98,96 @@ final class RegisterController extends AbstractController
         EntityManagerInterface $entityManager,
         UserRepository $userRepository
     ): Response {
+
+        // Récupération des données JSON envoyées par le frontend.
         $data = $request->toArray();
 
+        // Vérification de la présence des champs obligatoires.
+        $requiredFields = [
+            'email',
+            'password',
+            'firstName',
+            'lastName',
+            'phone',
+            'street',
+            'postalCode',
+            'city'
+        ];
+
+        foreach ($requiredFields as $field) {
+
+            if (
+                !isset($data[$field]) ||
+                !is_string($data[$field]) ||
+                trim($data[$field]) === ''
+            ) {
+                return $this->json([
+                    'message' => 'Veuillez renseigner tous les champs obligatoires.'
+                ], Response::HTTP_BAD_REQUEST);
+            }
+        }
+
+        // Nettoyage de l'adresse e-mail.
+        $email = trim($data['email']);
+
+        // Vérification du format de l'adresse e-mail côté serveur.
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+
+            return $this->json([
+                'message' => 'Veuillez saisir une adresse e-mail valide.'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Vérification de la robustesse du mot de passe côté serveur.
+        // 8 caractères minimum, une majuscule, une minuscule,
+        // un chiffre et un caractère spécial.
+        $passwordRegex =
+            '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/';
+
+        if (!preg_match($passwordRegex, $data['password'])) {
+
+            return $this->json([
+                'message' => 'Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Vérification de l'unicité de l'adresse e-mail.
         $existingUser = $userRepository->findOneBy([
-            'email' => $data['email']
+            'email' => $email
         ]);
 
         if ($existingUser !== null) {
+
             return $this->json([
                 'message' => 'Cet email est déjà utilisé.'
             ], Response::HTTP_CONFLICT);
         }
 
+        // Création du nouvel utilisateur.
         $user = new User();
 
-        $user->setEmail($data['email']);
+        $user->setEmail($email);
         $user->setFirstName($data['firstName']);
         $user->setLastName($data['lastName']);
+
+        // Hachage du mot de passe avant son enregistrement.
         $user->setPassword(
             $passwordHasher->hashPassword($user, $data['password'])
         );
+
         $user->setPhone($data['phone']);
         $user->setStreet($data['street']);
         $user->setPostalCode($data['postalCode']);
         $user->setCity($data['city']);
+
+        // Attribution du rôle utilisateur par défaut.
         $user->setRoles(['ROLE_USER']);
 
+        // Enregistrement de l'utilisateur dans MySQL via Doctrine.
         $entityManager->persist($user);
         $entityManager->flush();
 
+        // Confirmation de la création du compte.
         return $this->json([
             'message' => 'Utilisateur créé avec succès.'
         ], Response::HTTP_CREATED);
