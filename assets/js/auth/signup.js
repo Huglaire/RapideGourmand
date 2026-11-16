@@ -1,84 +1,197 @@
-/**
- * Initialisation du formulaire d'inscription.
- * Les contrôles sont effectués côté navigateur avant l'envoi à l'API.
- */
+// Initialisation du formulaire d'inscription
 function initializeSignupForm() {
 
     const form = document.getElementById('signup-form');
 
-    // Évite d'ajouter plusieurs fois les événements, notamment avec Turbo.
     if (!form || form.dataset.initialized) {
         return;
     }
 
     form.dataset.initialized = 'true';
 
+    // Recuperation des champs
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
-    const confirmPasswordInput = document.getElementById('confirmPassword');
+    const confirmInput = document.getElementById('confirmPassword');
+
+    // Recuperation des zones de feedback
+    const emailFeedback = document.getElementById('email-feedback');
+    const confirmFeedback = document.getElementById('confirm-password-feedback');
     const error = document.getElementById('signup-error');
 
-    // Expression régulière vérifiant le format général d'une adresse e-mail.
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    // Validation de l'adresse e-mail
+    function validateEmail() {
 
-    // Mot de passe : 8 caractères minimum, majuscule, minuscule,
-    // chiffre et caractère spécial obligatoires.
-    const passwordRegex =
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+        const email = emailInput.value.trim();
 
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+        if (!email) {
+
+            emailInput.classList.remove('is-valid', 'is-invalid');
+            emailFeedback.textContent = '';
+
+            return false;
+        }
+
+        const valid = regex.test(email);
+
+        emailInput.classList.toggle('is-valid', valid);
+        emailInput.classList.toggle('is-invalid', !valid);
+
+        emailFeedback.textContent = valid
+            ? 'Adresse e-mail au format correct.'
+            : 'Veuillez saisir une adresse e-mail valide.';
+
+        emailFeedback.className = valid
+            ? 'form-text text-success'
+            : 'form-text text-danger';
+
+        return valid;
+    }
+
+    // Validation des criteres du mot de passe
+    function validatePassword() {
+
+        const password = passwordInput.value;
+
+        const rules = {
+
+            length: password.length >= 8,
+
+            lowercase: /[a-z]/.test(password),
+
+            uppercase: /[A-Z]/.test(password),
+
+            number: /\d/.test(password),
+
+            special: /[^A-Za-z0-9]/.test(password)
+
+        };
+
+        const labels = {
+
+            length: '8 caracteres minimum',
+
+            lowercase: 'Une lettre minuscule',
+
+            uppercase: 'Une lettre majuscule',
+
+            number: 'Un chiffre',
+
+            special: 'Un caractere special'
+
+        };
+
+        Object.entries(rules).forEach(([rule, valid]) => {
+
+            const item = document.querySelector(
+                `[data-rule="${rule}"]`
+            );
+
+            if (!item) {
+                return;
+            }
+
+            item.classList.toggle('text-success', valid);
+            item.classList.toggle(
+                'text-danger',
+                !valid && password.length > 0
+            );
+
+            item.classList.toggle(
+                'text-muted',
+                password.length === 0
+            );
+
+            item.textContent =
+                `${valid ? '✓' : '○'} ${labels[rule]}`;
+
+        });
+
+        const valid = Object.values(rules).every(Boolean);
+
+        passwordInput.classList.toggle(
+            'is-valid',
+            valid && password.length > 0
+        );
+
+        passwordInput.classList.toggle(
+            'is-invalid',
+            password.length > 0 && !valid
+        );
+
+        return valid;
+    }
+
+    // Validation de la confirmation du mot de passe
+    function validateConfirmation() {
+
+        const password = passwordInput.value;
+        const confirmation = confirmInput.value;
+
+        if (!confirmation) {
+
+            confirmInput.classList.remove('is-valid', 'is-invalid');
+            confirmFeedback.textContent = '';
+
+            return false;
+        }
+
+        const valid = password === confirmation;
+
+        confirmInput.classList.toggle('is-valid', valid);
+        confirmInput.classList.toggle('is-invalid', !valid);
+
+        confirmFeedback.textContent = valid
+            ? 'Les mots de passe correspondent.'
+            : 'Les mots de passe ne correspondent pas.';
+
+        confirmFeedback.className = valid
+            ? 'form-text text-success'
+            : 'form-text text-danger';
+
+        return valid;
+    }
+
+    // Ecoute des saisies en temps reel
+    emailInput.addEventListener('input', validateEmail);
+
+    passwordInput.addEventListener('input', () => {
+
+        validatePassword();
+
+        if (confirmInput.value) {
+            validateConfirmation();
+        }
+
+    });
+
+    confirmInput.addEventListener('input', validateConfirmation);
+
+    // Gestion de la soumission du formulaire
     form.addEventListener('submit', async (event) => {
 
-        // Empêche l'envoi classique du formulaire.
         event.preventDefault();
 
-        // Réinitialise le message d'erreur.
+        console.log('Formulaire inscription envoye');
+
         error.classList.add('d-none');
         error.textContent = '';
 
-        const email = emailInput.value.trim();
+        // Verification de toutes les conditions
+        const emailValid = validateEmail();
+        const passwordValid = validatePassword();
+        const confirmationValid = validateConfirmation();
+
+        if (!emailValid || !passwordValid || !confirmationValid) {
+            return;
+        }
+
         const password = passwordInput.value;
-        const confirmPassword = confirmPasswordInput.value;
-
-        // Vérification du format de l'adresse e-mail.
-        if (!emailRegex.test(email)) {
-
-            error.textContent =
-                'Veuillez saisir une adresse e-mail valide.';
-
-            error.classList.remove('d-none');
-            emailInput.focus();
-
-            return;
-        }
-
-        // Vérification de la robustesse du mot de passe.
-        if (!passwordRegex.test(password)) {
-
-            error.textContent =
-                'Le mot de passe doit contenir au moins 8 caractères, ' +
-                'une majuscule, une minuscule, un chiffre et un caractère spécial.';
-
-            error.classList.remove('d-none');
-            passwordInput.focus();
-
-            return;
-        }
-
-        // Vérification de la confirmation du mot de passe.
-        if (password !== confirmPassword) {
-
-            error.textContent =
-                'Les mots de passe ne correspondent pas.';
-
-            error.classList.remove('d-none');
-            confirmPasswordInput.focus();
-
-            return;
-        }
 
         try {
 
-            // Envoi des données à l'API Symfony.
             const response = await fetch('/api/register', {
 
                 method: 'POST',
@@ -91,12 +204,19 @@ function initializeSignupForm() {
                 body: JSON.stringify({
 
                     firstName: document.getElementById('firstName').value,
+
                     lastName: document.getElementById('lastName').value,
-                    email,
+
+                    email: emailInput.value.trim(),
+
                     password,
+
                     phone: document.getElementById('phone').value,
+
                     street: document.getElementById('street').value,
+
                     postalCode: document.getElementById('postalCode').value,
+
                     city: document.getElementById('city').value
 
                 })
@@ -105,7 +225,6 @@ function initializeSignupForm() {
 
             const data = await response.json();
 
-            // Gestion des erreurs renvoyées par le backend.
             if (!response.ok) {
 
                 throw new Error(
@@ -114,12 +233,11 @@ function initializeSignupForm() {
 
             }
 
-            // Redirection après création réussie du compte.
+            // Redirection apres creation du compte
             window.location.href = '/signin';
 
         } catch (exception) {
 
-            // Affiche le message d'erreur retourné par l'API.
             error.textContent = exception.message;
             error.classList.remove('d-none');
 
@@ -129,8 +247,14 @@ function initializeSignupForm() {
 
 }
 
-// Initialisation lors du chargement classique de la page.
-document.addEventListener('DOMContentLoaded', initializeSignupForm);
+// Chargement classique
+document.addEventListener(
+    'DOMContentLoaded',
+    initializeSignupForm
+);
 
-// Initialisation après une navigation Turbo.
-document.addEventListener('turbo:load', initializeSignupForm);
+// Chargement apres une navigation Turbo
+document.addEventListener(
+    'turbo:load',
+    initializeSignupForm
+);
