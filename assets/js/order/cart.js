@@ -104,8 +104,9 @@ function renderCart(
         );
 
     let subtotal = 0;
+    let discount = 0;
 
-    // Génération de chaque ligne du panier.
+    // Génération de chaque ligne du panier et calcul des montants.
     items.forEach((item) => {
 
         const clone =
@@ -117,6 +118,15 @@ function renderCart(
             item.guestNumber;
 
         subtotal += total;
+
+        // Applique une remise de 10 % si le nombre de convives
+        // atteint au moins cinq personnes au-dessus du minimum du menu.
+        if (
+            item.guestNumber >=
+            Number(item.menu.minimumGuestNumber) + 5
+        ) {
+            discount += total * 0.10;
+        }
 
         clone.querySelector(
             '.cart-item__title'
@@ -179,10 +189,21 @@ function renderCart(
     ).textContent =
         `${subtotal.toFixed(2)} €`;
 
+    // Affichage de la remise et du total après réduction.
+    summaryClone.querySelector(
+        '.cart-summary__discount'
+    ).textContent =
+        discount > 0
+            ? `- ${discount.toFixed(2)} €`
+            : '—';
+
+    const discountedSubtotal =
+        subtotal - discount;
+
     summaryClone.querySelector(
         '.cart-summary__total'
     ).textContent =
-        `${subtotal.toFixed(2)} €`;
+        `${discountedSubtotal.toFixed(2)} €`;
 
     // Éléments qui seront mis à jour dynamiquement.
     const deliveryElement =
@@ -223,7 +244,7 @@ function renderCart(
                 '5,00 €';
 
             totalElement.textContent =
-                `${subtotal.toFixed(2)} €`;
+                `${discountedSubtotal.toFixed(2)} €`;
 
             return;
 
@@ -246,7 +267,7 @@ function renderCart(
             // Mise à jour du montant total.
             totalElement.textContent =
                 `${(
-                    subtotal +
+                    discountedSubtotal +
                     Number(result.deliveryFee)
                 ).toFixed(2)} €`;
 
