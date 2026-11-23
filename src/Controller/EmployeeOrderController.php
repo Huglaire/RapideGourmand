@@ -143,7 +143,6 @@ final class EmployeeOrderController extends AbstractController
             Order::STATUS_FINISHED,
             Order::STATUS_CANCELLED
         ];
-
         if (!in_array($status, $allowedStatuses, true)) {
 
             return $this->json(
@@ -153,9 +152,7 @@ final class EmployeeOrderController extends AbstractController
                 Response::HTTP_BAD_REQUEST
             );
         }
-
         $order->setStatus($status);
-
         $entityManager->flush();
 
         return $this->json([
@@ -181,13 +178,10 @@ final class EmployeeOrderController extends AbstractController
             $request->getContent(),
             true
         );
-
         $reason = trim(
             $data['reason'] ?? ''
         );
-
         if ($reason === '') {
-
             return $this->json(
                 [
                     'message' => 'Le motif est obligatoire.'
@@ -195,25 +189,19 @@ final class EmployeeOrderController extends AbstractController
                 Response::HTTP_BAD_REQUEST
             );
         }
-
         $order->setStatus(
             Order::STATUS_CANCELLED
         );
-
         $order->setCancelReason(
             $reason
         );
-
         $order->setCancelDate(
             new \DateTimeImmutable()
         );
-
         $order->setUpdatedAt(
             new \DateTimeImmutable()
         );
-
         $entityManager->flush();
-
         return $this->json([
             'message' => 'Commande annulée.',
             'status' => $order->getStatus()

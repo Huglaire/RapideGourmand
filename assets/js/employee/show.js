@@ -299,7 +299,7 @@ function createButton(
 
     button.classList.add(
         'btn',
-        'btn-primary',
+        'btn-primary-custom',
         'me-2'
     );
 
