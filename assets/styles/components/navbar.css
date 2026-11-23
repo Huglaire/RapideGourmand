@@ -115,3 +115,45 @@
     }
 
 }
+
+/* Navigation : occupation de toute la largeur */
+.navbar-container {
+    width: 100%;
+    max-width: none !important;
+    padding-left: clamp(16px, 3vw, 50px);
+    padding-right: clamp(16px, 3vw, 50px);
+}
+
+/* Répartition des éléments */
+.navbar-collapse {
+    flex-grow: 1;
+    justify-content: space-between;
+}
+
+/* Liens de navigation au centre */
+.navbar-nav {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Actions du compte à droite */
+.navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-left: auto;
+}
+
+/* Adaptation aux petits écrans */
+@media (max-width: 991.98px) {
+
+    .navbar-nav {
+        margin: 12px 0;
+    }
+
+    .navbar-actions {
+        margin: 0 0 12px;
+        flex-wrap: wrap;
+    }
+
+}
