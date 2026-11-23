@@ -11,6 +11,20 @@ export function getCart()
 }
 
 /**
+ * Informe les autres composants que le panier a changé.
+ */
+function notifyCartUpdate(cart)
+{
+    window.dispatchEvent(
+        new CustomEvent('cart:updated', {
+            detail: {
+                count: cart.length
+            }
+        })
+    );
+}
+
+/**
  * Sauvegarde le panier.
  */
 function saveCart(cart)
@@ -19,6 +33,8 @@ function saveCart(cart)
         STORAGE_KEY,
         JSON.stringify(cart)
     );
+
+    notifyCartUpdate(cart);
 }
 
 /**
@@ -90,6 +106,8 @@ export function removeFromCart(menuId)
 export function clearCart()
 {
     localStorage.removeItem(STORAGE_KEY);
+
+    notifyCartUpdate([]);
 }
 
 /**

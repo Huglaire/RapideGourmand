@@ -1,5 +1,20 @@
 import { logout } from './auth.service.js';
 import { getCurrentUser } from '../services/user.service.js';
+import { getCart } from '../services/cart.service.js';
+
+/**
+ * Met à jour le compteur du panier.
+ */
+function updateCartCount()
+{
+    const cartCount = document.getElementById('cart-count');
+
+    if (!cartCount) {
+        return;
+    }
+
+    cartCount.textContent = getCart().length;
+}
 
 /**
  * Met à jour les actions de la barre de navigation
@@ -57,4 +72,14 @@ async function updateNavbar() {
 
 }
 
+// Initialisation de la navigation.
 updateNavbar();
+
+// Initialisation du compteur du panier.
+updateCartCount();
+
+// Actualisation après chaque modification du panier.
+window.addEventListener('cart:updated', updateCartCount);
+
+// Synchronisation lorsque le panier change dans un autre onglet.
+window.addEventListener('storage', updateCartCount);
