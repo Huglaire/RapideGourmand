@@ -84,9 +84,14 @@ function initializeSigninForm() {
 
                 }
 
-                // Nettoyage du panier de la session précédente.
+                /**
+                 * Nettoyage des données temporaires
+                 * laissées par une précédente session.
+                 */
                 localStorage.removeItem('cart');
+                sessionStorage.removeItem('restore_email');
 
+                // Enregistrement du nouveau JWT.
                 localStorage.setItem(
                     'jwt',
                     data.token
@@ -102,9 +107,7 @@ function initializeSigninForm() {
                 error.textContent =
                     exception.message;
 
-                error.classList.remove(
-                    'd-none'
-                );
+                error.classList.remove('d-none');
 
             }
 
