@@ -9,8 +9,7 @@ class StatisticsQueryService
 {
     public function __construct(
         private readonly DocumentManager $documentManager
-    ) {
-    }
+    ) {}
 
     public function getOrdersPerMenu(): array
     {
@@ -42,7 +41,8 @@ class StatisticsQueryService
 
         // Exécute le pipeline et retourne le résultat sous forme de tableau PHP
         return $builder
-            ->execute()
+            ->getAggregation()
+            ->getIterator()
             ->toArray();
     }
 
@@ -107,7 +107,8 @@ class StatisticsQueryService
 
         // Exécute le pipeline et retourne le résultat sous forme de tableau PHP
         return $builder
-            ->execute()
+            ->getAggregation()
+            ->getIterator()
             ->toArray();
     }
 }
