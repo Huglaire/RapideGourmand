@@ -78,19 +78,6 @@
 
             <div class="navbar-actions">
 
-                {# Accès au panier #}
-                <a
-                    href="{{ path('front_cart') }}"
-                    class="btn btn-outline-light position-relative"
-                >
-                    <i class="bi bi-cart3"></i>
-                    Panier
-                    <span
-                        id="cart-count"
-                        class="badge rounded-pill bg-warning text-dark ms-1"
-                    >0</span>
-                </a>
-
                 <a
                     id="login-link"
                     href="{{ path('app_signin') }}"
@@ -105,6 +92,19 @@
                     class="btn btn-primary-custom d-none"
                 >
                     Mon profil
+                </a>
+
+                {# Accès au panier #}
+                <a
+                    href="{{ path('front_cart') }}"
+                    class="btn btn-outline-light position-relative"
+                >
+                    <i class="bi bi-cart3"></i>
+                    Panier
+                    <span
+                        id="cart-count"
+                        class="badge rounded-pill bg-warning text-dark ms-1"
+                    >0</span>
                 </a>
 
                 <button
