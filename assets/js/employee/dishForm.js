@@ -39,9 +39,6 @@ if (page) {
 
     const allergensSelect = document.querySelector('#dish-allergens');
 
-    console.log('MODE :', mode);
-    console.log('ID :', dishId);
-
     init();
 
 
@@ -123,8 +120,6 @@ if (page) {
         try {
 
             const dish = await getDish(dishId);
-
-            console.log('Plat récupéré :', dish);
 
             titleInput.value = dish.title;
             descriptionInput.value = dish.description ?? '';
@@ -239,10 +234,6 @@ if (page) {
             ].map(option => Number(option.value))
 
         };
-
-
-        console.log(data);
-
 
         if (mode === 'create') {
 
