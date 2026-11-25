@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Form\ContactType;
 use App\Service\BrevoMailerService;
 use App\Service\SiteInfosService;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,8 +20,7 @@ class ContactController extends AbstractController
     public function index(
         Request $request,
         BrevoMailerService $brevoMailerService,
-        SiteInfosService $siteInfosService,
-        LoggerInterface $logger
+        SiteInfosService $siteInfosService
     ): Response {
 
         $form = $this->createForm(ContactType::class);
@@ -34,7 +32,6 @@ class ContactController extends AbstractController
             $data = $form->getData();
 
             try {
-
                 $brevoMailerService->sendContactEmail(
                     $data['title'],
                     $data['description'],
@@ -47,14 +44,6 @@ class ContactController extends AbstractController
                 );
 
             } catch (\Throwable $exception) {
-
-                $logger->error(
-                    'Erreur lors de l’envoi du formulaire de contact.',
-                    [
-                        'exception_class' => get_class($exception),
-                        'message' => $exception->getMessage(),
-                    ]
-                );
 
                 $this->addFlash(
                     'danger',
