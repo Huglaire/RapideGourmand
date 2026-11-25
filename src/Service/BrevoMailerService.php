@@ -11,8 +11,7 @@ class BrevoMailerService
         private HttpClientInterface $client,
         private string $brevoApiKey,
         private LoggerInterface $logger
-    ) {
-    }
+    ) {}
 
     public function sendContactEmail(
         string $title,
@@ -78,10 +77,9 @@ class BrevoMailerService
 
             if ($statusCode < 200 || $statusCode >= 300) {
 
-                $this->logger->error('Brevo a refusé la requête.', [
-                    'http_status' => $statusCode,
-                    'response' => substr($content, 0, 1000),
-                ]);
+                $this->logger->error(
+                    'Brevo HTTP ' . $statusCode . ' : ' . substr($content, 0, 1000)
+                );
 
                 throw new \RuntimeException(sprintf(
                     'Brevo a retourné HTTP %d : %s',
@@ -93,7 +91,6 @@ class BrevoMailerService
             $this->logger->info('Brevo a accepté la demande d’envoi.', [
                 'http_status' => $statusCode,
             ]);
-
         } catch (\Throwable $exception) {
 
             $this->logger->error('Échec de la requête vers Brevo.', [
