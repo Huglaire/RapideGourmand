@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Form\ContactType;
 use App\Service\BrevoMailerService;
 use App\Service\SiteInfosService;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,18 +21,17 @@ class ContactController extends AbstractController
     public function index(
         Request $request,
         BrevoMailerService $brevoMailerService,
-        SiteInfosService $siteInfosService
+        SiteInfosService $siteInfosService,
+        LoggerInterface $logger
     ): Response {
 
         $form = $this->createForm(ContactType::class);
 
         $form->handleRequest($request);
 
-
         if ($form->isSubmitted() && $form->isValid()) {
 
             $data = $form->getData();
-
 
             try {
 
@@ -41,14 +41,20 @@ class ContactController extends AbstractController
                     $data['email']
                 );
 
-
                 $this->addFlash(
                     'success',
                     'Votre message a bien été envoyé.'
                 );
 
-
             } catch (\Throwable $exception) {
+
+                $logger->error(
+                    'Erreur lors de l’envoi du formulaire de contact.',
+                    [
+                        'exception_class' => get_class($exception),
+                        'message' => $exception->getMessage(),
+                    ]
+                );
 
                 $this->addFlash(
                     'danger',
@@ -56,10 +62,8 @@ class ContactController extends AbstractController
                 );
             }
 
-
             return $this->redirectToRoute('contact');
         }
-
 
         return $this->render(
             'front/contact/contact.html.twig',
