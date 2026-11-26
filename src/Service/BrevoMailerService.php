@@ -58,7 +58,6 @@ class BrevoMailerService
                 ],
             ]
         );
-
         $response->getContent();
     }
 }
