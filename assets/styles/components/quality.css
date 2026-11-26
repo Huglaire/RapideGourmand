@@ -1,7 +1,12 @@
-/* Section des engagements */
+/* ==================================================
+   SECTION DES ENGAGEMENTS
+   ================================================== */
+
 .quality {
     padding: 5rem 0;
     background-color: var(--color-secondary);
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* Titre de la section */
@@ -16,12 +21,15 @@
 /* Grille des cartes */
 .quality-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 2rem;
+    width: 100%;
 }
 
 /* Carte */
 .quality-card {
+    min-width: 0;
+    box-sizing: border-box;
     background: #ffffff;
     border: 2px solid var(--color-complementary);
     border-radius: 12px;
@@ -58,4 +66,74 @@
 .quality-card h3 {
     font-size: 1.1rem;
     margin: 0;
+    overflow-wrap: break-word;
+}
+
+
+/* ==================================================
+   ADAPTATION TABLETTES
+   ================================================== */
+
+@media (max-width: 991.98px) {
+
+    .quality-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1.5rem;
+    }
+
+    .quality-card {
+        padding: 1.5rem;
+    }
+}
+
+
+/* ==================================================
+   ADAPTATION SMARTPHONES
+   ================================================== */
+
+@media (max-width: 575.98px) {
+
+    .quality {
+        padding: 3rem 0;
+    }
+
+    .quality-title {
+        font-size: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .quality-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
+    }
+
+    .quality-card {
+        padding: 1.25rem 0.75rem;
+    }
+
+    .quality-icon {
+        width: 4rem;
+        height: 4rem;
+        margin-bottom: 1rem;
+    }
+
+    .quality-icon i {
+        font-size: 2.2rem;
+    }
+
+    .quality-card h3 {
+        font-size: 0.95rem;
+    }
+}
+
+
+/* ==================================================
+   TRÈS PETITS ÉCRANS
+   ================================================== */
+
+@media (max-width: 359.98px) {
+
+    .quality-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
 }

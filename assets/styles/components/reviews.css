@@ -1,7 +1,12 @@
-/* Section des avis clients */
+/* ==================================================
+   SECTION DES AVIS CLIENTS
+   ================================================== */
+
 .reviews {
     padding: 6rem 0;
     background-color: #f8f5f2;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* Titre de la section */
@@ -16,12 +21,15 @@
 /* Grille des avis */
 .reviews-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 2rem;
+    width: 100%;
 }
 
 /* Carte d'un avis */
 .review-card {
+    min-width: 0;
+    box-sizing: border-box;
     background-color: #ffffff;
     border-radius: 12px;
     padding: 2rem;
@@ -46,4 +54,56 @@
 .review-content {
     line-height: 1.7;
     color: #555555;
+    overflow-wrap: anywhere;
+}
+
+
+/* ==================================================
+   ADAPTATION TABLETTES
+   ================================================== */
+
+@media (max-width: 991.98px) {
+
+    .reviews-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1.5rem;
+    }
+
+    .review-card {
+        padding: 1.5rem;
+    }
+}
+
+
+/* ==================================================
+   ADAPTATION SMARTPHONES
+   ================================================== */
+
+@media (max-width: 575.98px) {
+
+    .reviews {
+        padding: 3rem 0;
+    }
+
+    .reviews-title {
+        font-size: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .reviews-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1.25rem;
+    }
+
+    .review-card {
+        padding: 1.5rem;
+    }
+
+    .review-author {
+        font-size: 1.1rem;
+    }
+
+    .review-stars {
+        font-size: 1.1rem;
+    }
 }
