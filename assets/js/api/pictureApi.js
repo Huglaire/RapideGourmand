@@ -11,14 +11,16 @@ export async function getPictures() {
 
 }
 
+
 /**
- * Upload une image.
+ * Upload une image avec son texte alternatif.
  */
-export async function uploadPicture(file) {
+export async function uploadPicture(file, alt = '') {
 
     const formData = new FormData();
 
     formData.append('file', file);
+    formData.append('alt', alt);
 
     const response = await apiFetch('/api/pictures', {
         method: 'POST',

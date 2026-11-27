@@ -114,6 +114,34 @@
 
         </div>
 
+        <div class="mb-3">
+
+            <label
+                for="dish-picture-alt"
+                class="form-label"
+            >
+                Texte alternatif de l'image
+            </label>
+
+            <input
+                id="dish-picture-alt"
+                class="form-control"
+                type="text"
+                maxlength="500"
+                placeholder="Généré automatiquement à partir du nom du fichier"
+                aria-describedby="dish-picture-alt-help"
+            >
+
+            <div
+                id="dish-picture-alt-help"
+                class="form-text"
+            >
+                Ce texte décrit l'image pour les personnes utilisant un lecteur d'écran.
+                Vous pouvez le modifier pour mieux décrire la photo.
+            </div>
+
+        </div>
+
         <div
             class="mb-3 d-none"
             id="dish-picture-preview-container"
@@ -123,7 +151,7 @@
                 id="dish-picture-preview"
                 class="img-fluid rounded border"
                 style="max-width: 300px;"
-                alt="Prévisualisation"
+                alt=""
             >
 
         </div>

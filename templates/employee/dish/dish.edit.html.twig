@@ -3,7 +3,6 @@
 {% block title %}Modifier un plat | Rapide & Gourmand{% endblock %}
 
 {% block body %}
-{# Formulaire de modification d'un plat avec gestion des images #}
 
 <div
     class="container py-5"
@@ -23,7 +22,6 @@
         </p>
 
     </div>
-
 
     <form id="dish-form">
 
@@ -45,7 +43,6 @@
 
         </div>
 
-
         <div class="mb-3">
 
             <label
@@ -62,7 +59,6 @@
             ></textarea>
 
         </div>
-
 
         <div class="mb-3">
 
@@ -84,7 +80,6 @@
 
         </div>
 
-
         <div class="mb-3">
 
             <label
@@ -101,7 +96,6 @@
             ></select>
 
         </div>
-
 
         <div class="mb-3">
 
@@ -121,6 +115,33 @@
 
         </div>
 
+        <div class="mb-3">
+
+            <label
+                for="dish-picture-alt"
+                class="form-label"
+            >
+                Texte alternatif de l'image
+            </label>
+
+            <input
+                id="dish-picture-alt"
+                class="form-control"
+                type="text"
+                maxlength="500"
+                placeholder="Généré automatiquement à partir du nom du fichier"
+                aria-describedby="dish-picture-alt-help"
+            >
+
+            <div
+                id="dish-picture-alt-help"
+                class="form-text"
+            >
+                Ce texte décrit l'image pour les personnes utilisant un lecteur d'écran.
+                Vous pouvez le modifier pour mieux décrire la photo.
+            </div>
+
+        </div>
 
         <div
             class="mb-3 d-none"
@@ -130,12 +151,11 @@
             <img
                 id="dish-picture-preview"
                 class="img-fluid rounded border"
-                style="max-width:300px;"
-                alt="Prévisualisation"
+                style="max-width: 300px;"
+                alt=""
             >
 
         </div>
-
 
         <div class="mb-4">
 
@@ -154,7 +174,6 @@
 
         </div>
 
-
         <div class="d-flex gap-2">
 
             <button
@@ -163,7 +182,6 @@
             >
                 Enregistrer
             </button>
-
 
             <a
                 href="{{ path('employee_dishes') }}"
@@ -174,9 +192,7 @@
 
         </div>
 
-
     </form>
-
 
 </div>
 

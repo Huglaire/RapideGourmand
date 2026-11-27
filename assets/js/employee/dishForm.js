@@ -13,6 +13,7 @@ import {
     getAllergens
 } from '../api/allergenApi.js';
 
+
 const page = document.querySelector('#dish-form-page');
 
 if (page) {
@@ -28,6 +29,7 @@ if (page) {
 
     const picturesSelect = document.querySelector('#dish-pictures');
     const pictureUpload = document.querySelector('#dish-picture-upload');
+    const pictureAltInput = document.querySelector('#dish-picture-alt');
 
     const previewContainer = document.querySelector(
         '#dish-picture-preview-container'
@@ -56,6 +58,14 @@ if (page) {
                 'change',
                 handlePictureUpload
             );
+
+        }
+
+        if (pictureAltInput && previewImage) {
+
+            pictureAltInput.addEventListener('input', () => {
+                previewImage.alt = pictureAltInput.value.trim();
+            });
 
         }
 
@@ -165,6 +175,26 @@ if (page) {
 
 
     /**
+     * Génère un texte alternatif à partir du nom du fichier.
+     */
+    function generateAltFromFilename(filename) {
+
+        const name = filename
+            .replace(/\.[^/.]+$/, '')
+            .replace(/[_-]+/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+
+        if (!name) {
+            return 'Image du plat';
+        }
+
+        return name.charAt(0).toUpperCase() + name.slice(1);
+
+    }
+
+
+    /**
      * Upload d'une nouvelle image.
      */
     async function handlePictureUpload(event) {
@@ -175,10 +205,17 @@ if (page) {
             return;
         }
 
+        // Génération automatique du texte alternatif.
+        const suggestedAlt = generateAltFromFilename(file.name);
+
+        if (pictureAltInput) {
+            pictureAltInput.value = suggestedAlt;
+        }
 
         if (previewImage && previewContainer) {
 
             previewImage.src = URL.createObjectURL(file);
+            previewImage.alt = suggestedAlt;
 
             previewContainer.classList.remove('d-none');
 
@@ -187,7 +224,11 @@ if (page) {
 
         try {
 
-            const picture = await uploadPicture(file);
+            const alt = pictureAltInput
+                ? pictureAltInput.value.trim()
+                : suggestedAlt;
+
+            const picture = await uploadPicture(file, alt);
 
             const option = document.createElement('option');
 

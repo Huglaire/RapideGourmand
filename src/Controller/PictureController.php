@@ -81,10 +81,26 @@ final class PictureController extends AbstractController
 
         }
 
+        // Récupération du nom d'origine du fichier.
         $title = pathinfo(
             $file->getClientOriginalName(),
             PATHINFO_FILENAME
         );
+
+        // Récupération du texte alternatif saisi par l'employé.
+        $alt = $request->request->get('alt', '');
+
+        if (!is_string($alt)) {
+            $alt = '';
+        }
+
+        $alt = trim($alt);
+
+        // Si aucun texte alternatif n'est fourni,
+        // on le génère à partir du nom du fichier.
+        if ($alt === '') {
+            $alt = $this->generateAltFromFilename($title);
+        }
 
         $extension = strtolower(
             $file->getClientOriginalExtension()
@@ -93,7 +109,6 @@ final class PictureController extends AbstractController
         $filename = $slugger->slug($title);
         $filename .= '-' . uniqid() . '.' . $extension;
 
-
         try {
 
             $file->move(
@@ -101,17 +116,14 @@ final class PictureController extends AbstractController
                 $filename
             );
 
-
             $picture = new Picture();
 
             $picture->setTitle($title);
-            $picture->setAlt('');
+            $picture->setAlt($alt);
             $picture->setPath('/uploads/' . $filename);
-
 
             $entityManager->persist($picture);
             $entityManager->flush();
-
 
         } catch (\Throwable $e) {
 
@@ -123,12 +135,33 @@ final class PictureController extends AbstractController
 
         }
 
-
         return $this->json([
             'id' => $picture->getId(),
             'title' => $picture->getTitle(),
             'alt' => $picture->getAlt(),
             'path' => $picture->getPath()
         ], Response::HTTP_CREATED);
+    }
+
+
+    /**
+     * Génère un texte alternatif lisible à partir
+     * du nom original du fichier.
+     */
+    private function generateAltFromFilename(string $filename): string
+    {
+        // Remplace les tirets et underscores par des espaces.
+        $alt = preg_replace('/[_-]+/u', ' ', $filename);
+
+        // Supprime les espaces superflus.
+        $alt = trim(preg_replace('/\s+/u', ' ', $alt));
+
+        if ($alt === '') {
+            return 'Image du plat';
+        }
+
+        // Met la première lettre en majuscule.
+        return mb_strtoupper(mb_substr($alt, 0, 1))
+            . mb_substr($alt, 1);
     }
 }
